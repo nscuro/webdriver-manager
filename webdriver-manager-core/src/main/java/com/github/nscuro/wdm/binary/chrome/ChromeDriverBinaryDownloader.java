@@ -1,7 +1,6 @@
 package com.github.nscuro.wdm.binary.chrome;
 
 import com.github.nscuro.wdm.Architecture;
-import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.BinaryDownloader;
 import com.github.nscuro.wdm.binary.CompressionUtils;
@@ -30,11 +29,6 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
 
     public ChromeDriverBinaryDownloader(final HttpClient httpClient) {
         this.httpClient = httpClient;
-    }
-
-    @Override
-    public boolean supportsBrowser(final Browser browser) {
-        return Browser.CHROME.equals(browser);
     }
 
     @Nonnull

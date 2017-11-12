@@ -1,7 +1,6 @@
 package com.github.nscuro.wdm.binary;
 
 import com.github.nscuro.wdm.Architecture;
-import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
 
 import javax.annotation.Nonnull;
@@ -10,8 +9,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 public interface BinaryDownloader {
-
-    boolean supportsBrowser(final Browser browser);
 
     @Nonnull
     File download(final String version, final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException;
