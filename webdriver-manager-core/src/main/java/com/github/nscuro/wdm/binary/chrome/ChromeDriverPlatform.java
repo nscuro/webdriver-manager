@@ -3,38 +3,35 @@ package com.github.nscuro.wdm.binary.chrome;
 import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Os;
 
-public enum ChromeDriverPlatform {
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-    WIN32,
+enum ChromeDriverPlatform {
 
-    MAC64,
+    WIN32(Os.WINDOWS, Arrays.asList(Architecture.X64, Architecture.X86)),
 
-    LINUX32,
+    MAC64(Os.MACOS, Collections.singletonList(Architecture.X64)),
 
-    LINUX64;
+    LINUX32(Os.LINUX, Collections.singletonList(Architecture.X86)),
+
+    LINUX64(Os.LINUX, Collections.singletonList(Architecture.X64));
+
+    private final Os os;
+
+    private final List<Architecture> architectures;
+
+    ChromeDriverPlatform(final Os os, final List<Architecture> architectures) {
+        this.os = os;
+        this.architectures = architectures;
+    }
 
     static ChromeDriverPlatform from(final Os os, final Architecture architecture) {
-        switch (os) {
-            case WINDOWS:
-                return WIN32;
-            case MACOS:
-                if (architecture.equals(Architecture.X86)) {
-                    throw new IllegalArgumentException();
-                } else {
-                    return MAC64;
-                }
-            case LINUX:
-                switch (architecture) {
-                    case X64:
-                        return LINUX64;
-                    case X86:
-                        return LINUX32;
-                    default:
-                        throw new IllegalArgumentException();
-                }
-            default:
-                throw new IllegalArgumentException();
-        }
+        return Arrays.stream(values())
+                .filter(platform -> platform.os.equals(os))
+                .filter(platform -> platform.architectures.contains(architecture))
+                .findAny()
+                .orElseThrow(IllegalArgumentException::new);
     }
 
 }
