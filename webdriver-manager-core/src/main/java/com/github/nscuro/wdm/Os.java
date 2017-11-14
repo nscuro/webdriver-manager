@@ -21,7 +21,7 @@ public enum Os {
         } else if (osName.contains("mac")) {
             return MACOS;
         } else {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Unable to determine the current operating system");
         }
     }
 

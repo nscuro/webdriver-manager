@@ -33,7 +33,7 @@ public enum Architecture {
         return Arrays.stream(values())
                 .filter(architecture -> architecture.hasName(archName))
                 .findAny()
-                .orElseThrow(IllegalStateException::new);
+                .orElseThrow(() -> new IllegalStateException("Unable to determine the current architecture"));
     }
 
 }

@@ -4,18 +4,19 @@ import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Os;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+
+import static java.util.Collections.singletonList;
 
 enum ChromeDriverPlatform {
 
     WIN32(Os.WINDOWS, Arrays.asList(Architecture.X64, Architecture.X86)),
 
-    MAC64(Os.MACOS, Collections.singletonList(Architecture.X64)),
+    MAC64(Os.MACOS, singletonList(Architecture.X64)),
 
-    LINUX32(Os.LINUX, Collections.singletonList(Architecture.X86)),
+    LINUX32(Os.LINUX, singletonList(Architecture.X86)),
 
-    LINUX64(Os.LINUX, Collections.singletonList(Architecture.X64));
+    LINUX64(Os.LINUX, singletonList(Architecture.X64));
 
     private final Os os;
 

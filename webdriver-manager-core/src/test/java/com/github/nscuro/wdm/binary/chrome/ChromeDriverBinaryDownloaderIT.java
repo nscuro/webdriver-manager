@@ -1,5 +1,7 @@
 package com.github.nscuro.wdm.binary.chrome;
 
+import com.github.nscuro.wdm.Architecture;
+import com.github.nscuro.wdm.Os;
 import org.apache.http.impl.client.HttpClients;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,12 +37,12 @@ class ChromeDriverBinaryDownloaderIT {
 
     @Test
     void testDownloadSpecificVersionForCurrentOsAndArchitecture() throws IOException {
-        downloadedFile = chromeDriverBinaryDownloader.download("2.31", DOWNLOAD_DESTINATION_DIR_PATH);
+        downloadedFile = chromeDriverBinaryDownloader.download("2.31", Os.getCurrent(), Architecture.getCurrent(), DOWNLOAD_DESTINATION_DIR_PATH);
     }
 
     @Test
     void testDownloadLatestVersionForCurrentOsAndArchitecture() throws IOException {
-        downloadedFile = chromeDriverBinaryDownloader.downloadLatest(DOWNLOAD_DESTINATION_DIR_PATH);
+        downloadedFile = chromeDriverBinaryDownloader.downloadLatest(Os.getCurrent(), Architecture.getCurrent(), DOWNLOAD_DESTINATION_DIR_PATH);
     }
 
     @AfterEach

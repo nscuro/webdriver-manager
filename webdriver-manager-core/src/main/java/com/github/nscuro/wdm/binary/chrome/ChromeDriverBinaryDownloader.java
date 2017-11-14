@@ -1,9 +1,11 @@
 package com.github.nscuro.wdm.binary.chrome;
 
 import com.github.nscuro.wdm.Architecture;
+import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.BinaryDownloader;
 import com.github.nscuro.wdm.binary.CompressionUtils;
+import com.github.nscuro.wdm.binary.FileUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -31,16 +33,28 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
         this.httpClient = httpClient;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean supportsBrowser(final Browser browser) {
+        return Browser.CHROME.equals(browser);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public File download(final String version, final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException {
         final ChromeDriverPlatform chromeDriverPlatform = ChromeDriverPlatform.from(os, architecture);
 
-        final String binaryName = buildChromeDriverBinaryName(version, chromeDriverPlatform);
+        final Path destinationFilePath = FileUtils.buildBinaryDestinationPath(Browser.CHROME, version, os, architecture, destinationDirPath);
 
-        if (destinationDirPath.resolve(binaryName).toFile().exists()) {
+        if (destinationFilePath.toFile().exists()) {
             LOGGER.info("ChromeDriver v{} for {} was already downloaded", version, chromeDriverPlatform);
-            return destinationDirPath.resolve(binaryName).toFile();
+
+            return destinationFilePath.toFile();
         } else {
             LOGGER.info("Downloading ChromeDriver v{} for {}", version, chromeDriverPlatform);
         }
@@ -58,7 +72,7 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
             }
         });
 
-        final File binaryFile = CompressionUtils.unzipFile(zippedBinaryContent, destinationDirPath.resolve(binaryName),
+        final File binaryFile = CompressionUtils.unzipFile(zippedBinaryContent, destinationFilePath,
                 zipEntry -> !zipEntry.isDirectory() && zipEntry.getName().toLowerCase().contains("chromedriver"))
                 .orElseThrow(RuntimeException::new);
 
@@ -69,10 +83,14 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
         return binaryFile;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public File downloadLatest(final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException {
         LOGGER.debug("Downloading latest ChromeDriver");
+
         return download(getLatestVersion(), os, architecture, destinationDirPath);
     }
 
@@ -85,15 +103,10 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
                 throw new RuntimeException("Response body is empty");
             } else {
                 final String latestReleaseVersion = EntityUtils.toString(httpResponse.getEntity()).trim();
-                LOGGER.debug("Latest ChromeDriver version is {}", latestReleaseVersion);
+                LOGGER.info("Latest ChromeDriver version is {}", latestReleaseVersion);
                 return latestReleaseVersion;
             }
         });
-    }
-
-    @Nonnull
-    private String buildChromeDriverBinaryName(final String version, final ChromeDriverPlatform chromeDriverPlatform) {
-        return format("chromedriver-%s_%s", version, chromeDriverPlatform.name().toLowerCase());
     }
 
 }
