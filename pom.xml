@@ -32,6 +32,7 @@
         <!-- Dependency versions -->
         <selenium.version>3.6.0</selenium.version>
         <apache-httpclient.version>4.5.3</apache-httpclient.version>
+        <jackson.version>2.9.2</jackson.version>
         <lombok.version>1.16.18</lombok.version>
         <findbugs-jsr305.version>3.0.2</findbugs-jsr305.version>
         <slf4j.version>1.7.25</slf4j.version>
@@ -68,6 +69,23 @@
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
                 <version>${apache-httpclient.version}</version>
+            </dependency>
+
+            <!-- Jackson -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
 
             <!-- Lombok -->
