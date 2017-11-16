@@ -3,6 +3,7 @@ package com.github.nscuro.wdm.binary;
 import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
+import com.github.nscuro.wdm.binary.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

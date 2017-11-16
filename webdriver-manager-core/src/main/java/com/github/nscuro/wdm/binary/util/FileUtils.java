@@ -1,4 +1,4 @@
-package com.github.nscuro.wdm.binary;
+package com.github.nscuro.wdm.binary.util;
 
 import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Browser;
@@ -22,7 +22,7 @@ public final class FileUtils {
     /**
      * @param dirPath
      */
-    static void ensureExistenceOfDir(final Path dirPath) {
+    public static void ensureExistenceOfDir(final Path dirPath) {
         final File dir = dirPath.toFile();
 
         if (!dir.exists()) {
@@ -44,7 +44,7 @@ public final class FileUtils {
      * @param file The file to be made executable
      * @throws IllegalArgumentException When the given file does not exist or is a directory
      */
-    static void makeFileExecutable(final File file) {
+    public static void makeFileExecutable(final File file) {
         if (!file.exists() || file.isDirectory()) {
             throw new IllegalArgumentException(format("Cannot make file executable: %s does not exist or is a directory", file));
         } else if (!file.canExecute()) {

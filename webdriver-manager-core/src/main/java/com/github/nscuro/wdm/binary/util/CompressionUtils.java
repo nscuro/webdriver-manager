@@ -1,4 +1,4 @@
-package com.github.nscuro.wdm.binary;
+package com.github.nscuro.wdm.binary.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
