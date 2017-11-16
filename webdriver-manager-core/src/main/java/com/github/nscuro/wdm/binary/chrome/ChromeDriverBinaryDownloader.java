@@ -64,9 +64,9 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
 
         final byte[] zippedBinaryContent = httpClient.execute(request, httpResponse -> {
             if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                throw new IllegalStateException("");
+                throw new IllegalStateException("Unexpected HTTP status");
             } else if (httpResponse.getEntity() == null) {
-                throw new RuntimeException();
+                throw new IllegalStateException("No HTTP response body found");
             } else {
                 return EntityUtils.toByteArray(httpResponse.getEntity());
             }
@@ -74,7 +74,7 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
 
         return CompressionUtils.unzipFile(zippedBinaryContent, destinationFilePath,
                 zipEntry -> !zipEntry.isDirectory() && zipEntry.getName().toLowerCase().contains("chromedriver"))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new IllegalStateException("No ChromeDriver executable was found in the downloaded ZIP archive"));
     }
 
     /**
