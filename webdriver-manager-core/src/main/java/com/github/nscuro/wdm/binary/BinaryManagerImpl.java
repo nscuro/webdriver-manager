@@ -42,6 +42,8 @@ final class BinaryManagerImpl implements BinaryManager {
             binaryFile = binaryDownloader.download(version, os, architecture, BINARY_DESTINATION_DIR_PATH);
         }
 
+        FileUtils.makeFileExecutable(binaryFile);
+
         return binaryFile;
     }
 

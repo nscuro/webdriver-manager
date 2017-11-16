@@ -39,6 +39,24 @@ public final class FileUtils {
     }
 
     /**
+     * Make a given file executable.
+     *
+     * @param file The file to be made executable
+     * @throws IllegalArgumentException When the given file does not exist or is a directory
+     */
+    static void makeFileExecutable(final File file) {
+        if (!file.exists() || file.isDirectory()) {
+            throw new IllegalArgumentException(format("Cannot make file executable: %s does not exist or is a directory", file));
+        } else if (!file.canExecute()) {
+            if (!file.setExecutable(true)) {
+                LOGGER.warn("{} was not made executable", file);
+            } else {
+                LOGGER.debug("{} was made executable");
+            }
+        }
+    }
+
+    /**
      * @param browser
      * @param version
      * @param os

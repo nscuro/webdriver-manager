@@ -64,7 +64,7 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
 
         final byte[] zippedBinaryContent = httpClient.execute(request, httpResponse -> {
             if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                throw new RuntimeException();
+                throw new IllegalStateException("");
             } else if (httpResponse.getEntity() == null) {
                 throw new RuntimeException();
             } else {
@@ -72,15 +72,9 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
             }
         });
 
-        final File binaryFile = CompressionUtils.unzipFile(zippedBinaryContent, destinationFilePath,
+        return CompressionUtils.unzipFile(zippedBinaryContent, destinationFilePath,
                 zipEntry -> !zipEntry.isDirectory() && zipEntry.getName().toLowerCase().contains("chromedriver"))
                 .orElseThrow(RuntimeException::new);
-
-        if (!binaryFile.setExecutable(true)) {
-            LOGGER.warn("Failed to make {} executable", binaryFile);
-        }
-
-        return binaryFile;
     }
 
     /**
