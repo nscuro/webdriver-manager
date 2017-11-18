@@ -11,7 +11,7 @@ import java.io.IOException;
 public interface BinaryManager {
 
     /**
-     * Get a webdriver binary for the given browser.
+     * Get a webdriver binary for the given {@link Browser}, version, {@link Os} and {@link Architecture}
      * <p>
      * When a binary for the given requirements is found locally,
      * it will not be downloaded again.
@@ -27,9 +27,12 @@ public interface BinaryManager {
     File getBinary(final Browser browser, final String version, final Os os, final Architecture architecture) throws IOException;
 
     /**
-     * Get a webdriver binary for the given browser and version.
+     * Get a webdriver binary for the given {@link Browser} and version.
      * <p>
      * This assumes that a binary for the current {@link Os} and {@link Architecture} is requested.
+     * <p>
+     * When a binary for the given requirements is found locally,
+     * it will not be downloaded again.
      *
      * @param browser The browser to download the binary for
      * @param version The version of the binary (<strong>not</strong> the browser version)
@@ -43,11 +46,16 @@ public interface BinaryManager {
     }
 
     /**
-     * @param browser
-     * @param os
-     * @param architecture
-     * @return
-     * @throws IOException
+     * Get the latest webdriver binary for the given {@link Browser}, {@link Os} and {@link Architecture}.
+     * <p>
+     * When a binary for the given requirements is found locally,
+     * it will not be downloaded again.
+     *
+     * @param browser      The browser to download the binary for
+     * @param os           The operating system the binary must be compatible with
+     * @param architecture The architecture the binary must be compatible with
+     * @return A {@link File} handle of the downloaded binary
+     * @throws IOException When downloading the binary failed
      * @see #getBinary(Browser, String, Os, Architecture)
      */
     @Nonnull
@@ -56,9 +64,16 @@ public interface BinaryManager {
     }
 
     /**
-     * @param browser
-     * @return
-     * @throws IOException
+     * Get the latest webdriver binary for a given {@link Browser}.
+     * <p>
+     * This assumes that a binary for the current {@link Os} and {@link Architecture} is requested.
+     * <p>
+     * When a binary for the given requirements is found locally,
+     * it will not be downloaded again.
+     *
+     * @param browser The browser to download the binary for
+     * @return A {@link File} handle of the downloaded binary
+     * @throws IOException When downloading the binary failed
      * @see #getBinary(Browser, String, Os, Architecture)
      */
     @Nonnull
@@ -67,8 +82,10 @@ public interface BinaryManager {
     }
 
     /**
-     * @param binaryFile
-     * @param browser
+     * Register a given binary file as the webdriver binary to use for a given {@link Browser}.
+     *
+     * @param binaryFile The binary file to register
+     * @param browser    The {@link Browser} to register the binary for
      */
     void registerBinary(final File binaryFile, final Browser browser);
 
