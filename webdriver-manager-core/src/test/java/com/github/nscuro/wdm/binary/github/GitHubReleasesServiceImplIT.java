@@ -13,6 +13,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class GitHubReleasesServiceImplIT {
 
+    private static final String gitHubUserName = System.getenv("WDM_GH_USER");
+
+    private static final String gitHubToken = System.getenv("WDM_GH_TOKEN");
+
     private GitHubReleasesService releasesService;
 
     @BeforeEach
@@ -22,7 +26,7 @@ class GitHubReleasesServiceImplIT {
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        releasesService = new GitHubReleasesServiceImpl(httpClient, objectMapper);
+        releasesService = new GitHubReleasesServiceImpl(httpClient, objectMapper, gitHubUserName, gitHubToken);
     }
 
     @Test

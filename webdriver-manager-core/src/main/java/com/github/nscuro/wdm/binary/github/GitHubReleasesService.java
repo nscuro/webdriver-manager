@@ -1,5 +1,9 @@
 package com.github.nscuro.wdm.binary.github;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.client.HttpClient;
+
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -20,6 +24,7 @@ public interface GitHubReleasesService {
      * @throws IOException
      * @see <a href="https://developer.github.com/v3/repos/releases/#get-the-latest-release">API endpoint documentation</a>
      */
+    @Nonnull
     Optional<GitHubRelease> getLatestRelease(final String repoOwner, final String repoName) throws IOException;
 
     /**
@@ -33,6 +38,32 @@ public interface GitHubReleasesService {
      * @throws IOException
      * @see <a href="https://developer.github.com/v3/repos/releases/#get-a-release-by-tag-name">API endpoint documentation</a>
      */
+    @Nonnull
     Optional<GitHubRelease> getReleaseByTagName(final String repoOwner, final String repoName, final String tagName) throws IOException;
+
+    /**
+     * @param httpClient   The {@link HttpClient} to use
+     * @param objectMapper The {@link ObjectMapper} to use
+     * @return A {@link GitHubReleasesService}
+     */
+    @Nonnull
+    static GitHubReleasesService create(final HttpClient httpClient, final ObjectMapper objectMapper) {
+        return new GitHubReleasesServiceImpl(httpClient, objectMapper, null, null);
+    }
+
+    /**
+     * @param httpClient   The {@link HttpClient} to use
+     * @param objectMapper The {@link ObjectMapper} to use
+     * @param userName     A GitHub username
+     * @param oAuthToken   A personal GitHub API token
+     * @return A {@link GitHubReleasesService}
+     */
+    @Nonnull
+    static GitHubReleasesService createWithToken(final HttpClient httpClient,
+                                                 final ObjectMapper objectMapper,
+                                                 final String userName,
+                                                 final String oAuthToken) {
+        return new GitHubReleasesServiceImpl(httpClient, objectMapper, userName, oAuthToken);
+    }
 
 }
