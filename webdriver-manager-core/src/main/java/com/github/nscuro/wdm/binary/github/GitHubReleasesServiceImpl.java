@@ -98,7 +98,7 @@ final class GitHubReleasesServiceImpl implements GitHubReleasesService {
     }
 
     @Nonnull
-    private Optional<Credentials> getApiCredentials() {
+    Optional<Credentials> getApiCredentials() {
         if (gitHubUserName != null && oAuthToken != null) {
             return Optional.of(new UsernamePasswordCredentials(gitHubUserName, oAuthToken));
         } else {
