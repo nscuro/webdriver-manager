@@ -1,11 +1,13 @@
 package com.github.nscuro.wdm.binary.github;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.Set;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public final class GitHubRelease {
 
     @JsonProperty("id")

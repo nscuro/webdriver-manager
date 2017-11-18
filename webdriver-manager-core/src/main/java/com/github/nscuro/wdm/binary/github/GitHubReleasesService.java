@@ -14,6 +14,10 @@ import java.util.Optional;
  */
 public interface GitHubReleasesService {
 
+    String ENV_GITHUB_USERNAME = "WDM_GH_USER";
+
+    String ENV_GITHUB_APITOKEN = "WDM_GH_TOKEN";
+
     /**
      * Get the latest release.
      *
@@ -45,10 +49,15 @@ public interface GitHubReleasesService {
      * @param httpClient   The {@link HttpClient} to use
      * @param objectMapper The {@link ObjectMapper} to use
      * @return A {@link GitHubReleasesService}
+     * @see #ENV_GITHUB_USERNAME
+     * @see #ENV_GITHUB_APITOKEN
      */
     @Nonnull
     static GitHubReleasesService create(final HttpClient httpClient, final ObjectMapper objectMapper) {
-        return new GitHubReleasesServiceImpl(httpClient, objectMapper, null, null);
+        final String gitHubUserName = System.getenv(ENV_GITHUB_USERNAME);
+        final String gitHubApiToken = System.getenv(ENV_GITHUB_APITOKEN);
+
+        return new GitHubReleasesServiceImpl(httpClient, objectMapper, gitHubUserName, gitHubApiToken);
     }
 
     /**
