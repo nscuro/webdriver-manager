@@ -36,8 +36,8 @@ public final class GeckoDriverBinaryDownloader implements BinaryDownloader {
 
     private final GitHubReleasesService releasesService;
 
-    GeckoDriverBinaryDownloader(final HttpClient httpClient,
-                                final GitHubReleasesService releasesService) {
+    public GeckoDriverBinaryDownloader(final HttpClient httpClient,
+                                       final GitHubReleasesService releasesService) {
         this.httpClient = httpClient;
         this.releasesService = releasesService;
     }
@@ -86,13 +86,29 @@ public final class GeckoDriverBinaryDownloader implements BinaryDownloader {
                 .getLatestRelease(REPOSITORY_OWNER, REPOSITORY_NAME)
                 .orElseThrow(NoSuchElementException::new);
 
-        LOGGER.info("Latest GeckoDriver version is {}", latestRelease.getTagName());
+        final String latestVersion = latestRelease.getTagName();
 
-        final String downloadUrl = getReleaseAssetForPlatform(latestRelease, driverPlatform)
-                .map(GitHubReleaseAsset::getBrowserDownloadUrl)
+        LOGGER.info("Latest GeckoDriver version is {}", latestVersion);
+
+        final Path destinationFilePath = FileUtils.buildBinaryDestinationPath(Browser.FIREFOX, latestVersion, os, architecture, destinationDirPath);
+        if (destinationFilePath.toFile().exists()) {
+            LOGGER.info("GeckoDriver {} for {} was already downloaded", latestVersion, driverPlatform);
+
+            return destinationFilePath.toFile();
+        } else {
+            LOGGER.info("Downloading GeckoDriver {} for {}", latestVersion, driverPlatform);
+        }
+
+        final GitHubReleaseAsset releaseAsset = getReleaseAssetForPlatform(latestRelease, driverPlatform)
                 .orElseThrow(NoSuchElementException::new);
 
-        return null;
+        final String downloadUrl = releaseAsset.getBrowserDownloadUrl();
+        final String contentType = releaseAsset.getContentType();
+
+        final byte[] archivedBinary = downloadArchivedBinary(downloadUrl, contentType);
+
+        return unarchiveBinary(archivedBinary, contentType, destinationFilePath)
+                .orElseThrow(IllegalStateException::new);
     }
 
     @Nonnull
