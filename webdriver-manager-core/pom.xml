@@ -16,6 +16,11 @@
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.codeborne</groupId>
+            <artifactId>phantomjsdriver</artifactId>
+            <optional>true</optional>
+        </dependency>
 
         <!-- Apache HttpClient -->
         <dependency>

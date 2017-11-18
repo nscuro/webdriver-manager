@@ -31,6 +31,7 @@
 
         <!-- Dependency versions -->
         <selenium.version>3.6.0</selenium.version>
+        <phantomjs-driver.version>1.4.3</phantomjs-driver.version>
         <apache-httpclient.version>4.5.3</apache-httpclient.version>
         <jackson.version>2.9.2</jackson.version>
         <lombok.version>1.16.18</lombok.version>
@@ -62,6 +63,11 @@
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-java</artifactId>
                 <version>${selenium.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.codeborne</groupId>
+                <artifactId>phantomjsdriver</artifactId>
+                <version>${phantomjs-driver.version}</version>
             </dependency>
 
             <!-- Apache HttpClient -->
