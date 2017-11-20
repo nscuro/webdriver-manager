@@ -6,6 +6,7 @@ import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.BinaryDownloader;
 import com.github.nscuro.wdm.binary.util.CompressionUtils;
 import com.github.nscuro.wdm.binary.util.FileUtils;
+import com.github.nscuro.wdm.binary.util.HttpUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -19,6 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import static com.github.nscuro.wdm.binary.util.HttpContentType.APPLICATION_X_ZIP_COMPRESSED;
+import static com.github.nscuro.wdm.binary.util.HttpContentType.APPLICATION_ZIP;
 import static java.lang.String.format;
 
 public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
@@ -59,18 +62,7 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
             LOGGER.info("Downloading ChromeDriver v{} for {}", version, chromeDriverPlatform);
         }
 
-        final HttpGet request = new HttpGet(BASE_URL + format("/%s/chromedriver_%s.zip", version, chromeDriverPlatform.name().toLowerCase()));
-        request.setHeader(HttpHeaders.ACCEPT, "application/zip,application/x-zip-compressed");
-
-        final byte[] zippedBinaryContent = httpClient.execute(request, httpResponse -> {
-            if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                throw new IllegalStateException("Unexpected HTTP status");
-            } else if (httpResponse.getEntity() == null) {
-                throw new IllegalStateException("No HTTP response body found");
-            } else {
-                return EntityUtils.toByteArray(httpResponse.getEntity());
-            }
-        });
+        final byte[] zippedBinaryContent = downloadZippedBinary(version, chromeDriverPlatform);
 
         return CompressionUtils.unzipFile(zippedBinaryContent, destinationFilePath,
                 zipEntry -> !zipEntry.isDirectory() && zipEntry.getName().toLowerCase().contains("chromedriver"))
@@ -99,6 +91,23 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
                 final String latestReleaseVersion = EntityUtils.toString(httpResponse.getEntity()).trim();
                 LOGGER.info("Latest ChromeDriver version is {}", latestReleaseVersion);
                 return latestReleaseVersion;
+            }
+        });
+    }
+
+    @Nonnull
+    private byte[] downloadZippedBinary(final String version, final ChromeDriverPlatform platform) throws IOException {
+        final HttpGet request = new HttpGet(format("%s/%s/chromedriver_%s.zip", BASE_URL, version, platform.name().toLowerCase()));
+        request.setHeader(HttpHeaders.ACCEPT, format("%s,%s", APPLICATION_ZIP, APPLICATION_X_ZIP_COMPRESSED));
+
+        return httpClient.execute(request, httpResponse -> {
+            if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                throw new IllegalStateException("Unexpected HTTP status");
+            } else if (httpResponse.getEntity() == null) {
+                throw new IllegalStateException("No HTTP response body found");
+            } else {
+                HttpUtils.verifyContentTypeIsAnyOf(httpResponse, APPLICATION_ZIP, APPLICATION_X_ZIP_COMPRESSED);
+                return EntityUtils.toByteArray(httpResponse.getEntity());
             }
         });
     }
