@@ -50,7 +50,7 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
     @Nonnull
     @Override
     public File download(final String version, final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException {
-        final ChromeDriverPlatform chromeDriverPlatform = ChromeDriverPlatform.from(os, architecture);
+        final ChromeDriverPlatform chromeDriverPlatform = ChromeDriverPlatform.valueOf(os, architecture);
 
         final Path destinationFilePath = FileUtils.buildBinaryDestinationPath(Browser.CHROME, version, os, architecture, destinationDirPath);
 

@@ -27,7 +27,7 @@ enum ChromeDriverPlatform {
         this.architectures = architectures;
     }
 
-    static ChromeDriverPlatform from(final Os os, final Architecture architecture) {
+    static ChromeDriverPlatform valueOf(final Os os, final Architecture architecture) {
         return Arrays.stream(values())
                 .filter(platform -> platform.os.equals(os))
                 .filter(platform -> platform.architectures.contains(architecture))

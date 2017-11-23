@@ -14,6 +14,8 @@ enum GeckoDriverPlatform {
 
     WIN64(Os.WINDOWS, singletonList(Architecture.X64)),
 
+    LINUX32(Os.LINUX, singletonList(Architecture.X86)),
+
     LINUX64(Os.LINUX, singletonList(Architecture.X64)),
 
     MACOS(Os.MACOS, singletonList(Architecture.X64));
@@ -27,7 +29,7 @@ enum GeckoDriverPlatform {
         this.architectures = architectures;
     }
 
-    static GeckoDriverPlatform from(final Os os, final Architecture architecture) {
+    static GeckoDriverPlatform valueOf(final Os os, final Architecture architecture) {
         return Arrays.stream(values())
                 .filter(platform -> platform.os.equals(os))
                 .filter(platform -> platform.architectures.contains(architecture))

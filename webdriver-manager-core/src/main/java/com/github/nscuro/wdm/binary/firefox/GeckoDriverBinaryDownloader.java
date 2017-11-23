@@ -4,11 +4,11 @@ import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.BinaryDownloader;
+import com.github.nscuro.wdm.binary.github.GitHubRelease;
+import com.github.nscuro.wdm.binary.github.GitHubReleaseAsset;
+import com.github.nscuro.wdm.binary.github.GitHubReleasesService;
 import com.github.nscuro.wdm.binary.util.CompressionUtils;
 import com.github.nscuro.wdm.binary.util.FileUtils;
-import com.github.nscuro.wdm.binary.github.GitHubReleaseAsset;
-import com.github.nscuro.wdm.binary.github.GitHubRelease;
-import com.github.nscuro.wdm.binary.github.GitHubReleasesService;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -42,15 +42,21 @@ public final class GeckoDriverBinaryDownloader implements BinaryDownloader {
         this.releasesService = releasesService;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean supportsBrowser(final Browser browser) {
         return Browser.FIREFOX.equals(browser);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public File download(final String version, final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException {
-        final GeckoDriverPlatform driverPlatform = GeckoDriverPlatform.from(os, architecture);
+        final GeckoDriverPlatform driverPlatform = GeckoDriverPlatform.valueOf(os, architecture);
 
         final Path destinationFilePath = FileUtils.buildBinaryDestinationPath(Browser.FIREFOX, version, os, architecture, destinationDirPath);
         if (destinationFilePath.toFile().exists()) {
@@ -77,10 +83,13 @@ public final class GeckoDriverBinaryDownloader implements BinaryDownloader {
                 .orElseThrow(IllegalStateException::new);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public File downloadLatest(final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException {
-        final GeckoDriverPlatform driverPlatform = GeckoDriverPlatform.from(os, architecture);
+        final GeckoDriverPlatform driverPlatform = GeckoDriverPlatform.valueOf(os, architecture);
 
         final GitHubRelease latestRelease = releasesService
                 .getLatestRelease(REPOSITORY_OWNER, REPOSITORY_NAME)
