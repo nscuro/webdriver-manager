@@ -101,7 +101,6 @@ public interface BinaryManager {
         final HttpClient httpClient = HttpClients.custom()
                 .setUserAgent("Mozilla/5.0")
                 .disableAuthCaching()
-                .disableRedirectHandling()
                 .disableCookieManagement()
                 .build();
 
