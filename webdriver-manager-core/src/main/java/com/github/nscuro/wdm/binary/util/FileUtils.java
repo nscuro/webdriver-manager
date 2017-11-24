@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static java.lang.String.format;
 
@@ -17,6 +18,16 @@ public final class FileUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
 
     private FileUtils() {
+    }
+
+    /**
+     * Get the {@link Path} to the temp directory.
+     *
+     * @return A {@link Path} to the temp directory
+     */
+    @Nonnull
+    public static Path getTempDirPath() {
+        return Paths.get(System.getProperty("java.io.tmpdir"));
     }
 
     /**
@@ -56,14 +67,6 @@ public final class FileUtils {
         }
     }
 
-    /**
-     * @param browser
-     * @param version
-     * @param os
-     * @param architecture
-     * @param basePath
-     * @return
-     */
     @Nonnull
     public static Path buildBinaryDestinationPath(final Browser browser, final String version, final Os os, final Architecture architecture, final Path basePath) {
         final String binaryFileName = format("driver_%s-%s_%s-%s", browser, version, os, architecture).toLowerCase();

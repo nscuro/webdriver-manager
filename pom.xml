@@ -33,6 +33,7 @@
         <selenium.version>3.6.0</selenium.version>
         <phantomjs-driver.version>1.4.3</phantomjs-driver.version>
         <apache-httpclient.version>4.5.3</apache-httpclient.version>
+        <apache-commons-compress.version>1.5</apache-commons-compress.version>
         <jackson.version>2.9.2</jackson.version>
         <lombok.version>1.16.18</lombok.version>
         <findbugs-jsr305.version>3.0.2</findbugs-jsr305.version>
@@ -76,6 +77,14 @@
                 <artifactId>httpclient</artifactId>
                 <version>${apache-httpclient.version}</version>
             </dependency>
+
+            <!-- Apache Commons Compress -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>${apache-commons-compress.version}</version>
+            </dependency>
+
 
             <!-- Jackson -->
             <dependency>
