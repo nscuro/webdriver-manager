@@ -1,6 +1,6 @@
 package com.github.nscuro.wdm.binary.util;
 
-public final class HttpContentType {
+public final class MimeType {
 
     public static final String APPLICATION_ZIP = "application/zip";
 
@@ -10,7 +10,7 @@ public final class HttpContentType {
 
     public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
 
-    private HttpContentType() {
+    private MimeType() {
     }
 
 }

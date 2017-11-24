@@ -25,9 +25,9 @@ import java.nio.file.Path;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static com.github.nscuro.wdm.binary.util.HttpContentType.APPLICATION_GZIP;
-import static com.github.nscuro.wdm.binary.util.HttpContentType.APPLICATION_OCTET_STREAM;
-import static com.github.nscuro.wdm.binary.util.HttpContentType.APPLICATION_ZIP;
+import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_GZIP;
+import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_OCTET_STREAM;
+import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_ZIP;
 
 public final class GeckoDriverBinaryDownloader implements BinaryDownloader {
 

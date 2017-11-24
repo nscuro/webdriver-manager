@@ -20,8 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static com.github.nscuro.wdm.binary.util.HttpContentType.APPLICATION_X_ZIP_COMPRESSED;
-import static com.github.nscuro.wdm.binary.util.HttpContentType.APPLICATION_ZIP;
+import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_X_ZIP_COMPRESSED;
+import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_ZIP;
 import static java.lang.String.format;
 
 public final class ChromeDriverBinaryDownloader implements BinaryDownloader {

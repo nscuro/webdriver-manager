@@ -3,7 +3,6 @@ package com.github.nscuro.wdm.binary.util;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
-import org.apache.http.entity.ContentType;
 import org.apache.http.message.BasicHeader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -37,24 +36,24 @@ class HttpUtilsTest {
 
         @Test
         void shouldThrowExceptionWhenExpectedContentTypesDoNotMatchTheActualOne() {
-            final Header contentTypeHeader = new BasicHeader(HttpHeaders.CONTENT_TYPE, HttpContentType.APPLICATION_ZIP);
+            final Header contentTypeHeader = new BasicHeader(HttpHeaders.CONTENT_TYPE, MimeType.APPLICATION_ZIP);
 
             given(httpResponse.getLastHeader(HttpHeaders.CONTENT_TYPE))
                     .willReturn(contentTypeHeader);
 
             assertThatExceptionOfType(IllegalStateException.class)
-                    .isThrownBy(() -> HttpUtils.verifyContentTypeIsAnyOf(httpResponse, HttpContentType.APPLICATION_X_ZIP_COMPRESSED));
+                    .isThrownBy(() -> HttpUtils.verifyContentTypeIsAnyOf(httpResponse, MimeType.APPLICATION_X_ZIP_COMPRESSED));
         }
 
         @Test
         void shouldReturnTheMatchedContentType() {
-            final Header contentTypeHeader = new BasicHeader(HttpHeaders.CONTENT_TYPE, HttpContentType.APPLICATION_ZIP);
+            final Header contentTypeHeader = new BasicHeader(HttpHeaders.CONTENT_TYPE, MimeType.APPLICATION_ZIP);
 
             given(httpResponse.getLastHeader(HttpHeaders.CONTENT_TYPE))
                     .willReturn(contentTypeHeader);
 
-            assertThat(HttpUtils.verifyContentTypeIsAnyOf(httpResponse, HttpContentType.APPLICATION_ZIP, HttpContentType.APPLICATION_X_ZIP_COMPRESSED))
-                    .isEqualTo(HttpContentType.APPLICATION_ZIP);
+            assertThat(HttpUtils.verifyContentTypeIsAnyOf(httpResponse, MimeType.APPLICATION_ZIP, MimeType.APPLICATION_X_ZIP_COMPRESSED))
+                    .isEqualTo(MimeType.APPLICATION_ZIP);
         }
 
     }
