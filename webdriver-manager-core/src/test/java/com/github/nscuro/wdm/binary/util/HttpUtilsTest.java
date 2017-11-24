@@ -3,6 +3,8 @@ package com.github.nscuro.wdm.binary.util;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
 import org.apache.http.message.BasicHeader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -12,18 +14,52 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class HttpUtilsTest {
 
-    @Nested
-    class VerifyContentTypeIsAnyOfTest {
+    private HttpResponse httpResponse;
 
-        private HttpResponse httpResponse;
+    @BeforeEach
+    void beforeEach() {
+        httpResponse = mock(HttpResponse.class);
+    }
+
+    @Nested
+    class VerifyStatusCodeIsAnyOfTest {
+
+        private StatusLine statusLine;
 
         @BeforeEach
         void beforeEach() {
-            httpResponse = mock(HttpResponse.class);
+            statusLine = mock(StatusLine.class);
+
+            when(httpResponse.getStatusLine())
+                    .thenReturn(statusLine);
         }
+
+        @Test
+        void shouldThrowExceptionWhenExpectedStatusCodesDoNotMatchTheActualOne() {
+            given(statusLine.getStatusCode())
+                    .willReturn(HttpStatus.SC_BAD_REQUEST);
+
+            assertThatExceptionOfType(IllegalStateException.class)
+                    .isThrownBy(() -> HttpUtils.verifyStatusCodeIsAnyOf(httpResponse, HttpStatus.SC_OK));
+        }
+
+        @Test
+        void shouldReturnTheMatchedStatusCode() {
+            given(statusLine.getStatusCode())
+                    .willReturn(HttpStatus.SC_NOT_FOUND);
+
+            assertThat(HttpUtils.verifyStatusCodeIsAnyOf(httpResponse, HttpStatus.SC_OK, HttpStatus.SC_NOT_FOUND))
+                    .isEqualTo(HttpStatus.SC_NOT_FOUND);
+        }
+
+    }
+
+    @Nested
+    class VerifyContentTypeIsAnyOfTest {
 
         @Test
         void shouldThrowExceptionWhenResponseHasNoContentTypeHeader() {

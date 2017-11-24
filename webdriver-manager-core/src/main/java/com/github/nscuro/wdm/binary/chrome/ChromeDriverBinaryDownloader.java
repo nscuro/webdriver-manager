@@ -6,7 +6,6 @@ import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.BinaryDownloader;
 import com.github.nscuro.wdm.binary.BinaryExtractor;
 import com.github.nscuro.wdm.binary.util.FileUtils;
-import com.github.nscuro.wdm.binary.util.HttpUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -20,9 +19,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Optional;
 
 import static com.github.nscuro.wdm.binary.BinaryExtractor.FileSelectors.entryIsFile;
 import static com.github.nscuro.wdm.binary.BinaryExtractor.FileSelectors.entryNameStartsWithIgnoringCase;
+import static com.github.nscuro.wdm.binary.util.HttpUtils.verifyContentTypeIsAnyOf;
+import static com.github.nscuro.wdm.binary.util.HttpUtils.verifyStatusCodeIsAnyOf;
 import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_X_ZIP_COMPRESSED;
 import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_ZIP;
 import static java.lang.String.format;
@@ -107,20 +109,16 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
         LOGGER.debug("Downloading archived binary to {}", targetFile);
 
         return httpClient.execute(request, httpResponse -> {
-            switch (httpResponse.getStatusLine().getStatusCode()) {
-                case HttpStatus.SC_OK:
-                    if (httpResponse.getEntity() == null) {
-                        throw new IllegalStateException();
-                    } else {
-                        HttpUtils.verifyContentTypeIsAnyOf(httpResponse, APPLICATION_ZIP, APPLICATION_X_ZIP_COMPRESSED);
-                        try (final FileOutputStream fileOutputStream = new FileOutputStream(targetFile)) {
-                            httpResponse.getEntity().writeTo(fileOutputStream);
-                        }
-                        return targetFile;
-                    }
-                default:
-                    throw new IllegalStateException();
+            verifyStatusCodeIsAnyOf(httpResponse, HttpStatus.SC_OK);
+            verifyContentTypeIsAnyOf(httpResponse, APPLICATION_ZIP, APPLICATION_X_ZIP_COMPRESSED);
+
+            try (final FileOutputStream fileOutputStream = new FileOutputStream(targetFile)) {
+                Optional.ofNullable(httpResponse.getEntity())
+                        .orElseThrow(() -> new IllegalStateException("Response body was empty"))
+                        .writeTo(fileOutputStream);
             }
+
+            return targetFile;
         });
     }
 

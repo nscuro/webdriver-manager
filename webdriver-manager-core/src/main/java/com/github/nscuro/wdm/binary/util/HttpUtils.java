@@ -1,6 +1,7 @@
 package com.github.nscuro.wdm.binary.util;
 
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 
@@ -13,6 +14,23 @@ import static java.lang.String.format;
 public final class HttpUtils {
 
     private HttpUtils() {
+    }
+
+    /**
+     * Verify that a given {@link HttpResponse} does have any of the given status codes.
+     *
+     * @param httpResponse The {@link HttpResponse} to verify the status code of
+     * @param statusCodes  The status codes to look for
+     * @return The status code that matched the actual status code of the {@link HttpResponse}
+     * @throws IllegalStateException When none of the given status codes matches the actual one
+     */
+    public static int verifyStatusCodeIsAnyOf(final HttpResponse httpResponse, final int... statusCodes) {
+        final int actualStatusCode = httpResponse.getStatusLine().getStatusCode();
+
+        return Arrays.stream(statusCodes)
+                .filter(code -> code == actualStatusCode)
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException(format("Unexpected status code \"%d\"", actualStatusCode)));
     }
 
     /**
