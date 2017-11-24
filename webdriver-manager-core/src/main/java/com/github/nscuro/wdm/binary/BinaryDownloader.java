@@ -21,6 +21,9 @@ public interface BinaryDownloader {
 
     /**
      * Download a specific binary version and deploy it to the given destination directory.
+     * <p>
+     * Note that each {@link BinaryDownloader} implementation must detect if the desired binary
+     * was already downloaded and decide whether or not to download it again.
      *
      * @param version            The binary version to download (<strong>not</strong> the browser version)
      * @param os                 The operating system the binary must be compatible with
@@ -33,11 +36,17 @@ public interface BinaryDownloader {
     File download(final String version, final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException;
 
     /**
-     * @param os
-     * @param architecture
-     * @param destinationDirPath
-     * @return
-     * @throws IOException
+     * Download the latest binary version and deploy it to the given destination directory.
+     * <p>
+     * Note that each {@link BinaryDownloader} implementation must detect if the desired binary
+     * was already downloaded and decide whether or not to download it again.
+     *
+     * @param os                 The operating system the binary must be compatible with
+     * @param architecture       The architecture the binary must be compatible with
+     * @param destinationDirPath Path to the directory the binary shall be deployed to
+     * @return A {@link File} handle of the downloaded binary
+     * @throws IOException When downloading the binary failed
+     * @see #download(String, Os, Architecture, Path)
      */
     @Nonnull
     File downloadLatest(final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException;
