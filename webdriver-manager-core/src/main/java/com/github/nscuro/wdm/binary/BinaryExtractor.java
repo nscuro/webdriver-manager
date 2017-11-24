@@ -1,7 +1,10 @@
 package com.github.nscuro.wdm.binary;
 
+import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +18,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Predicate;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
@@ -41,14 +42,14 @@ public final class BinaryExtractor implements AutoCloseable {
     }
 
     @Nonnull
-    public final File unZip(final Path fileDestinationPath, final Predicate<ZipEntry> fileSelection) throws IOException {
+    public final File unZip(final Path fileDestinationPath, final Predicate<ArchiveEntry> fileSelection) throws IOException {
         try (final InputStream fileInputStream = new FileInputStream(archiveFile);
              final InputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-             final ZipInputStream zipInputStream = new ZipInputStream(bufferedInputStream)) {
+             final ZipArchiveInputStream zipInputStream = new ZipArchiveInputStream(bufferedInputStream)) {
 
-            for (ZipEntry zipEntry = zipInputStream.getNextEntry();
+            for (ZipArchiveEntry zipEntry = zipInputStream.getNextZipEntry();
                  !isNull(zipEntry);
-                 zipEntry = zipInputStream.getNextEntry()) {
+                 zipEntry = zipInputStream.getNextZipEntry()) {
 
                 if (fileSelection.test(zipEntry)) {
                     Files.copy(zipInputStream, fileDestinationPath);
@@ -62,7 +63,7 @@ public final class BinaryExtractor implements AutoCloseable {
     }
 
     @Nonnull
-    public final File unTarGz(final Path fileDestinationPath, final Predicate<TarArchiveEntry> fileSelection) throws IOException {
+    public final File unTarGz(final Path fileDestinationPath, final Predicate<ArchiveEntry> fileSelection) throws IOException {
         try (final InputStream fileInputStream = new FileInputStream(archiveFile);
              final InputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
              final GzipCompressorInputStream gzipInputStream = new GzipCompressorInputStream(bufferedInputStream);
@@ -92,6 +93,21 @@ public final class BinaryExtractor implements AutoCloseable {
                 LOGGER.warn("{} not deleted", archiveFile);
             }
         }
+    }
+
+    public static final class FileSelectors {
+
+        private FileSelectors() {
+        }
+
+        public static Predicate<ArchiveEntry> entryIsFile() {
+            return archiveEntry -> !archiveEntry.isDirectory();
+        }
+
+        public static Predicate<ArchiveEntry> entryNameStartsWithIgnoringCase(final String prefix) {
+            return archiveEntry -> archiveEntry.getName().toLowerCase().startsWith(prefix.toLowerCase());
+        }
+
     }
 
 }

@@ -21,6 +21,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import static com.github.nscuro.wdm.binary.BinaryExtractor.FileSelectors.entryIsFile;
+import static com.github.nscuro.wdm.binary.BinaryExtractor.FileSelectors.entryNameStartsWithIgnoringCase;
 import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_X_ZIP_COMPRESSED;
 import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_ZIP;
 import static java.lang.String.format;
@@ -65,7 +67,7 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
 
         try (final BinaryExtractor binaryExtractor = BinaryExtractor.fromArchiveFile(downloadArchivedBinary(version, driverPlatform))) {
             return binaryExtractor.unZip(destinationFilePath,
-                    zipEntry -> !zipEntry.isDirectory() && zipEntry.getName().toLowerCase().contains("chromedriver"));
+                    entryIsFile().and(entryNameStartsWithIgnoringCase("chromedriver")));
         }
     }
 

@@ -25,6 +25,8 @@ import java.nio.file.Path;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import static com.github.nscuro.wdm.binary.BinaryExtractor.FileSelectors.entryIsFile;
+import static com.github.nscuro.wdm.binary.BinaryExtractor.FileSelectors.entryNameStartsWithIgnoringCase;
 import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_GZIP;
 import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_OCTET_STREAM;
 import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_ZIP;
@@ -33,9 +35,9 @@ public final class GeckoDriverBinaryDownloader implements BinaryDownloader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GeckoDriverBinaryDownloader.class);
 
-    private static final String REPOSITORY_OWNER = "mozilla";
+    private static final String GITHUB_REPOSITORY_OWNER = "mozilla";
 
-    private static final String REPOSITORY_NAME = "geckodriver";
+    private static final String GITHUB_REPOSITORY_NAME = "geckodriver";
 
     private final HttpClient httpClient;
 
@@ -73,7 +75,7 @@ public final class GeckoDriverBinaryDownloader implements BinaryDownloader {
         }
 
         final GitHubRelease specificRelease = releasesService
-                .getReleaseByTagName(REPOSITORY_OWNER, REPOSITORY_NAME, version)
+                .getReleaseByTagName(GITHUB_REPOSITORY_OWNER, GITHUB_REPOSITORY_NAME, version)
                 .orElseThrow(NoSuchElementException::new);
 
         final GitHubReleaseAsset releaseAsset = getReleaseAssetForPlatform(specificRelease, driverPlatform)
@@ -91,7 +93,7 @@ public final class GeckoDriverBinaryDownloader implements BinaryDownloader {
         final GeckoDriverPlatform driverPlatform = GeckoDriverPlatform.valueOf(os, architecture);
 
         final GitHubRelease latestRelease = releasesService
-                .getLatestRelease(REPOSITORY_OWNER, REPOSITORY_NAME)
+                .getLatestRelease(GITHUB_REPOSITORY_OWNER, GITHUB_REPOSITORY_NAME)
                 .orElseThrow(NoSuchElementException::new);
 
         final String latestVersion = latestRelease.getTagName();
@@ -163,11 +165,11 @@ public final class GeckoDriverBinaryDownloader implements BinaryDownloader {
         try (final BinaryExtractor binaryExtractor = BinaryExtractor.fromArchiveFile(archivedBinaryFile)) {
             switch (mimeType) {
                 case APPLICATION_GZIP:
-                    return binaryExtractor.unTarGz(destinationFilePath, tarEntry ->
-                            tarEntry.isFile() && tarEntry.getName().toLowerCase().startsWith("geckodriver"));
+                    return binaryExtractor.unTarGz(destinationFilePath,
+                            entryIsFile().and(entryNameStartsWithIgnoringCase("geckodriver")));
                 case APPLICATION_ZIP:
-                    return binaryExtractor.unZip(destinationFilePath, zipEntry ->
-                            !zipEntry.isDirectory() && zipEntry.getName().toLowerCase().startsWith("geckodriver"));
+                    return binaryExtractor.unZip(destinationFilePath,
+                            entryIsFile().and(entryNameStartsWithIgnoringCase("geckodriver")));
                 default:
                     throw new IllegalArgumentException("Unable to unarchive file with MIME-type " + mimeType);
             }
