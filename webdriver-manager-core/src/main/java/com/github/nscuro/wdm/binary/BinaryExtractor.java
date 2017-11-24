@@ -21,7 +21,7 @@ import java.util.zip.ZipInputStream;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 
-public class BinaryExtractor implements AutoCloseable {
+public final class BinaryExtractor implements AutoCloseable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BinaryExtractor.class);
 
@@ -41,7 +41,7 @@ public class BinaryExtractor implements AutoCloseable {
     }
 
     @Nonnull
-    public File unZip(final Path fileDestinationPath, final Predicate<ZipEntry> fileSelection) throws IOException {
+    public final File unZip(final Path fileDestinationPath, final Predicate<ZipEntry> fileSelection) throws IOException {
         try (final InputStream fileInputStream = new FileInputStream(archiveFile);
              final InputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
              final ZipInputStream zipInputStream = new ZipInputStream(bufferedInputStream)) {
@@ -62,7 +62,7 @@ public class BinaryExtractor implements AutoCloseable {
     }
 
     @Nonnull
-    public File unTarGz(final Path fileDestinationPath, final Predicate<TarArchiveEntry> fileSelection) throws IOException {
+    public final File unTarGz(final Path fileDestinationPath, final Predicate<TarArchiveEntry> fileSelection) throws IOException {
         try (final InputStream fileInputStream = new FileInputStream(archiveFile);
              final InputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
              final GzipCompressorInputStream gzipInputStream = new GzipCompressorInputStream(bufferedInputStream);
@@ -84,7 +84,7 @@ public class BinaryExtractor implements AutoCloseable {
     }
 
     @Override
-    public void close() {
+    public final void close() {
         if (archiveFile.exists()) {
             if (archiveFile.delete()) {
                 LOGGER.debug("{} deleted", archiveFile);
