@@ -65,11 +65,11 @@ public final class GeckoDriverBinaryDownloader implements BinaryDownloader {
 
         final Path destinationFilePath = FileUtils.buildBinaryDestinationPath(Browser.FIREFOX, version, os, architecture, destinationDirPath);
         if (destinationFilePath.toFile().exists()) {
-            LOGGER.info("GeckoDriver {} for {} was already downloaded", version, driverPlatform);
+            LOGGER.debug("GeckoDriver {} for {} was already downloaded", version, driverPlatform);
 
             return destinationFilePath.toFile();
         } else {
-            LOGGER.info("Downloading GeckoDriver {} for {}", version, driverPlatform);
+            LOGGER.debug("Downloading GeckoDriver {} for {}", version, driverPlatform);
         }
 
         final GitHubRelease specificRelease = releasesService
@@ -100,11 +100,11 @@ public final class GeckoDriverBinaryDownloader implements BinaryDownloader {
 
         final Path destinationFilePath = FileUtils.buildBinaryDestinationPath(Browser.FIREFOX, latestVersion, os, architecture, destinationDirPath);
         if (destinationFilePath.toFile().exists()) {
-            LOGGER.info("GeckoDriver {} for {} was already downloaded", latestVersion, driverPlatform);
+            LOGGER.debug("GeckoDriver {} for {} was already downloaded", latestVersion, driverPlatform);
 
             return destinationFilePath.toFile();
         } else {
-            LOGGER.info("Downloading GeckoDriver {} for {}", latestVersion, driverPlatform);
+            LOGGER.debug("Downloading GeckoDriver {} for {}", latestVersion, driverPlatform);
         }
 
         final GitHubReleaseAsset releaseAsset = getReleaseAssetForPlatform(latestRelease, driverPlatform)

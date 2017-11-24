@@ -40,7 +40,7 @@ public abstract class AbstractBinaryDownloaderIT {
             if (!file.delete()) {
                 LOGGER.warn("{} was not deleted", file);
             } else {
-                LOGGER.info("{} was successfully deleted", file);
+                LOGGER.debug("{} was successfully deleted", file);
             }
         });
     }

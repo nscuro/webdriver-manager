@@ -62,13 +62,15 @@ public final class FileUtils {
             if (!file.setExecutable(true)) {
                 LOGGER.warn("{} was not made executable", file);
             } else {
-                LOGGER.debug("{} was made executable");
+                LOGGER.debug("{} was made executable", file);
             }
         }
     }
 
     @Nonnull
-    public static Path buildBinaryDestinationPath(final Browser browser, final String version, final Os os, final Architecture architecture, final Path basePath) {
+    public static Path buildBinaryDestinationPath(final Browser browser, final String version,
+                                                  final Os os, final Architecture architecture,
+                                                  final Path basePath) {
         final String binaryFileName = format("driver_%s-%s_%s-%s", browser, version, os, architecture).toLowerCase();
 
         return basePath.resolve(binaryFileName);
