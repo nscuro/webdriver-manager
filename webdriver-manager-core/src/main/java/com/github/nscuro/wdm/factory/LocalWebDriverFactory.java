@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
-public class LocalWebDriverFactory implements WebDriverFactory {
+public final class LocalWebDriverFactory implements WebDriverFactory {
 
     private final BinaryManager binaryManager;
 
@@ -34,6 +34,7 @@ public class LocalWebDriverFactory implements WebDriverFactory {
     @Override
     public WebDriver getWebDriver(final Capabilities capabilities) throws IOException {
         final Browser browser = Optional.ofNullable(capabilities.getBrowserName())
+                .filter(browserName -> !browserName.isEmpty())
                 .map(Browser::byName)
                 .orElseThrow(() -> new IllegalArgumentException("No browser name specified"));
 
