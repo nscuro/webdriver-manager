@@ -15,6 +15,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import static java.lang.String.format;
+
 public enum Browser {
 
     CHROME(Arrays.asList(BrowserType.CHROME, BrowserType.GOOGLECHROME), ChromeDriver.class, "webdriver.chrome.driver"),
@@ -25,7 +27,7 @@ public enum Browser {
 
     INTERNET_EXPLORER(Arrays.asList(BrowserType.IE, BrowserType.IEXPLORE), InternetExplorerDriver.class, "webdriver.ie.driver"),
 
-    OPERA(Collections.singletonList(BrowserType.OPERA), OperaDriver.class, "webdriver.opera.driver"),
+    OPERA(Arrays.asList(BrowserType.OPERA, BrowserType.OPERA_BLINK), OperaDriver.class, "webdriver.opera.driver"),
 
     PHANTOM_JS(Collections.singletonList(BrowserType.PHANTOMJS), PhantomJSDriver.class, "phantomjs.binary.path");
 
@@ -62,7 +64,7 @@ public enum Browser {
         return Arrays.stream(values())
                 .filter(browser -> browser.hasName(name))
                 .findAny()
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException(format("No browser named \"%s\" found", name)));
     }
 
 }
