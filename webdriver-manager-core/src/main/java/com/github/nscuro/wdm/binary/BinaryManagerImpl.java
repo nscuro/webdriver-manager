@@ -12,8 +12,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static java.lang.String.format;
 
@@ -67,6 +71,28 @@ final class BinaryManagerImpl implements BinaryManager {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void cleanUp() {
+        Optional.ofNullable(BINARY_DESTINATION_DIR_PATH.toFile().listFiles(BinaryManagerImpl::isWebDriverBinary))
+                .map(Arrays::stream)
+                .orElseGet(Stream::empty)
+                .map(file -> {
+                    if (file.delete()) {
+                        // File was deleted, we don't need its reference anymore
+                        LOGGER.debug("{} deleted", file);
+                        return null;
+                    } else {
+                        // Deletion failed, keep reference to provide meaningful warning
+                        return file;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .forEach(file -> LOGGER.warn("{} was not deleted", file));
+    }
+
     @Nonnull
     private BinaryDownloader findBinaryDownloaderForBrowser(final Browser browser) {
         return binaryDownloaders.stream()
@@ -74,6 +100,10 @@ final class BinaryManagerImpl implements BinaryManager {
                 .findAny()
                 .orElseThrow(() -> new NoSuchElementException(
                         format("No binary downloader for browser \"%s\" available", browser)));
+    }
+
+    private static boolean isWebDriverBinary(final File file) {
+        return file.isFile() && file.getName().startsWith("driver_");
     }
 
 }

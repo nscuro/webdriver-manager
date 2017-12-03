@@ -97,6 +97,11 @@ public interface BinaryManager {
      */
     void registerBinary(final File binaryFile, final Browser browser);
 
+    /**
+     * Delete all downloaded binary files.
+     */
+    void cleanUp();
+
     static BinaryManager createDefault() {
         final HttpClient httpClient = HttpClients.custom()
                 .setUserAgent("Mozilla/5.0")
