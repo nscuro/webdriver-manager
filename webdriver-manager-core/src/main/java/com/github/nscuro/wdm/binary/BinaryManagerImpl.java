@@ -29,9 +29,12 @@ final class BinaryManagerImpl implements BinaryManager {
         this.binaryDownloaders = binaryDownloaders;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
-    public File getBinary(final Browser browser, final String version, final Os os, final Architecture architecture) throws IOException {
+    public synchronized File getBinary(final Browser browser, final String version, final Os os, final Architecture architecture) throws IOException {
         final BinaryDownloader binaryDownloader = findBinaryDownloaderForBrowser(browser);
 
         FileUtils.ensureExistenceOfDir(BINARY_DESTINATION_DIR_PATH);
@@ -48,6 +51,9 @@ final class BinaryManagerImpl implements BinaryManager {
         return binaryFile;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void registerBinary(final File binaryFile, final Browser browser) {
         if (!binaryFile.exists()) {
@@ -66,7 +72,8 @@ final class BinaryManagerImpl implements BinaryManager {
         return binaryDownloaders.stream()
                 .filter(downloader -> downloader.supportsBrowser(browser))
                 .findAny()
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException(
+                        format("No binary downloader for browser \"%s\" available", browser)));
     }
 
 }
