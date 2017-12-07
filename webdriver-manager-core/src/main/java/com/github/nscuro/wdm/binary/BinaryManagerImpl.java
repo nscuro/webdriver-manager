@@ -67,7 +67,11 @@ final class BinaryManagerImpl implements BinaryManager {
         } else {
             LOGGER.info("Registering {} as binary for {}", binaryFile, browser);
 
-            System.setProperty(browser.getBinarySystemProperty(), binaryFile.getAbsolutePath());
+            final String binarySystemProperty = browser.getBinarySystemProperty()
+                    .orElseThrow(() -> new UnsupportedOperationException(
+                            format("Browser %s does not define a binary system property", browser)));
+
+            System.setProperty(binarySystemProperty, binaryFile.getAbsolutePath());
         }
     }
 

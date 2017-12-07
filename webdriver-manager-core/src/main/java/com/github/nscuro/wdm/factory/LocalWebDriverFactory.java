@@ -38,9 +38,11 @@ public final class LocalWebDriverFactory implements WebDriverFactory {
                 .map(Browser::byName)
                 .orElseThrow(() -> new IllegalArgumentException("No browser name specified"));
 
-        final File webDriverBinary = binaryManager.getBinary(browser);
+        if (browser.doesRequireBinary()) {
+            final File webDriverBinary = binaryManager.getBinary(browser);
 
-        binaryManager.registerBinary(webDriverBinary, browser);
+            binaryManager.registerBinary(webDriverBinary, browser);
+        }
 
         return getWebDriverInstance(browser, capabilities);
     }

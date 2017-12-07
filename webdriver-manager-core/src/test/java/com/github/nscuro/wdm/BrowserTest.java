@@ -11,9 +11,7 @@ class BrowserTest {
     @EnumSource(Browser.class)
     void shouldDefineBinarySystemProperty(final Browser browser) {
         assertThat(browser.getBinarySystemProperty())
-                .isNotNull()
-                .isNotEmpty()
-                .isNotBlank();
+                .isNotNull();
     }
 
 }

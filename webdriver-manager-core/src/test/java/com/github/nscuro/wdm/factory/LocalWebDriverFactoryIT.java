@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -34,6 +35,11 @@ class LocalWebDriverFactoryIT {
     @Test
     void testGetWebDriverFirefox() throws IOException {
         webDriver = webDriverFactory.getWebDriver(new FirefoxOptions());
+    }
+
+    @Test
+    void testGetWebDriverHtmlUnit() throws IOException {
+        webDriver = webDriverFactory.getWebDriver(DesiredCapabilities.htmlUnit());
     }
 
     @AfterEach
