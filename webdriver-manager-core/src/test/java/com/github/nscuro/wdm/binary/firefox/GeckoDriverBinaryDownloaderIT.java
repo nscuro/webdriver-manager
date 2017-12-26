@@ -25,7 +25,7 @@ class GeckoDriverBinaryDownloaderIT extends AbstractBinaryDownloaderIT {
 
         final GitHubReleasesService releasesService = GitHubReleasesService.create(getHttpClient(), new ObjectMapper());
 
-        geckoDriverBinaryDownloader = new GeckoDriverBinaryDownloader(getHttpClient(), releasesService);
+        geckoDriverBinaryDownloader = new GeckoDriverBinaryDownloader(releasesService);
     }
 
     @Test

@@ -28,6 +28,7 @@ import static com.github.nscuro.wdm.binary.util.HttpUtils.verifyStatusCodeIsAnyO
 import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_X_ZIP_COMPRESSED;
 import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_ZIP;
 import static java.lang.String.format;
+import static java.util.Objects.requireNonNull;
 
 public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
 
@@ -38,7 +39,7 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
     private final HttpClient httpClient;
 
     public ChromeDriverBinaryDownloader(final HttpClient httpClient) {
-        this.httpClient = httpClient;
+        this.httpClient = requireNonNull(httpClient, "No HttpClient provided");
     }
 
     /**
@@ -54,7 +55,7 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
      */
     @Nonnull
     @Override
-    public File download(final String version, final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException {
+    public synchronized File download(final String version, final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException {
         final ChromeDriverPlatform driverPlatform = ChromeDriverPlatform.valueOf(os, architecture);
 
         final Path destinationFilePath = FileUtils.buildBinaryDestinationPath(Browser.CHROME, version, os, architecture, destinationDirPath);

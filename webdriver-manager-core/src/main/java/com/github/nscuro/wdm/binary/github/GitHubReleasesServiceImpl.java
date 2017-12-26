@@ -1,6 +1,7 @@
 package com.github.nscuro.wdm.binary.github;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.nscuro.wdm.binary.util.FileUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthenticationException;
@@ -15,9 +16,16 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Optional;
 
+import static com.github.nscuro.wdm.binary.util.HttpUtils.verifyContentTypeIsAnyOf;
+import static com.github.nscuro.wdm.binary.util.HttpUtils.verifyStatusCodeIsAnyOf;
+import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_GZIP;
+import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_OCTET_STREAM;
+import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_ZIP;
 import static java.lang.String.format;
 
 final class GitHubReleasesServiceImpl implements GitHubReleasesService {
@@ -58,6 +66,30 @@ final class GitHubReleasesServiceImpl implements GitHubReleasesService {
     @Override
     public Optional<GitHubRelease> getReleaseByTagName(final String repoOwner, final String repoName, final String tagName) throws IOException {
         return getGitHubReleaseFromPath("/releases/tags/" + tagName, repoOwner, repoName);
+    }
+
+    @Nonnull
+    @Override
+    public File downloadAsset(final GitHubReleaseAsset asset) throws IOException {
+        final HttpGet request = new HttpGet(asset.getBrowserDownloadUrl());
+        request.setHeader(HttpHeaders.ACCEPT, asset.getContentType());
+
+        final File targetFile = FileUtils.getTempDirPath().resolve(asset.getName()).toFile();
+
+        LOGGER.debug("Downloading archived binary to {}", targetFile);
+
+        return httpClient.execute(request, httpResponse -> {
+            verifyStatusCodeIsAnyOf(httpResponse, HttpStatus.SC_OK);
+            verifyContentTypeIsAnyOf(httpResponse, APPLICATION_ZIP, APPLICATION_GZIP, APPLICATION_OCTET_STREAM);
+
+            try (final FileOutputStream fileOutputStream = new FileOutputStream(targetFile)) {
+                Optional.ofNullable(httpResponse.getEntity())
+                        .orElseThrow(() -> new IllegalStateException("Response body was empty"))
+                        .writeTo(fileOutputStream);
+            }
+
+            return targetFile;
+        });
     }
 
     @Nonnull

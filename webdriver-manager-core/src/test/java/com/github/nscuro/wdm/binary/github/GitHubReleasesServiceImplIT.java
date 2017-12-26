@@ -1,8 +1,6 @@
 package com.github.nscuro.wdm.binary.github;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,20 +11,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class GitHubReleasesServiceImplIT {
 
-    private static final String gitHubUserName = System.getenv("WDM_GH_USER");
-
-    private static final String gitHubToken = System.getenv("WDM_GH_TOKEN");
-
     private GitHubReleasesService releasesService;
 
     @BeforeEach
     void beforeEach() {
-        final HttpClient httpClient = HttpClients.createSystem();
-
-        final ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-        releasesService = new GitHubReleasesServiceImpl(httpClient, objectMapper, gitHubUserName, gitHubToken);
+        releasesService = GitHubReleasesService.create(HttpClients.createSystem(), new ObjectMapper());
     }
 
     @Test

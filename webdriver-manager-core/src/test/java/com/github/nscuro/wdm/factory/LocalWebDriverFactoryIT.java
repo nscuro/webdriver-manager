@@ -22,7 +22,11 @@ class LocalWebDriverFactoryIT {
 
     @BeforeEach
     void beforeEach() {
-        binaryManager = BinaryManager.createDefault();
+        binaryManager = BinaryManager.builder()
+                .defaultHttpClient()
+                .addChromeDriverBinaryDownloader()
+                .addGeckoDriverBinaryDownloader()
+                .build();
 
         webDriverFactory = new LocalWebDriverFactory(binaryManager);
     }

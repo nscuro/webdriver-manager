@@ -64,7 +64,7 @@ class ChromeDriverBinaryDownloaderIT extends AbstractBinaryDownloaderIT {
 
     @Test
     @DisplayName("should throw an exception when trying to download latest binary for MacOS 32bit")
-    void testDownloadLatestForMacOs32() throws IOException {
+    void testDownloadLatestForMacOs32() {
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> downloadedFile = chromeDriverBinaryDownloader.downloadLatest(Os.MACOS, Architecture.X86, DOWNLOAD_DESTINATION_DIR_PATH));
     }

@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 public interface BinaryManager {
 
@@ -102,21 +104,108 @@ public interface BinaryManager {
      */
     void cleanUp();
 
-    static BinaryManager createDefault() {
-        final HttpClient httpClient = HttpClients.custom()
-                .setUserAgent("Mozilla/5.0")
-                .disableAuthCaching()
-                .disableCookieManagement()
-                .build();
+    static Builder.HttpClientStep builder() {
+        return Builder::new;
+    }
 
-        final GitHubReleasesService gitHubReleasesService = GitHubReleasesService
-                .create(httpClient, new ObjectMapper());
+    final class Builder {
 
-        final BinaryDownloader chromeDownloader = new ChromeDriverBinaryDownloader(httpClient);
+        @FunctionalInterface
+        public interface HttpClientStep {
 
-        final BinaryDownloader geckoDownloader = new GeckoDriverBinaryDownloader(httpClient, gitHubReleasesService);
+            /**
+             * Provide a custom {@link HttpClient} to use for the binary downloaders.
+             *
+             * @param httpClient The http client to use
+             * @return A {@link Builder} instance
+             */
+            Builder httpClient(final HttpClient httpClient);
 
-        return new BinaryManagerImpl(new HashSet<>(Arrays.asList(chromeDownloader, geckoDownloader)));
+            /**
+             * Use a default {@link HttpClient} that has been tested with
+             * built-in binary downloaders and should work for the vast majority of users.
+             *
+             * @return A {@link Builder} instance
+             */
+            default Builder defaultHttpClient() {
+                final HttpClient httpClient = HttpClients.custom()
+                        .setUserAgent("Mozilla/5.0")
+                        .disableAuthCaching()
+                        .disableCookieManagement()
+                        .build();
+
+                return httpClient(httpClient);
+            }
+
+        }
+
+        private final HttpClient httpClient;
+
+        private final GitHubReleasesService gitHubReleasesService;
+
+        private Set<BinaryDownloader> binaryDownloaders;
+
+        private Builder(final HttpClient httpClient) {
+            this.httpClient = httpClient;
+            this.gitHubReleasesService = GitHubReleasesService.create(httpClient, new ObjectMapper());
+            binaryDownloaders = new HashSet<>();
+        }
+
+        /**
+         * Add the {@link ChromeDriverBinaryDownloader}.
+         *
+         * @return A {@link Builder} instance
+         */
+        public Builder addChromeDriverBinaryDownloader() {
+            binaryDownloaders.add(new ChromeDriverBinaryDownloader(httpClient));
+
+            return this;
+        }
+
+        /**
+         * Add the {@link GeckoDriverBinaryDownloader}.
+         *
+         * @return A {@link Builder} instance
+         */
+        public Builder addGeckoDriverBinaryDownloader() {
+            binaryDownloaders.add(new GeckoDriverBinaryDownloader(gitHubReleasesService));
+
+            return this;
+        }
+
+        /**
+         * Add a custom {@link BinaryDownloader}.
+         *
+         * @param binaryDownloader The binary downloader to add
+         * @return A {@link Builder} instance
+         */
+        public Builder addBinaryDownloader(final BinaryDownloader binaryDownloader) {
+            binaryDownloaders.add(binaryDownloader);
+
+            return this;
+        }
+
+        /**
+         * Add all default {@link BinaryDownloader}s.
+         * <p>
+         * This includes:
+         * <pre>
+         *     - {@link ChromeDriverBinaryDownloader}
+         *     - {@link GeckoDriverBinaryDownloader}
+         * </pre>
+         *
+         * @return A {@link Builder} instance
+         */
+        public Builder addDefaultBinaryDownloaders() {
+            return this
+                    .addChromeDriverBinaryDownloader()
+                    .addGeckoDriverBinaryDownloader();
+        }
+
+        public BinaryManager build() {
+            return new BinaryManagerImpl(binaryDownloaders);
+        }
+
     }
 
 }
