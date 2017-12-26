@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static com.github.nscuro.wdm.binary.BinaryExtractor.FileSelectors.entryIsFile;
@@ -101,7 +102,7 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
     }
 
     @Nonnull
-    File downloadArchivedBinary(final String version, final ChromeDriverPlatform platform) throws IOException {
+    private File downloadArchivedBinary(final String version, final ChromeDriverPlatform platform) throws IOException {
         final HttpGet request = new HttpGet(format("%s/%s/chromedriver_%s.zip", BASE_URL, version, platform.name().toLowerCase()));
         request.setHeader(HttpHeaders.ACCEPT, format("%s,%s", APPLICATION_ZIP, APPLICATION_X_ZIP_COMPRESSED));
 
@@ -110,7 +111,13 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
         LOGGER.debug("Downloading archived binary to {}", targetFile);
 
         return httpClient.execute(request, httpResponse -> {
-            verifyStatusCodeIsAnyOf(httpResponse, HttpStatus.SC_OK);
+            verifyStatusCodeIsAnyOf(httpResponse, HttpStatus.SC_OK, HttpStatus.SC_NOT_FOUND);
+
+            if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+                throw new NoSuchElementException(
+                        format("No ChromeDriver binary available for version %s and platform %s", version, platform));
+            }
+
             verifyContentTypeIsAnyOf(httpResponse, APPLICATION_ZIP, APPLICATION_X_ZIP_COMPRESSED);
 
             try (final FileOutputStream fileOutputStream = new FileOutputStream(targetFile)) {
