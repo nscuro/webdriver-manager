@@ -65,13 +65,13 @@ final class BinaryManagerImpl implements BinaryManager {
         } else if (binaryFile.isDirectory()) {
             throw new IllegalArgumentException(format("Cannot register binary for %s: %s is a directory", browser, binaryFile));
         } else {
-            LOGGER.info("Registering {} as binary for {}", binaryFile, browser);
-
             final String binarySystemProperty = browser.getBinarySystemProperty()
                     .orElseThrow(() -> new UnsupportedOperationException(
                             format("Browser %s does not define a binary system property", browser)));
 
             System.setProperty(binarySystemProperty, binaryFile.getAbsolutePath());
+
+            LOGGER.info("{} was registered as binary for {}", binaryFile, browser);
         }
     }
 
