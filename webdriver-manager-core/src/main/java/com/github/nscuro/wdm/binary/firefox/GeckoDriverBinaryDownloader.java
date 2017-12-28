@@ -44,7 +44,7 @@ public final class GeckoDriverBinaryDownloader implements BinaryDownloader {
      */
     @Override
     public boolean supportsBrowser(final Browser browser) {
-        return Browser.FIREFOX.equals(browser);
+        return Browser.FIREFOX == browser;
     }
 
     /**

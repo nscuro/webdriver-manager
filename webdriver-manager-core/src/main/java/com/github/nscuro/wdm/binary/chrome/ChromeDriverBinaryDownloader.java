@@ -48,7 +48,7 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
      */
     @Override
     public boolean supportsBrowser(final Browser browser) {
-        return Browser.CHROME.equals(browser);
+        return Browser.CHROME == browser;
     }
 
     /**
