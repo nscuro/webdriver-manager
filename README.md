@@ -45,3 +45,17 @@ public void tearDown() {
 }
 ```
 Be aware that `WebDriverFactory` won't take care of closing your `WebDriver` instance, you **have** to do this yourself.
+
+### Specifying binary versions
+Per default, the `WebDriverFactory` will always download the latest version of a webdriver binary.
+This behavior may not always be what you want - i.e. you use an older browser version or the latest binary version
+does not support your system's architecture anymore.
+
+In order to solve this issue, you can provide a `WebDriverFactoryConfig` to the `WebDriverFactory` in which you explicitly
+state which version shall be downloaded:
+```java
+final WebDriverFactoryConfig config = new WebDriverFactoryConfig();
+config.setBinaryVersionForBrowser(Browser.CHROME, "2.32");
+
+final WebDriverFactory webDriverFactory = new LocalWebDriverFactory(BinaryManager.createDefault(), config);
+```
