@@ -5,7 +5,7 @@
 
 ## Introduction
 This project aims to simplify the process of constructing a `WebDriver` instance in Selenium test cases
-by taking care of downloading the required binaries at runtime and unifying the way instanced are created.
+by taking care of downloading the required binaries at runtime and unifying the way instances are created.
 
 ## Supported Browsers
 - [x] Google Chrome ([chromedriver](https://sites.google.com/a/chromium.org/chromedriver/))
@@ -18,7 +18,35 @@ by taking care of downloading the required binaries at runtime and unifying the 
 ## Usage
 
 ### Downloading Binaries
-TODO
+WebDriver binaries can be downloaded using the `BinaryManager` class:
+```java
+final BinaryManager binaryManager = BinaryManager.builder()
+    .defaultHttpClient() // you can provide your own using .httpClient(myHttpClient)
+    .addChromeDriverBinaryDownloader()
+    // .addBinaryDownloader(myBinaryDownloader)
+    .build();
+
+// Get a specific version for specific platform
+final File binaryFile = binaryManager.getBinary(Browser.CHROME, "2.33", Os.WINDOWS, Architecture.X64);
+```
+Binaries will be downloaded to `$HOME/.webdriver-manager` and can be programmatically deleted 
+using `binaryManager.cleanUp()`.
+
+#### GitHub API
+Some binaries are being downloaded from GitHub (currently Firefox's `geckodriver` & Opera's `operachromiumdriver`).
+GitHub **may** limit the amount of requests being performed against their API, in which case you must
+provide OAuth credentials in order to authorize yourself.
+
+Currently, you need to set the `WDM_GH_USER` and `WDM_GH_TOKEN` **ENVIRONMENT** variables for
+this to work - where `WDM_GH_USER` is your GitHub username and `WDM_GH_TOKEN` is a *personal access token*
+whith the permission to access public repositories:
+
+![personal access token](https://i.imgur.com/Lm6cWAN.png)
+
+```bash
+export WDM_GH_USER=nscuro
+export WDM_GH_TOKEN=<your-token>
+```
 
 ### Instantiating WebDriver
 In your test or testing framework, you'd typically do the following:
@@ -46,7 +74,7 @@ public void tearDown() {
 ```
 Be aware that `WebDriverFactory` won't take care of closing your `WebDriver` instance, you **have** to do this yourself.
 
-### Specifying binary versions
+#### Specifying binary versions
 Per default, the `WebDriverFactory` will always download the latest version of a webdriver binary.
 This behavior may not always be what you want - i.e. you use an older browser version or the latest binary version
 does not support your system's architecture anymore.
