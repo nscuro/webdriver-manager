@@ -1,6 +1,7 @@
 package com.github.nscuro.wdm.binary.github;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.nscuro.wdm.Platform;
 import com.github.nscuro.wdm.binary.util.FileUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
@@ -66,6 +67,17 @@ final class GitHubReleasesServiceImpl implements GitHubReleasesService {
     @Override
     public Optional<GitHubRelease> getReleaseByTagName(final String repoOwner, final String repoName, final String tagName) throws IOException {
         return getGitHubReleaseFromPath("/releases/tags/" + tagName, repoOwner, repoName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
+    @Override
+    public Optional<GitHubReleaseAsset> getReleaseAssetForPlatform(final GitHubRelease release, final Platform platform) {
+        return release.getAssets().stream()
+                .filter(asset -> asset.getName().toLowerCase().contains(platform.getName().toLowerCase()))
+                .findAny();
     }
 
     @Nonnull

@@ -1,6 +1,7 @@
 package com.github.nscuro.wdm.binary.github;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.nscuro.wdm.Platform;
 import com.github.nscuro.wdm.binary.util.FileUtils;
 import org.apache.http.client.HttpClient;
 
@@ -49,6 +50,17 @@ public interface GitHubReleasesService {
     Optional<GitHubRelease> getReleaseByTagName(final String repoOwner, final String repoName, final String tagName) throws IOException;
 
     /**
+     * Get a {@link GitHubReleaseAsset} from a {@link GitHubRelease} for a given {@link Platform}.
+     *
+     * @param release  The {@link GitHubRelease} to get the {@link GitHubReleaseAsset} from
+     * @param platform The desired {@link Platform}
+     * @return The corresponding {@link GitHubReleaseAsset} or {@link Optional#empty()} when no such
+     *         {@link GitHubReleaseAsset} has been found
+     */
+    @Nonnull
+    Optional<GitHubReleaseAsset> getReleaseAssetForPlatform(final GitHubRelease release, final Platform platform);
+
+    /**
      * Download the given {@link GitHubReleaseAsset} to the system's temp directory.
      *
      * @param asset The asset to download
@@ -62,6 +74,10 @@ public interface GitHubReleasesService {
     static GitHubReleasesService create(final HttpClient httpClient, final ObjectMapper objectMapper) {
         return new GitHubReleasesServiceImpl(httpClient, objectMapper,
                 System.getenv(ENV_GITHUB_USERNAME), System.getenv(ENV_GITHUB_APITOKEN));
+    }
+
+    static GitHubReleasesService create(final HttpClient httpClient) {
+        return create(httpClient, new ObjectMapper());
     }
 
 }

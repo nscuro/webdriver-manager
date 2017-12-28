@@ -7,6 +7,7 @@ import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.chrome.ChromeDriverBinaryDownloader;
 import com.github.nscuro.wdm.binary.firefox.GeckoDriverBinaryDownloader;
 import com.github.nscuro.wdm.binary.github.GitHubReleasesService;
+import com.github.nscuro.wdm.binary.opera.OperaChromiumDriverBinaryDownloader;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClients;
 
@@ -174,6 +175,17 @@ public interface BinaryManager {
         }
 
         /**
+         * Add the {@link OperaChromiumDriverBinaryDownloader}.
+         *
+         * @return A {@link Builder} instance
+         */
+        public Builder addOperaChromiumDriverBinaryDownloader() {
+            binaryDownloaders.add(new OperaChromiumDriverBinaryDownloader(gitHubReleasesService));
+
+            return this;
+        }
+
+        /**
          * Add a custom {@link BinaryDownloader}.
          *
          * @param binaryDownloader The binary downloader to add
@@ -199,7 +211,8 @@ public interface BinaryManager {
         public Builder addDefaultBinaryDownloaders() {
             return this
                     .addChromeDriverBinaryDownloader()
-                    .addGeckoDriverBinaryDownloader();
+                    .addGeckoDriverBinaryDownloader()
+                    .addOperaChromiumDriverBinaryDownloader();
         }
 
         public BinaryManager build() {
