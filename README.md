@@ -10,7 +10,7 @@ by taking care of downloading the required binaries at runtime and unifying the 
 ## Supported Browsers
 - [x] Google Chrome ([chromedriver](https://sites.google.com/a/chromium.org/chromedriver/))
 - [x] Mozilla Firefox ([geckodriver](https://github.com/mozilla/geckodriver/releases))
-- [ ] Opera
+- [x] Opera
 - [ ] PhantomJS
 - [ ] Microsoft Internet Explorer
 - [ ] Microsoft Edge
