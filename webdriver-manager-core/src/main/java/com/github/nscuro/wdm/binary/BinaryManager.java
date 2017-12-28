@@ -105,6 +105,13 @@ public interface BinaryManager {
      */
     void cleanUp();
 
+    static BinaryManager createDefault() {
+        return builder()
+                .defaultHttpClient()
+                .addDefaultBinaryDownloaders()
+                .build();
+    }
+
     static Builder.HttpClientStep builder() {
         return Builder::new;
     }
