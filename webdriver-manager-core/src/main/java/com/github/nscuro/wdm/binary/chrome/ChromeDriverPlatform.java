@@ -2,13 +2,17 @@ package com.github.nscuro.wdm.binary.chrome;
 
 import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Os;
+import com.github.nscuro.wdm.Platform;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.Collections.singletonList;
 
-enum ChromeDriverPlatform {
+enum ChromeDriverPlatform implements Platform {
 
     WIN32(Os.WINDOWS, Arrays.asList(Architecture.X64, Architecture.X86)),
 
@@ -33,6 +37,24 @@ enum ChromeDriverPlatform {
                 .filter(platform -> platform.architectures.contains(architecture))
                 .findAny()
                 .orElseThrow(IllegalArgumentException::new);
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return name().toLowerCase();
+    }
+
+    @Nonnull
+    @Override
+    public Os getOs() {
+        return os;
+    }
+
+    @Nonnull
+    @Override
+    public Set<Architecture> getArchitectures() {
+        return new HashSet<>(architectures);
     }
 
 }

@@ -3,6 +3,7 @@ package com.github.nscuro.wdm.binary.chrome;
 import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
+import com.github.nscuro.wdm.Platform;
 import com.github.nscuro.wdm.binary.BinaryDownloader;
 import com.github.nscuro.wdm.binary.BinaryExtractor;
 import com.github.nscuro.wdm.binary.util.FileUtils;
@@ -37,6 +38,8 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
 
     private static final String BASE_URL = "https://chromedriver.storage.googleapis.com";
 
+    private static final String BINARY_NAME = "chromedriver";
+
     private final HttpClient httpClient;
 
     public ChromeDriverBinaryDownloader(final HttpClient httpClient) {
@@ -57,7 +60,7 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
     @Nonnull
     @Override
     public synchronized File download(final String version, final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException {
-        final ChromeDriverPlatform driverPlatform = ChromeDriverPlatform.valueOf(os, architecture);
+        final Platform driverPlatform = ChromeDriverPlatform.valueOf(os, architecture);
 
         final Path destinationFilePath = FileUtils.buildBinaryDestinationPath(Browser.CHROME, version, os, architecture, destinationDirPath);
 
@@ -71,7 +74,7 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
 
         try (final BinaryExtractor binaryExtractor = BinaryExtractor.fromArchiveFile(downloadArchivedBinary(version, driverPlatform))) {
             return binaryExtractor.unZip(destinationFilePath,
-                    entryIsFile().and(entryNameStartsWithIgnoringCase("chromedriver")));
+                    entryIsFile().and(entryNameStartsWithIgnoringCase(BINARY_NAME)));
         }
     }
 
@@ -102,12 +105,13 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
     }
 
     @Nonnull
-    private File downloadArchivedBinary(final String version, final ChromeDriverPlatform platform) throws IOException {
-        final HttpGet request = new HttpGet(format("%s/%s/chromedriver_%s.zip", BASE_URL, version, platform.name().toLowerCase()));
+    private File downloadArchivedBinary(final String version, final Platform platform) throws IOException {
+        final HttpGet request = new HttpGet(format("%s/%s/chromedriver_%s.zip", BASE_URL, version, platform.getName()));
         request.setHeader(HttpHeaders.ACCEPT, format("%s,%s", APPLICATION_ZIP, APPLICATION_X_ZIP_COMPRESSED));
 
         final File targetFile = FileUtils.getTempDirPath()
-                .resolve(format("chromedriver-%s_%s.zip", version, platform.name().toLowerCase())).toFile();
+                .resolve(format("chromedriver-%s_%s.zip", version, platform.getName()))
+                .toFile();
         LOGGER.debug("Downloading archived binary to {}", targetFile);
 
         return httpClient.execute(request, httpResponse -> {

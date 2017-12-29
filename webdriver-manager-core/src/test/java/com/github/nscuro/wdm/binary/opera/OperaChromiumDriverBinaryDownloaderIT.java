@@ -1,6 +1,5 @@
 package com.github.nscuro.wdm.binary.opera;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.AbstractBinaryDownloaderIT;
