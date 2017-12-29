@@ -10,7 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
 
-public class RemoteWebDriverFactory implements WebDriverFactory {
+public final class RemoteWebDriverFactory implements WebDriverFactory {
 
     private final URL gridHubUrl;
 

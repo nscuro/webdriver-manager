@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Data
-public class WebDriverFactoryConfig {
+public final class WebDriverFactoryConfig {
 
     private Map<Browser, String> binaryVersions;
 
