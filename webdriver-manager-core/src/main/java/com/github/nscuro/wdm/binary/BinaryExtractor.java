@@ -17,10 +17,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.function.Predicate;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
+import static java.util.Objects.requireNonNull;
 
 public final class BinaryExtractor implements AutoCloseable {
 
@@ -34,6 +36,8 @@ public final class BinaryExtractor implements AutoCloseable {
 
     @Nonnull
     public static BinaryExtractor fromArchiveFile(final File archiveFile) {
+        requireNonNull(archiveFile, "No archiveFile provided");
+
         if (!archiveFile.exists()) {
             throw new IllegalArgumentException(format("Archive file %s does not exist", archiveFile));
         }
@@ -52,7 +56,7 @@ public final class BinaryExtractor implements AutoCloseable {
                  zipEntry = zipInputStream.getNextZipEntry()) {
 
                 if (fileSelection.test(zipEntry)) {
-                    Files.copy(zipInputStream, fileDestinationPath);
+                    Files.copy(zipInputStream, fileDestinationPath, StandardCopyOption.REPLACE_EXISTING);
                     LOGGER.debug("extracted to {}", fileDestinationPath);
                     return fileDestinationPath.toFile();
                 }
@@ -74,7 +78,7 @@ public final class BinaryExtractor implements AutoCloseable {
                  tarEntry = tarInputStream.getNextTarEntry()) {
 
                 if (fileSelection.test(tarEntry)) {
-                    Files.copy(tarInputStream, fileDestinationPath);
+                    Files.copy(tarInputStream, fileDestinationPath, StandardCopyOption.REPLACE_EXISTING);
                     LOGGER.debug("extracted to {}", fileDestinationPath);
                     return fileDestinationPath.toFile();
                 }

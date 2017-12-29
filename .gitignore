@@ -30,3 +30,6 @@ target/
 
 # Maven wrapper
 !.mvn/wrapper/maven-wrapper.jar
+
+# Test files
+!webdriver-manager-core/src/test/resources/test-archives/*
