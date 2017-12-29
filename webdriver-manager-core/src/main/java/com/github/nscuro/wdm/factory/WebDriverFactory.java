@@ -3,6 +3,7 @@ package com.github.nscuro.wdm.factory;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
 public interface WebDriverFactory {
@@ -15,6 +16,7 @@ public interface WebDriverFactory {
      * @throws IOException              When downloading the binary failed
      * @throws IllegalArgumentException When the given {@link Capabilities} do not specify a browser name
      */
+    @Nonnull
     WebDriver getWebDriver(final Capabilities capabilities) throws IOException;
 
 }

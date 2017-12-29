@@ -5,6 +5,7 @@ import com.github.nscuro.wdm.binary.BinaryManager;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -43,6 +44,7 @@ public final class LocalWebDriverFactory implements WebDriverFactory {
      * @throws IOException              When downloading the binary failed
      * @throws IllegalArgumentException When the given {@link Capabilities} do not specify a browser name
      */
+    @Nonnull
     @Override
     public WebDriver getWebDriver(final Capabilities capabilities) throws IOException {
         final Browser browser = Optional.ofNullable(capabilities.getBrowserName())
