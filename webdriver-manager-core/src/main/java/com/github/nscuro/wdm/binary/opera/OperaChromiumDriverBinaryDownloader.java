@@ -22,6 +22,7 @@ import java.util.NoSuchElementException;
 
 import static com.github.nscuro.wdm.binary.BinaryExtractor.FileSelectors.entryIsFile;
 import static com.github.nscuro.wdm.binary.BinaryExtractor.FileSelectors.entryNameStartsWithIgnoringCase;
+import static java.util.Objects.requireNonNull;
 
 public class OperaChromiumDriverBinaryDownloader implements BinaryDownloader {
 
@@ -36,7 +37,7 @@ public class OperaChromiumDriverBinaryDownloader implements BinaryDownloader {
     private final GitHubReleasesService gitHubReleasesService;
 
     public OperaChromiumDriverBinaryDownloader(final GitHubReleasesService gitHubReleasesService) {
-        this.gitHubReleasesService = gitHubReleasesService;
+        this.gitHubReleasesService = requireNonNull(gitHubReleasesService, "No GitHubReleasesService provided");
     }
 
     /**
@@ -55,7 +56,8 @@ public class OperaChromiumDriverBinaryDownloader implements BinaryDownloader {
     public synchronized File download(final String version, final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException {
         final Platform driverPlatform = OperaChromiumDriverPlatform.valueOf(os, architecture);
 
-        final Path destinationFilePath = FileUtils.buildBinaryDestinationPath(Browser.FIREFOX, version, os, architecture, destinationDirPath);
+        final Path destinationFilePath = FileUtils.buildBinaryDestinationPath(Browser.OPERA, version, os, architecture, destinationDirPath);
+
         if (destinationFilePath.toFile().exists()) {
             LOGGER.debug("OperaChromiumDriver {} for {} was already downloaded", version, driverPlatform);
 
@@ -91,7 +93,7 @@ public class OperaChromiumDriverBinaryDownloader implements BinaryDownloader {
 
         LOGGER.info("Latest OperaChromiumDriver version is {}", latestVersion);
 
-        final Path destinationFilePath = FileUtils.buildBinaryDestinationPath(Browser.FIREFOX, latestVersion, os, architecture, destinationDirPath);
+        final Path destinationFilePath = FileUtils.buildBinaryDestinationPath(Browser.OPERA, latestVersion, os, architecture, destinationDirPath);
         if (destinationFilePath.toFile().exists()) {
             LOGGER.debug("OperaChromiumDriver {} for {} was already downloaded", latestVersion, driverPlatform);
 
