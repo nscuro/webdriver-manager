@@ -41,6 +41,7 @@
         <!-- General project properties -->
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- Dependency versions -->
         <selenium.version>3.8.1</selenium.version>
@@ -235,15 +236,18 @@
                         <execution>
                             <goals>
                                 <goal>integration-test</goal>
+                                <!--
+                                    Because the integration tests perform a lot of downloading from
+                                    remote services that may not always be available or responsive,
+                                    we do not want to have failsafe attach to the verify goal.
+
+                                    Having the build fail due to third party issues is not a good thing.
+
                                 <goal>verify</goal>
+                                -->
                             </goals>
                         </execution>
                     </executions>
-                    <configuration>
-                        <properties>
-                            <includeTags>IntegrationTest</includeTags>
-                        </properties>
-                    </configuration>
                     <dependencies>
                         <dependency>
                             <groupId>org.junit.platform</groupId>
