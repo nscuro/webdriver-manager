@@ -59,11 +59,11 @@ public class OperaChromiumDriverBinaryDownloader implements BinaryDownloader {
         final Path destinationFilePath = FileUtils.buildBinaryDestinationPath(Browser.OPERA, version, os, architecture, destinationDirPath);
 
         if (destinationFilePath.toFile().exists()) {
-            LOGGER.debug("OperaChromiumDriver {} for {} was already downloaded", version, driverPlatform);
+            LOGGER.debug("OperaChromiumDriver {} for {} was already downloaded", version, driverPlatform.getName());
 
             return destinationFilePath.toFile();
         } else {
-            LOGGER.debug("Downloading OperaChromiumDriver {} for {}", version, driverPlatform);
+            LOGGER.debug("Downloading OperaChromiumDriver {} for {}", version, driverPlatform.getName());
         }
 
         final GitHubRelease specificRelease = gitHubReleasesService
@@ -91,7 +91,7 @@ public class OperaChromiumDriverBinaryDownloader implements BinaryDownloader {
 
         final String latestVersion = latestRelease.getTagName();
 
-        LOGGER.info("Latest OperaChromiumDriver version is {}", latestVersion);
+        LOGGER.debug("Latest OperaChromiumDriver version is {}", latestVersion);
 
         final Path destinationFilePath = FileUtils.buildBinaryDestinationPath(Browser.OPERA, latestVersion, os, architecture, destinationDirPath);
         if (destinationFilePath.toFile().exists()) {

@@ -65,11 +65,11 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
         final Path destinationFilePath = FileUtils.buildBinaryDestinationPath(Browser.CHROME, version, os, architecture, destinationDirPath);
 
         if (destinationFilePath.toFile().exists()) {
-            LOGGER.debug("ChromeDriver v{} for {} was already downloaded", version, driverPlatform);
+            LOGGER.debug("ChromeDriver v{} for {} was already downloaded", version, driverPlatform.getName());
 
             return destinationFilePath.toFile();
         } else {
-            LOGGER.debug("Downloading ChromeDriver v{} for {}", version, driverPlatform);
+            LOGGER.debug("Downloading ChromeDriver v{} for {}", version, driverPlatform.getName());
         }
 
         try (final BinaryExtractor binaryExtractor = BinaryExtractor.fromArchiveFile(downloadArchivedBinary(version, driverPlatform))) {
