@@ -21,11 +21,7 @@ class BinaryManagerImplIT {
 
     @BeforeEach
     void beforeEach() {
-        binaryManager = BinaryManager.builder()
-                .defaultHttpClient()
-                .addChromeDriverBinaryDownloader()
-                .addGeckoDriverBinaryDownloader()
-                .build();
+        binaryManager = BinaryManager.createDefault();
     }
 
     @Nested
