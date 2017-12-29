@@ -9,6 +9,11 @@
         <version>0.1.0-SNAPSHOT</version>
     </parent>
     <artifactId>webdriver-manager-core</artifactId>
+    <packaging>jar</packaging>
+
+    <name>webdriver-manager-core</name>
+    <description>Core components of the webdriver-manager project</description>
+    <url>https://github.com/nscuro/webdriver-manager/webdriver-manager-core</url>
 
     <dependencies>
         <!-- Selenium -->
