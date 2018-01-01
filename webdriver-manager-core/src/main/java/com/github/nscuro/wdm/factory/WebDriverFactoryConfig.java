@@ -27,9 +27,11 @@ public final class WebDriverFactoryConfig {
     }
 
     /**
+     * Get the desired binary version for a given {@link Browser}.
      *
-     * @param browser
-     * @return
+     * @param browser The {@link Browser} to get the binary version for
+     * @return The desired version or {@link Optional#empty()}, in which case the latest
+     *         version should be used
      */
     public Optional<String> getBinaryVersionForBrowser(final Browser browser) {
         return binaryVersions.entrySet().stream()
