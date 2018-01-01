@@ -9,6 +9,7 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.opera.OperaDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.safari.SafariDriver;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,7 +35,9 @@ public enum Browser {
 
     PHANTOM_JS(Collections.singletonList(BrowserType.PHANTOMJS), PhantomJSDriver.class, "phantomjs.binary.path", true),
 
-    HTMLUNIT(Collections.singletonList(BrowserType.HTMLUNIT), HtmlUnitDriver.class, null, false);
+    HTMLUNIT(Collections.singletonList(BrowserType.HTMLUNIT), HtmlUnitDriver.class, null, false),
+
+    SAFARI(Collections.singletonList(BrowserType.SAFARI), SafariDriver.class, null, false);
 
     private final List<String> names;
 

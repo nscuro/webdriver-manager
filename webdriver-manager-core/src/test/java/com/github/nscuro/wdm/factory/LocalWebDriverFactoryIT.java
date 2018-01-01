@@ -1,7 +1,9 @@
 package com.github.nscuro.wdm.factory;
 
+import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.BinaryManager;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
@@ -9,6 +11,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.safari.SafariOptions;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -46,6 +49,13 @@ class LocalWebDriverFactoryIT {
     @Test
     void testGetWebDriverHtmlUnit() throws IOException {
         webDriver = webDriverFactory.getWebDriver(DesiredCapabilities.htmlUnit());
+    }
+
+    @Test
+    void testGetWebDriverSafari() throws IOException {
+        Assumptions.assumeTrue(Os.getCurrent() == Os.MACOS, "SafariDriver is only available on MacOS");
+
+        webDriver = webDriverFactory.getWebDriver(new SafariOptions());
     }
 
     @AfterEach
