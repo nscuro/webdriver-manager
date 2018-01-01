@@ -14,6 +14,10 @@ by taking care of downloading the required binaries at runtime and unifying the 
 - [ ] PhantomJS
 - [ ] Microsoft Internet Explorer
 - [ ] Microsoft Edge
+ 
+Of course, browsers that do not require a separate driver binary are also supported:
+- [x] HtmlUnit
+- [x] Safari
 
 ## Usage
 
