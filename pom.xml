@@ -22,8 +22,8 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/nscuro/webdriver-manager.git</connection>
-        <developerConnection>scm:git:ssh://github.com:nscuro/webdriver-manager.git</developerConnection>
+        <connection>scm:git:git@github.com:nscuro/webdriver-manager.git</connection>
+        <developerConnection>scm:git:git@github.com:nscuro/webdriver-manager.git</developerConnection>
         <url>https://github.com/nscuro/webdriver-manager/tree/master</url>
     </scm>
 
