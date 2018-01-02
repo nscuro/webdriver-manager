@@ -6,5 +6,7 @@ install:
   - ./mvnw test-compile -DskipTests
 script:
   - ./mvnw test jacoco:report
+after_success:
+  - ./mvnw coveralls:report
 notifications:
-email: false
+  email: false

@@ -1,5 +1,6 @@
 # webdriver-manager
 [![Build Status](https://travis-ci.org/nscuro/webdriver-manager.svg?branch=master)](https://travis-ci.org/nscuro/webdriver-manager)
+[![Coverage Status](https://coveralls.io/repos/github/nscuro/webdriver-manager/badge.svg?branch=master)](https://coveralls.io/github/nscuro/webdriver-manager?branch=master)
 
 *Simplifying WebDriver instantiation*
 
