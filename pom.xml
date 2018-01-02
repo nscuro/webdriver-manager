@@ -4,7 +4,7 @@
 
     <groupId>com.github.nscuro</groupId>
     <artifactId>webdriver-manager</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>WebDriver Manager</name>
@@ -23,7 +23,7 @@
         <connection>scm:git:git@github.com:nscuro/webdriver-manager.git</connection>
         <developerConnection>scm:git:git@github.com:nscuro/webdriver-manager.git</developerConnection>
         <url>https://github.com/nscuro/webdriver-manager/tree/master</url>
-      <tag>webdriver-manager-0.1.0</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <issueManagement>
