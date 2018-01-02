@@ -1,5 +1,5 @@
 # webdriver-manager
-[![Build Status](https://travis-ci.com/nscuro/webdriver-manager.svg?token=24qz67tadxUHqtNZeoJu&branch=master)](https://travis-ci.com/nscuro/webdriver-manager)
+[![Build Status](https://travis-ci.org/nscuro/webdriver-manager.svg?branch=master)](https://travis-ci.org/nscuro/webdriver-manager)
 
 *Simplifying WebDriver instantiation*
 
