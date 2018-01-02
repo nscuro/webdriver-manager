@@ -1,5 +1,7 @@
 # webdriver-manager
 [![Build Status](https://travis-ci.org/nscuro/webdriver-manager.svg?branch=master)](https://travis-ci.org/nscuro/webdriver-manager)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.nscuro/webdriver-manager/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.nscuro/webdriver-manager)
+[![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![Coverage Status](https://coveralls.io/repos/github/nscuro/webdriver-manager/badge.svg?branch=master)](https://coveralls.io/github/nscuro/webdriver-manager?branch=master)
 
 *Simplifying WebDriver instantiation*
@@ -19,6 +21,16 @@ by taking care of downloading the required binaries at runtime and unifying the 
 Of course, browsers that do not require a separate driver binary are also supported:
 - [x] HtmlUnit
 - [x] Safari
+
+## Setup
+```xml
+<dependency>
+    <groupId>com.github.nscuro</groupId>
+    <artifactId>webdriver-manager</artifactId>
+    <version>${webdriver-manager.version}</version>
+</dependency>
+```
+For the latest available version see [here](https://github.com/nscuro/webdriver-manager/releases).
 
 ## Usage
 
