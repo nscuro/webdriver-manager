@@ -1,58 +1,50 @@
 package com.github.nscuro.wdm;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.opera.OperaDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.remote.BrowserType;
-import org.openqa.selenium.safari.SafariDriver;
+import static java.lang.String.format;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static java.lang.String.format;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.openqa.selenium.remote.BrowserType;
 
 public enum Browser {
 
-    CHROME(Arrays.asList(BrowserType.CHROME, BrowserType.GOOGLECHROME), ChromeDriver.class, "webdriver.chrome.driver", true),
+    CHROME(Arrays.asList(BrowserType.CHROME, BrowserType.GOOGLECHROME), "org.openqa.selenium.chrome.ChromeDriver", "webdriver.chrome.driver", true),
 
-    EDGE(Collections.singletonList(BrowserType.EDGE), EdgeDriver.class, "webdriver.edge.driver", true),
+    EDGE(Collections.singletonList(BrowserType.EDGE), "org.openqa.selenium.edge.EdgeDriver", "webdriver.edge.driver", true),
 
-    FIREFOX(Collections.singletonList(BrowserType.FIREFOX), FirefoxDriver.class, "webdriver.gecko.driver", true),
+    FIREFOX(Collections.singletonList(BrowserType.FIREFOX), "org.openqa.selenium.firefox.FirefoxDriver", "webdriver.gecko.driver", true),
 
-    INTERNET_EXPLORER(Arrays.asList(BrowserType.IE, BrowserType.IEXPLORE), InternetExplorerDriver.class, "webdriver.ie.driver", true),
+    INTERNET_EXPLORER(Arrays.asList(BrowserType.IE, BrowserType.IEXPLORE), "org.openqa.selenium.ie.InternetExplorerDriver", "webdriver.ie.driver", true),
 
-    OPERA(Arrays.asList(BrowserType.OPERA, BrowserType.OPERA_BLINK), OperaDriver.class, "webdriver.opera.driver", true),
+    OPERA(Arrays.asList(BrowserType.OPERA, BrowserType.OPERA_BLINK), "org.openqa.selenium.opera.OperaDriver", "webdriver.opera.driver", true),
 
-    PHANTOM_JS(Collections.singletonList(BrowserType.PHANTOMJS), PhantomJSDriver.class, "phantomjs.binary.path", true),
+    PHANTOM_JS(Collections.singletonList(BrowserType.PHANTOMJS), "org.openqa.selenium.phantomjs.PhantomJSDriver", "phantomjs.binary.path", true),
 
-    HTMLUNIT(Collections.singletonList(BrowserType.HTMLUNIT), HtmlUnitDriver.class, null, false),
+    HTMLUNIT(Collections.singletonList(BrowserType.HTMLUNIT), "org.openqa.selenium.htmlunit.HtmlUnitDriver", null, false),
 
-    SAFARI(Collections.singletonList(BrowserType.SAFARI), SafariDriver.class, null, false);
+    SAFARI(Collections.singletonList(BrowserType.SAFARI), "org.openqa.selenium.safari.SafariDriver", null, false);
 
     private final List<String> names;
 
-    private final Class<? extends WebDriver> webDriverClass;
+    private final String webDriverClassName;
 
     private final String binarySystemProperty;
 
     private final boolean requiresBinary;
 
     Browser(final List<String> names,
-            final Class<? extends WebDriver> webDriverClass,
+            final String webDriverClassName,
             @Nullable final String binarySystemProperty,
             final boolean requiresBinary) {
         this.names = names;
-        this.webDriverClass = webDriverClass;
+        this.webDriverClassName = webDriverClassName;
         this.binarySystemProperty = binarySystemProperty;
         this.requiresBinary = requiresBinary;
     }
@@ -62,8 +54,8 @@ public enum Browser {
     }
 
     @Nonnull
-    public Class<? extends WebDriver> getWebDriverClass() {
-        return webDriverClass;
+    public String getWebDriverClassName() {
+        return webDriverClassName;
     }
 
     @Nonnull

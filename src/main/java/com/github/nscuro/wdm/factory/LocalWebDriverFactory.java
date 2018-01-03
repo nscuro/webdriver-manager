@@ -1,15 +1,17 @@
 package com.github.nscuro.wdm.factory;
 
-import com.github.nscuro.wdm.Browser;
-import com.github.nscuro.wdm.binary.BinaryManager;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.WebDriver;
-
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
+
+import javax.annotation.Nonnull;
+
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriver;
+
+import com.github.nscuro.wdm.Browser;
+import com.github.nscuro.wdm.binary.BinaryManager;
 
 public final class LocalWebDriverFactory implements WebDriverFactory {
 
@@ -71,10 +73,12 @@ public final class LocalWebDriverFactory implements WebDriverFactory {
 
     private WebDriver getWebDriverInstance(final Browser browser, final Capabilities capabilities) {
         try {
-            return browser.getWebDriverClass()
+            return Class
+                    .forName(browser.getWebDriverClassName())
+                    .asSubclass(WebDriver.class)
                     .getConstructor(Capabilities.class)
                     .newInstance(capabilities);
-        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException | ClassNotFoundException e) {
             // TODO Don't be so sloppy with these exceptions
             throw new RuntimeException(e);
         }
