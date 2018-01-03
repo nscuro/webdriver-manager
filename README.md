@@ -7,12 +7,12 @@
 *Simplifying WebDriver instantiation*
 
 ## Introduction
-This project aims to simplify the process of constructing a `WebDriver` instance in Selenium test cases
+This project aims to simplify the process of constructing a `WebDriver` instance in [Selenium](https://github.com/SeleniumHQ/selenium) test cases
 by taking care of downloading the required binaries at runtime and unifying the way instances are created.
 
 ## Supported Browsers
 - [x] Google Chrome ([chromedriver](https://sites.google.com/a/chromium.org/chromedriver/))
-- [x] Mozilla Firefox ([geckodriver](https://github.com/mozilla/geckodriver/releases))
+- [x] Mozilla Firefox ([geckodriver](https://github.com/mozilla/geckodriver))
 - [x] Opera ([operachromiumdriver](https://github.com/operasoftware/operachromiumdriver))
 - [ ] PhantomJS
 - [ ] Microsoft Internet Explorer
@@ -24,6 +24,17 @@ Of course, browsers that do not require a separate driver binary are also suppor
 
 ## Setup
 ```xml
+<!-- 
+    webdriver-manager requires you to provide the Selenium dependencies
+    yourself. This is a good thing, because it allows you to manage the
+    Selenium version yourself based on your needs or requirements.
+-->
+<dependency>
+    <groupId>org.seleniumhq.selenium</groupId>
+    <artifactId>selenium-java</artifactId>
+    <version>${selenium.version}</version>
+</dependency>
+
 <dependency>
     <groupId>com.github.nscuro</groupId>
     <artifactId>webdriver-manager</artifactId>
