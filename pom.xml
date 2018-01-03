@@ -86,12 +86,14 @@
             <artifactId>phantomjsdriver</artifactId>
             <version>${phantomjs-driver.version}</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>htmlunit-driver</artifactId>
             <version>${htmlunit-driver.version}</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <!-- Apache HttpClient -->
