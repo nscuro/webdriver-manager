@@ -5,6 +5,7 @@ import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.chrome.ChromeDriverBinaryDownloader;
+import com.github.nscuro.wdm.binary.edge.EdgeDriverBinaryDownloader;
 import com.github.nscuro.wdm.binary.firefox.GeckoDriverBinaryDownloader;
 import com.github.nscuro.wdm.binary.github.GitHubReleasesService;
 import com.github.nscuro.wdm.binary.opera.OperaChromiumDriverBinaryDownloader;
@@ -14,9 +15,7 @@ import org.apache.http.impl.client.HttpClients;
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 public interface BinaryManager {
@@ -193,6 +192,17 @@ public interface BinaryManager {
         }
 
         /**
+         * Add the {@link EdgeDriverBinaryDownloader}.
+         *
+         * @return A {@link Builder} instance
+         */
+        public Builder addEdgeDriverBinaryDownloader() {
+            binaryDownloaders.add(new EdgeDriverBinaryDownloader(httpClient));
+
+            return this;
+        }
+
+        /**
          * Add a custom {@link BinaryDownloader}.
          *
          * @param binaryDownloader The binary downloader to add
@@ -211,6 +221,8 @@ public interface BinaryManager {
          * <pre>
          *     - {@link ChromeDriverBinaryDownloader}
          *     - {@link GeckoDriverBinaryDownloader}
+         *     - {@link OperaChromiumDriverBinaryDownloader}
+         *     - {@link EdgeDriverBinaryDownloader}
          * </pre>
          *
          * @return A {@link Builder} instance
@@ -219,7 +231,8 @@ public interface BinaryManager {
             return this
                     .addChromeDriverBinaryDownloader()
                     .addGeckoDriverBinaryDownloader()
-                    .addOperaChromiumDriverBinaryDownloader();
+                    .addOperaChromiumDriverBinaryDownloader()
+                    .addEdgeDriverBinaryDownloader();
         }
 
         public BinaryManager build() {
