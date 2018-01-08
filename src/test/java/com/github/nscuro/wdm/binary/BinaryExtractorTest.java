@@ -41,10 +41,10 @@ class BinaryExtractorTest {
         @Test
         @DisplayName("should be able to unzip a single file and delete the source archive afterwards")
         void testUnZip() throws IOException {
-            try (final BinaryExtractor binaryExtractor = BinaryExtractor.fromArchiveFile(archiveFile)) {
-                extractedFile = binaryExtractor.unZip(Files.createTempFile("unzipped-file", null),
-                        entry -> entry.getName().equals("unzip-successful.txt"));
-            }
+            extractedFile = BinaryExtractor
+                    .fromArchiveFile(archiveFile)
+                    .unZip(Files.createTempFile("unzipped-file", null),
+                            entry -> entry.getName().equals("unzip-successful.txt"));
 
             assertThat(extractedFile).exists();
             assertThat(archiveFile).doesNotExist();
@@ -64,10 +64,10 @@ class BinaryExtractorTest {
         @Test
         @DisplayName("should be able to ungzip & untar a single file and delete the source archive afterwards")
         void testUnTarGz() throws IOException {
-            try (final BinaryExtractor binaryExtractor = BinaryExtractor.fromArchiveFile(archiveFile)) {
-                extractedFile = binaryExtractor.unTarGz(Files.createTempFile("untargzed-file", null),
-                        entry -> entry.getName().equals("untargz-successful.txt"));
-            }
+            extractedFile = BinaryExtractor
+                    .fromArchiveFile(archiveFile)
+                    .unTarGz(Files.createTempFile("untargzed-file", null),
+                            entry -> entry.getName().equals("untargz-successful.txt"));
 
             assertThat(extractedFile).exists();
             assertThat(archiveFile).doesNotExist();

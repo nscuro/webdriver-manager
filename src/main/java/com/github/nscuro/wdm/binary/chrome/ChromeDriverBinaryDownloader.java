@@ -72,10 +72,9 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
             LOGGER.debug("Downloading ChromeDriver v{} for {}", version, driverPlatform.getName());
         }
 
-        try (final BinaryExtractor binaryExtractor = BinaryExtractor.fromArchiveFile(downloadArchivedBinary(version, driverPlatform))) {
-            return binaryExtractor.unZip(destinationFilePath,
-                    entryIsFile().and(entryNameStartsWithIgnoringCase(BINARY_NAME)));
-        }
+        return BinaryExtractor
+                .fromArchiveFile(downloadArchivedBinary(version, driverPlatform))
+                .unZip(destinationFilePath, entryIsFile().and(entryNameStartsWithIgnoringCase(BINARY_NAME)));
     }
 
     /**

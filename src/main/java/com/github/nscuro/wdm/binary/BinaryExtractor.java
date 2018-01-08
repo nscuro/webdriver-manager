@@ -18,13 +18,14 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.function.Predicate;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 
-public final class BinaryExtractor implements AutoCloseable {
+public final class BinaryExtractor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BinaryExtractor.class);
 
@@ -47,7 +48,7 @@ public final class BinaryExtractor implements AutoCloseable {
 
     @Nonnull
     public final File unZip(final Path fileDestinationPath, final Predicate<ArchiveEntry> fileSelection) throws IOException {
-        try (final InputStream fileInputStream = new FileInputStream(archiveFile);
+        try (final InputStream fileInputStream = Files.newInputStream(archiveFile.toPath(), StandardOpenOption.DELETE_ON_CLOSE);
              final InputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
              final ZipArchiveInputStream zipInputStream = new ZipArchiveInputStream(bufferedInputStream)) {
 
@@ -68,7 +69,7 @@ public final class BinaryExtractor implements AutoCloseable {
 
     @Nonnull
     public final File unTarGz(final Path fileDestinationPath, final Predicate<ArchiveEntry> fileSelection) throws IOException {
-        try (final InputStream fileInputStream = new FileInputStream(archiveFile);
+        try (final InputStream fileInputStream = Files.newInputStream(archiveFile.toPath(), StandardOpenOption.DELETE_ON_CLOSE);
              final InputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
              final GzipCompressorInputStream gzipInputStream = new GzipCompressorInputStream(bufferedInputStream);
              final TarArchiveInputStream tarInputStream = new TarArchiveInputStream(gzipInputStream)) {
@@ -86,17 +87,6 @@ public final class BinaryExtractor implements AutoCloseable {
         }
 
         throw new IllegalStateException("Nothing was extracted");
-    }
-
-    @Override
-    public final void close() {
-        if (archiveFile.exists()) {
-            if (archiveFile.delete()) {
-                LOGGER.debug("{} deleted", archiveFile);
-            } else {
-                LOGGER.warn("{} not deleted", archiveFile);
-            }
-        }
     }
 
     public static final class FileSelectors {
