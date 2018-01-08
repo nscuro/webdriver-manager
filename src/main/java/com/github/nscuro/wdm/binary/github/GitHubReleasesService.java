@@ -2,11 +2,9 @@ package com.github.nscuro.wdm.binary.github;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nscuro.wdm.Platform;
-import com.github.nscuro.wdm.binary.util.FileUtils;
 import org.apache.http.client.HttpClient;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
@@ -66,7 +64,6 @@ public interface GitHubReleasesService {
      * @param asset The asset to download
      * @return A {@link File} handle of the downloaded file
      * @throws IOException When the download failed
-     * @see FileUtils#getTempDirPath()
      */
     @Nonnull
     File downloadAsset(final GitHubReleaseAsset asset) throws IOException;
