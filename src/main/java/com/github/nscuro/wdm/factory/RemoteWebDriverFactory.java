@@ -32,7 +32,8 @@ public final class RemoteWebDriverFactory implements WebDriverFactory {
         return new RemoteWebDriver(gridHubUrl, capabilities);
     }
 
-    private static URL requireValidUrl(@Nullable final String url) {
+    @Nonnull
+    static URL requireValidUrl(@Nullable final String url) {
         return Optional.ofNullable(url)
                 .map(urlStr -> {
                     try {
