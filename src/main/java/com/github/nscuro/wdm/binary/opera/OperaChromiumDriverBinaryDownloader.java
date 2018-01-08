@@ -111,9 +111,9 @@ public final class OperaChromiumDriverBinaryDownloader implements BinaryDownload
 
     @Nonnull
     private File unarchiveBinary(final File archivedBinaryFile, final Path destinationFilePath) throws IOException {
-        try (final BinaryExtractor binaryExtractor = BinaryExtractor.fromArchiveFile(archivedBinaryFile)) {
-            return binaryExtractor.unZip(destinationFilePath, entryIsFile().and(entryNameStartsWithIgnoringCase(BINARY_NAME)));
-        }
+        return BinaryExtractor
+                .fromArchiveFile(archivedBinaryFile)
+                .unZip(destinationFilePath, entryIsFile().and(entryNameStartsWithIgnoringCase(BINARY_NAME)));
     }
 
 }

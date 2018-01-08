@@ -122,17 +122,17 @@ public final class GeckoDriverBinaryDownloader implements BinaryDownloader {
      */
     @Nonnull
     private File unarchiveBinary(final File archivedBinaryFile, final String mimeType, final Path destinationFilePath) throws IOException {
-        try (final BinaryExtractor binaryExtractor = BinaryExtractor.fromArchiveFile(archivedBinaryFile)) {
-            switch (mimeType) {
-                case APPLICATION_GZIP:
-                    return binaryExtractor.unTarGz(destinationFilePath,
-                            entryIsFile().and(entryNameStartsWithIgnoringCase(BINARY_NAME)));
-                case APPLICATION_ZIP:
-                    return binaryExtractor.unZip(destinationFilePath,
-                            entryIsFile().and(entryNameStartsWithIgnoringCase(BINARY_NAME)));
-                default:
-                    throw new IllegalArgumentException("Unable to unarchive file with MIME-type " + mimeType);
-            }
+        final BinaryExtractor binaryExtractor = BinaryExtractor.fromArchiveFile(archivedBinaryFile);
+
+        switch (mimeType) {
+            case APPLICATION_GZIP:
+                return binaryExtractor.unTarGz(destinationFilePath,
+                        entryIsFile().and(entryNameStartsWithIgnoringCase(BINARY_NAME)));
+            case APPLICATION_ZIP:
+                return binaryExtractor.unZip(destinationFilePath,
+                        entryIsFile().and(entryNameStartsWithIgnoringCase(BINARY_NAME)));
+            default:
+                throw new IllegalArgumentException("Unable to unarchive file with MIME-type " + mimeType);
         }
     }
 

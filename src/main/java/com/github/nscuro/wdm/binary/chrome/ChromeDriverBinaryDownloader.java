@@ -17,8 +17,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -72,10 +73,9 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
             LOGGER.debug("Downloading ChromeDriver v{} for {}", version, driverPlatform.getName());
         }
 
-        try (final BinaryExtractor binaryExtractor = BinaryExtractor.fromArchiveFile(downloadArchivedBinary(version, driverPlatform))) {
-            return binaryExtractor.unZip(destinationFilePath,
-                    entryIsFile().and(entryNameStartsWithIgnoringCase(BINARY_NAME)));
-        }
+        return BinaryExtractor
+                .fromArchiveFile(downloadArchivedBinary(version, driverPlatform))
+                .unZip(destinationFilePath, entryIsFile().and(entryNameStartsWithIgnoringCase(BINARY_NAME)));
     }
 
     /**
@@ -109,10 +109,8 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
         final HttpGet request = new HttpGet(format("%s/%s/chromedriver_%s.zip", BASE_URL, version, platform.getName()));
         request.setHeader(HttpHeaders.ACCEPT, format("%s,%s", APPLICATION_ZIP, APPLICATION_X_ZIP_COMPRESSED));
 
-        final File targetFile = FileUtils.getTempDirPath()
-                .resolve(format("chromedriver-%s_%s.zip", version, platform.getName()))
-                .toFile();
-        LOGGER.debug("Downloading archived binary to {}", targetFile);
+        final Path targetFilePath = Files.createTempFile(format("chromedriver_%s-%s_", version, platform.getName()), null);
+        LOGGER.debug("Downloading archived binary to {}", targetFilePath);
 
         return httpClient.execute(request, httpResponse -> {
             verifyStatusCodeIsAnyOf(httpResponse, HttpStatus.SC_OK, HttpStatus.SC_NOT_FOUND);
@@ -124,13 +122,13 @@ public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
 
             verifyContentTypeIsAnyOf(httpResponse, APPLICATION_ZIP, APPLICATION_X_ZIP_COMPRESSED);
 
-            try (final FileOutputStream fileOutputStream = new FileOutputStream(targetFile)) {
+            try (final OutputStream fileOutputStream = Files.newOutputStream(targetFilePath)) {
                 Optional.ofNullable(httpResponse.getEntity())
                         .orElseThrow(() -> new IllegalStateException("Response body was empty"))
                         .writeTo(fileOutputStream);
             }
 
-            return targetFile;
+            return targetFilePath.toFile();
         });
     }
 
