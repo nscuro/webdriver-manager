@@ -14,8 +14,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -79,6 +81,16 @@ class BinaryExtractorTest {
     void shouldThrowExceptionWhenArchiveFileIsNull() {
         assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> BinaryExtractor.fromArchiveFile(null));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenArchiveFileDoesNotExist() {
+        final File nonExistentFile = Paths
+                .get(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString())
+                .toFile();
+
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> BinaryExtractor.fromArchiveFile(nonExistentFile));
     }
 
     @AfterEach

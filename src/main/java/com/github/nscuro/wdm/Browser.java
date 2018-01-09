@@ -54,6 +54,11 @@ public enum Browser {
     }
 
     @Nonnull
+    List<String> getNames() {
+        return names;
+    }
+
+    @Nonnull
     public String getWebDriverClassName() {
         return webDriverClassName;
     }
