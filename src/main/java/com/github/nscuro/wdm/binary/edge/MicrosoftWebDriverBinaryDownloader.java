@@ -49,35 +49,44 @@ public final class MicrosoftWebDriverBinaryDownloader implements BinaryDownloade
         this.httpClient = httpClient;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean supportsBrowser(final Browser browser) {
         return Browser.EDGE == browser;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public File download(final String version, final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException {
         if (os != Os.WINDOWS) {
-            throw new IllegalArgumentException("Edge is only supported for Windows");
+            throw new IllegalArgumentException("Microsoft WebDriver is only supported on Windows");
         }
 
         final Path destinationFilePath = FileUtils.buildBinaryDestinationPath(Browser.EDGE, version, os, architecture, destinationDirPath);
         if (destinationFilePath.toFile().exists()) {
-            LOGGER.debug("EdgeDriver v{} was already downloaded", version);
+            LOGGER.debug("Microsoft WebDriver v{} was already downloaded", version);
 
             return destinationFilePath.toFile();
         } else {
-            LOGGER.debug("Downloading EdgeDriver v{}", version);
+            LOGGER.debug("Downloading Microsoft WebDriver v{}", version);
         }
 
         final MicrosoftWebDriverRelease matchingRelease = getAvailableReleases().stream()
                 .filter(release -> release.getVersion().equals(version))
                 .findAny()
-                .orElseThrow(() -> new NoSuchElementException(format("No EdgeDriver binary found for version \"%s\"", version)));
+                .orElseThrow(() -> new NoSuchElementException(format("Version \"%s\" of Microsoft WebDriver is not available", version)));
 
         return downloadRelease(matchingRelease, destinationFilePath.toFile());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public File downloadLatest(final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException {
@@ -85,7 +94,7 @@ public final class MicrosoftWebDriverBinaryDownloader implements BinaryDownloade
                 .stream()
                 .findFirst()
                 .map(MicrosoftWebDriverRelease::getVersion)
-                .orElseThrow(() -> new IllegalStateException("Cannot determine latest EdgeDriver version"));
+                .orElseThrow(() -> new IllegalStateException("Cannot determine latest Microsoft WebDriver version"));
 
         return download(latestVersion, os, architecture, destinationDirPath);
     }
@@ -123,7 +132,7 @@ public final class MicrosoftWebDriverBinaryDownloader implements BinaryDownloade
 
             try (final FileOutputStream fileOutputStream = new FileOutputStream(destinationFile)) {
                 Optional.ofNullable(httpResponse.getEntity())
-                        .orElseThrow(IllegalStateException::new)
+                        .orElseThrow(() -> new IllegalStateException("Body of response to download request is empty"))
                         .writeTo(fileOutputStream);
             }
 
