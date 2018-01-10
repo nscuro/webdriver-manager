@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 class BinaryManagerImplIT {
 
@@ -30,6 +31,8 @@ class BinaryManagerImplIT {
         @ParameterizedTest
         @EnumSource(Browser.class)
         void testGetLatestBinaryForCurrentOsAndArchitecture(final Browser browser) throws IOException {
+            assumeTrue(browser.doesRequireBinary());
+
             downloadedFile = binaryManager.getBinary(browser);
 
             assertThat(downloadedFile).exists();
