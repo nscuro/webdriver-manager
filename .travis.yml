@@ -5,7 +5,7 @@ jdk:
 install:
   - ./mvnw test-compile -DskipTests
 script:
-  - ./mvnw test jacoco:report
+  - ./mvnw test integration-test jacoco:report
 after_success:
   - ./mvnw coveralls:report
 notifications:
