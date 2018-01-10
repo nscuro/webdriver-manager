@@ -5,7 +5,7 @@ import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.chrome.ChromeDriverBinaryDownloader;
-import com.github.nscuro.wdm.binary.edge.EdgeDriverBinaryDownloader;
+import com.github.nscuro.wdm.binary.edge.MicrosoftWebDriverBinaryDownloader;
 import com.github.nscuro.wdm.binary.firefox.GeckoDriverBinaryDownloader;
 import com.github.nscuro.wdm.binary.github.GitHubReleasesService;
 import com.github.nscuro.wdm.binary.opera.OperaChromiumDriverBinaryDownloader;
@@ -192,12 +192,12 @@ public interface BinaryManager {
         }
 
         /**
-         * Add the {@link EdgeDriverBinaryDownloader}.
+         * Add the {@link MicrosoftWebDriverBinaryDownloader}.
          *
          * @return A {@link Builder} instance
          */
-        public Builder addEdgeDriverBinaryDownloader() {
-            binaryDownloaders.add(new EdgeDriverBinaryDownloader(httpClient));
+        public Builder addMicrosoftWebDriverBinaryDownloader() {
+            binaryDownloaders.add(new MicrosoftWebDriverBinaryDownloader(httpClient));
 
             return this;
         }
@@ -222,7 +222,7 @@ public interface BinaryManager {
          *     - {@link ChromeDriverBinaryDownloader}
          *     - {@link GeckoDriverBinaryDownloader}
          *     - {@link OperaChromiumDriverBinaryDownloader}
-         *     - {@link EdgeDriverBinaryDownloader}
+         *     - {@link MicrosoftWebDriverBinaryDownloader}
          * </pre>
          *
          * @return A {@link Builder} instance
@@ -232,7 +232,7 @@ public interface BinaryManager {
                     .addChromeDriverBinaryDownloader()
                     .addGeckoDriverBinaryDownloader()
                     .addOperaChromiumDriverBinaryDownloader()
-                    .addEdgeDriverBinaryDownloader();
+                    .addMicrosoftWebDriverBinaryDownloader();
         }
 
         public BinaryManager build() {

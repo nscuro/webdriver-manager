@@ -3,7 +3,7 @@ package com.github.nscuro.wdm.binary.edge;
 import lombok.Data;
 
 @Data
-public final class EdgeRelease {
+public final class MicrosoftWebDriverRelease {
 
     private final String version;
 

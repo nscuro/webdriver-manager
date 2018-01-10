@@ -32,9 +32,12 @@ import static com.github.nscuro.wdm.binary.util.HttpUtils.verifyContentTypeIsAny
 import static com.github.nscuro.wdm.binary.util.HttpUtils.verifyStatusCodeIsAnyOf;
 import static java.lang.String.format;
 
-public final class EdgeDriverBinaryDownloader implements BinaryDownloader {
+/**
+ * A {@link BinaryDownloader} for Microsoft's <a href="https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/">Microsoft WebDriver</a>.
+ */
+public final class MicrosoftWebDriverBinaryDownloader implements BinaryDownloader {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EdgeDriverBinaryDownloader.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MicrosoftWebDriverBinaryDownloader.class);
 
     private static final String BASE_URL = "https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/";
 
@@ -42,7 +45,7 @@ public final class EdgeDriverBinaryDownloader implements BinaryDownloader {
 
     private final HttpClient httpClient;
 
-    public EdgeDriverBinaryDownloader(final HttpClient httpClient) {
+    public MicrosoftWebDriverBinaryDownloader(final HttpClient httpClient) {
         this.httpClient = httpClient;
     }
 
@@ -67,7 +70,7 @@ public final class EdgeDriverBinaryDownloader implements BinaryDownloader {
             LOGGER.debug("Downloading EdgeDriver v{}", version);
         }
 
-        final EdgeRelease matchingRelease = getAvailableReleases().stream()
+        final MicrosoftWebDriverRelease matchingRelease = getAvailableReleases().stream()
                 .filter(release -> release.getVersion().equals(version))
                 .findAny()
                 .orElseThrow(() -> new NoSuchElementException(format("No EdgeDriver binary found for version \"%s\"", version)));
@@ -78,12 +81,18 @@ public final class EdgeDriverBinaryDownloader implements BinaryDownloader {
     @Nonnull
     @Override
     public File downloadLatest(final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException {
-        return download(getAvailableReleases().get(0).getVersion(), os, architecture, destinationDirPath);
+        final String latestVersion = getAvailableReleases()
+                .stream()
+                .findFirst()
+                .map(MicrosoftWebDriverRelease::getVersion)
+                .orElseThrow(() -> new IllegalStateException("Cannot determine latest EdgeDriver version"));
+
+        return download(latestVersion, os, architecture, destinationDirPath);
     }
 
     @Nonnull
-    private List<EdgeRelease> getAvailableReleases() throws IOException {
-        final List<EdgeRelease> availableReleases = new ArrayList<>();
+    private List<MicrosoftWebDriverRelease> getAvailableReleases() throws IOException {
+        final List<MicrosoftWebDriverRelease> availableReleases = new ArrayList<>();
 
         return httpClient.execute(new HttpGet(BASE_URL), httpResponse -> {
             try (final InputStream inputStream = httpResponse.getEntity().getContent()) {
@@ -97,7 +106,7 @@ public final class EdgeDriverBinaryDownloader implements BinaryDownloader {
                     if (!versionMatcher.matches()) {
                         LOGGER.debug("No version found in \"{}\"", downloadMeta);
                     } else {
-                        availableReleases.add(new EdgeRelease(versionMatcher.group(1), downloadUrl));
+                        availableReleases.add(new MicrosoftWebDriverRelease(versionMatcher.group(1), downloadUrl));
                     }
                 });
             }
@@ -107,7 +116,7 @@ public final class EdgeDriverBinaryDownloader implements BinaryDownloader {
     }
 
     @Nonnull
-    private File downloadRelease(final EdgeRelease release, final File destinationFile) throws IOException {
+    private File downloadRelease(final MicrosoftWebDriverRelease release, final File destinationFile) throws IOException {
         return httpClient.execute(new HttpGet(release.getDownloadUrl()), httpResponse -> {
             verifyStatusCodeIsAnyOf(httpResponse, HttpStatus.SC_OK);
             verifyContentTypeIsAnyOf(httpResponse, MimeType.APPLICATION_OCTET_STREAM);
