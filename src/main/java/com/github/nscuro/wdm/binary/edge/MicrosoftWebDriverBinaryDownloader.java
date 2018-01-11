@@ -62,7 +62,7 @@ public final class MicrosoftWebDriverBinaryDownloader implements BinaryDownloade
      */
     @Nonnull
     @Override
-    public File download(final String version, final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException {
+    public synchronized File download(final String version, final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException {
         if (os != Os.WINDOWS) {
             throw new IllegalArgumentException("Microsoft WebDriver is only supported on Windows");
         }
@@ -89,7 +89,7 @@ public final class MicrosoftWebDriverBinaryDownloader implements BinaryDownloade
      */
     @Nonnull
     @Override
-    public File downloadLatest(final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException {
+    public synchronized File downloadLatest(final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException {
         final String latestVersion = getAvailableReleases()
                 .stream()
                 .findFirst()
