@@ -63,9 +63,7 @@ public final class MicrosoftWebDriverBinaryDownloader implements BinaryDownloade
     @Nonnull
     @Override
     public synchronized File download(final String version, final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException {
-        if (os != Os.WINDOWS) {
-            throw new IllegalArgumentException("Microsoft WebDriver is only supported on Windows");
-        }
+        requireWindowsOs(os);
 
         final Path destinationFilePath = FileUtils.buildBinaryDestinationPath(Browser.EDGE, version, os, architecture, destinationDirPath);
         if (destinationFilePath.toFile().exists()) {
@@ -90,13 +88,24 @@ public final class MicrosoftWebDriverBinaryDownloader implements BinaryDownloade
     @Nonnull
     @Override
     public synchronized File downloadLatest(final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException {
-        final String latestVersion = getAvailableReleases()
+        requireWindowsOs(os);
+
+        final MicrosoftWebDriverRelease latestRelease = getAvailableReleases()
                 .stream()
                 .findFirst()
-                .map(MicrosoftWebDriverRelease::getVersion)
-                .orElseThrow(() -> new IllegalStateException("Cannot determine latest Microsoft WebDriver version"));
+                .orElseThrow(() -> new IllegalStateException("Cannot determine latest Microsoft WebDriver release"));
+        LOGGER.debug("Latest Microsoft WebDriver version is {}", latestRelease.getVersion());
 
-        return download(latestVersion, os, architecture, destinationDirPath);
+        final Path destinationFilePath = FileUtils.buildBinaryDestinationPath(Browser.EDGE, latestRelease.getVersion(), os, architecture, destinationDirPath);
+        if (destinationFilePath.toFile().exists()) {
+            LOGGER.debug("Microsoft WebDriver v{} was already downloaded", latestRelease.getVersion());
+
+            return destinationFilePath.toFile();
+        } else {
+            LOGGER.debug("Downloading Microsoft WebDriver v{}", latestRelease.getVersion());
+        }
+
+        return downloadRelease(latestRelease, destinationFilePath.toFile());
     }
 
     @Nonnull
@@ -112,7 +121,7 @@ public final class MicrosoftWebDriverBinaryDownloader implements BinaryDownloade
                     final String downloadMeta = releaseElement.selectFirst("p.driver-download__meta").text();
 
                     final Matcher versionMatcher = VERSION_PATTERN.matcher(downloadMeta);
-                    if (!versionMatcher.matches()) {
+                    if (versionMatcher.matches()) {
                         LOGGER.debug("No version found in \"{}\"", downloadMeta);
                     } else {
                         availableReleases.add(new MicrosoftWebDriverRelease(versionMatcher.group(1), downloadUrl));
@@ -138,6 +147,12 @@ public final class MicrosoftWebDriverBinaryDownloader implements BinaryDownloade
 
             return destinationFile;
         });
+    }
+
+    void requireWindowsOs(final Os os) {
+        if (os != Os.WINDOWS) {
+            throw new IllegalArgumentException("Microsoft WebDriver is only supported on Windows");
+        }
     }
 
 }
