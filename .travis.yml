@@ -18,5 +18,8 @@ script:
   - ./mvnw test integration-test jacoco:report
 after_success:
   - ./mvnw coveralls:report
+branches:
+  only:
+    - master
 notifications:
   email: false
