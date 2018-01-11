@@ -121,7 +121,7 @@ public final class MicrosoftWebDriverBinaryDownloader implements BinaryDownloade
                     final String downloadMeta = releaseElement.selectFirst("p.driver-download__meta").text();
 
                     final Matcher versionMatcher = VERSION_PATTERN.matcher(downloadMeta);
-                    if (versionMatcher.matches()) {
+                    if (!versionMatcher.matches()) {
                         LOGGER.debug("No version found in \"{}\"", downloadMeta);
                     } else {
                         availableReleases.add(new MicrosoftWebDriverRelease(versionMatcher.group(1), downloadUrl));
