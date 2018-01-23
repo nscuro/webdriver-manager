@@ -16,7 +16,7 @@ by taking care of downloading the required binaries at runtime and unifying the 
 - [x] Opera ([operachromiumdriver](https://github.com/operasoftware/operachromiumdriver))
 - [ ] PhantomJS
 - [ ] Microsoft Internet Explorer
-- [ ] Microsoft Edge
+- [x] Microsoft Edge ([Microsoft WebDriver](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/))
  
 Of course, browsers that do not require a separate driver binary are also supported:
 - [x] HtmlUnit
