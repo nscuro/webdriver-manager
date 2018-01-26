@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -32,7 +31,7 @@ public class SingleWebDriverManager implements WebDriverManager {
 
     @Nonnull
     @Override
-    public WebDriver getWebDriver(final Capabilities capabilities) throws IOException {
+    public WebDriver getWebDriver(final Capabilities capabilities) {
         if (currentWebDriver == null) {
             currentWebDriver = webDriverFactory.getWebDriver(capabilities);
             currentCapabilities = capabilities;

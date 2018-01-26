@@ -13,7 +13,6 @@ import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariOptions;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -34,34 +33,34 @@ class LocalWebDriverFactoryIT {
     }
 
     @Test
-    void testGetWebDriverChrome() throws IOException {
+    void testGetWebDriverChrome() {
         webDriver = webDriverFactory.getWebDriver(new ChromeOptions());
     }
 
     @Test
-    void testGetWebDriverFirefox() throws IOException {
+    void testGetWebDriverFirefox() {
         webDriver = webDriverFactory.getWebDriver(new FirefoxOptions());
     }
 
     @Test
-    void testGetWebDriverOpera() throws IOException {
+    void testGetWebDriverOpera() {
         webDriver = webDriverFactory.getWebDriver(new OperaOptions());
     }
 
     @Test
-    void testGetWebDriverHtmlUnit() throws IOException {
+    void testGetWebDriverHtmlUnit() {
         webDriver = webDriverFactory.getWebDriver(DesiredCapabilities.htmlUnit());
     }
 
     @Test
-    void testGetWebDriverSafari() throws IOException {
+    void testGetWebDriverSafari() {
         assumeTrue(Os.getCurrent() == Os.MACOS, "SafariDriver is only available on MacOS");
 
         webDriver = webDriverFactory.getWebDriver(new SafariOptions());
     }
 
     @Test
-    void testGetWebDriverEdge() throws IOException {
+    void testGetWebDriverEdge() {
         assumeTrue(Os.getCurrent() == Os.WINDOWS, "EdgeDriver is only available on Windows");
 
         webDriver = webDriverFactory.getWebDriver(new EdgeOptions());

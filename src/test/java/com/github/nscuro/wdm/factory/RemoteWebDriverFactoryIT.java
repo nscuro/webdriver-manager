@@ -37,7 +37,7 @@ class RemoteWebDriverFactoryIT {
 
     @Test
     @Disabled("Requires a local Selenium Grid Hub instance")
-    void shouldBeAbleToInitiateRemoteWebDriverInstances() throws IOException {
+    void shouldBeAbleToInitiateRemoteWebDriverInstances() {
         webDriver = webDriverFactory.getWebDriver(new ChromeOptions());
     }
 
