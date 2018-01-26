@@ -9,13 +9,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
-import java.io.IOException;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 class SingletonWebDriverManagerTest {
 
@@ -34,7 +34,7 @@ class SingletonWebDriverManagerTest {
     class GetWebDriverTest {
 
         @Test
-        void shouldReturnNewWebDriverInstanceWhenNoCurrentInstanceExists() throws IOException {
+        void shouldReturnNewWebDriverInstanceWhenNoCurrentInstanceExists() {
             final WebDriver webDriverInstance = mock(WebDriver.class);
 
             final Capabilities capabilities = new ChromeOptions();
@@ -48,7 +48,7 @@ class SingletonWebDriverManagerTest {
         }
 
         @Test
-        void shouldReturnCurrentWebDriverInstanceWhenCapabilitiesAreTheSame() throws IOException {
+        void shouldReturnCurrentWebDriverInstanceWhenCapabilitiesAreTheSame() {
             final WebDriver webDriverInstance = mock(WebDriver.class);
 
             given(webDriverFactory.createWebDriver(any(Capabilities.class)))
@@ -60,7 +60,7 @@ class SingletonWebDriverManagerTest {
         }
 
         @Test
-        void shouldQuitCurrentInstanceAndReturnNewOneWhenCapabilitiesDiffer() throws IOException {
+        void shouldQuitCurrentInstanceAndReturnNewOneWhenCapabilitiesDiffer() {
             final WebDriver initialWebDriverInstance = mock(WebDriver.class);
 
             final Capabilities initialCapabilities = new ChromeOptions();
@@ -81,6 +81,41 @@ class SingletonWebDriverManagerTest {
             assertThat(webDriverManager.getWebDriver(secondCapabilities)).isEqualTo(secondWebDriverInstance);
             assertThat(webDriverManager.getCurrentWebDriver()).contains(secondWebDriverInstance);
             assertThat(webDriverManager.getCurrentCapabilities()).contains(secondCapabilities);
+        }
+
+    }
+
+    @Nested
+    class QuitWebDriverTest {
+
+        @Test
+        void shouldQuitGivenWebDriverWhenItsCurrentlyActive() {
+            final WebDriver webDriver = mock(WebDriver.class);
+
+            webDriverManager.setCurrentWebDriver(webDriver);
+
+            webDriverManager.quitWebDriver(webDriver);
+
+            verify(webDriver).quit();
+
+            assertThat(webDriverManager.getCurrentWebDriver()).isNotPresent();
+            assertThat(webDriverManager.getCurrentCapabilities()).isNotPresent();
+        }
+
+        @Test
+        void shouldThrowExceptioWhenGivenWebDriverIsNotTheCurrentlyActiveOne() {
+            final WebDriver currentlyActiveWebDriver = mock(WebDriver.class);
+
+            webDriverManager.setCurrentWebDriver(currentlyActiveWebDriver);
+
+            assertThatExceptionOfType(IllegalArgumentException.class)
+                    .isThrownBy(() -> webDriverManager.quitWebDriver(mock(WebDriver.class)));
+        }
+
+        @Test
+        void shouldThrowExceptionWhenNoWebDriverIsCurrentlyActive() {
+            assertThatExceptionOfType(IllegalStateException.class)
+                    .isThrownBy(() -> webDriverManager.quitWebDriver(mock(WebDriver.class)));
         }
 
     }

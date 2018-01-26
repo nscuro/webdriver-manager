@@ -29,15 +29,28 @@ public class SingletonWebDriverManager implements WebDriverManager {
         this.webDriverFactory = webDriverFactory;
     }
 
+    /**
+     * Get a {@link WebDriver} instance for the given desired {@link Capabilities}.
+     * <pre>
+     *  -   If no {@link WebDriver} is currently active, a new instance will be created.
+     *  -   If a {@link WebDriver} is currently active and its {@link Capabilities} match the given desired ones,
+     *      the currently active instance will be returned.
+     *  -   If a {@link WebDriver} is currently active and its {@link Capabilities} DO NOT match the given
+     *      desired ones, the currently active instance will be closed and a new one will be created.
+     * </pre>
+     *
+     * @param capabilities The desired {@link Capabilities}
+     * @return A {@link WebDriver} instance
+     */
     @Nonnull
     @Override
-    public WebDriver getWebDriver(final Capabilities capabilities) {
+    public synchronized WebDriver getWebDriver(final Capabilities capabilities) {
         if (currentWebDriver == null) {
             currentWebDriver = webDriverFactory.createWebDriver(capabilities);
             currentCapabilities = capabilities;
         } else {
             if (!Objects.equals(currentCapabilities, capabilities)) {
-                LOGGER.trace("New desired capabilities detected; quitting current WebDriver instance...");
+                LOGGER.debug("New desired capabilities detected; Quitting current WebDriver instance...");
 
                 quitWebDriver(currentWebDriver);
 
@@ -48,12 +61,20 @@ public class SingletonWebDriverManager implements WebDriverManager {
         return currentWebDriver;
     }
 
+    /**
+     * Quit the given {@link WebDriver} instance.
+     *
+     * @param webDriver The {@link WebDriver} instance to quit
+     * @throws IllegalArgumentException When the given instance is not managed by this class
+     */
     @Override
     public void quitWebDriver(final WebDriver webDriver) {
-        requireNonNull(webDriver, "No WebDriver instance provided");
+        if (currentWebDriver == null) {
+            throw new IllegalStateException("Cannot quit any WebDriver instance: No instance is currently active");
+        }
 
-        if (currentWebDriver != webDriver) {
-            throw new IllegalArgumentException("Cannot quit WebDriver instances that are not owned by this class");
+        if (currentWebDriver != requireNonNull(webDriver, "No WebDriver instance provided")) {
+            throw new IllegalArgumentException("The given WebDriver instance is not managed by this class");
         }
 
         webDriver.quit();
@@ -62,6 +83,9 @@ public class SingletonWebDriverManager implements WebDriverManager {
         currentCapabilities = null;
     }
 
+    /**
+     * @see #quitWebDriver(WebDriver)
+     */
     @Override
     public void shutdown() {
         Optional.ofNullable(currentWebDriver).ifPresent(this::quitWebDriver);
@@ -73,6 +97,10 @@ public class SingletonWebDriverManager implements WebDriverManager {
 
     Optional<Capabilities> getCurrentCapabilities() {
         return Optional.ofNullable(currentCapabilities);
+    }
+
+    void setCurrentWebDriver(final WebDriver webDriver) {
+        this.currentWebDriver = webDriver;
     }
 
 }
