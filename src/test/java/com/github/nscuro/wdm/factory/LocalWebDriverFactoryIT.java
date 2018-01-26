@@ -13,7 +13,6 @@ import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariOptions;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -34,37 +33,37 @@ class LocalWebDriverFactoryIT {
     }
 
     @Test
-    void testGetWebDriverChrome() throws IOException {
-        webDriver = webDriverFactory.getWebDriver(new ChromeOptions());
+    void testCreateWebDriverChrome() {
+        webDriver = webDriverFactory.createWebDriver(new ChromeOptions());
     }
 
     @Test
-    void testGetWebDriverFirefox() throws IOException {
-        webDriver = webDriverFactory.getWebDriver(new FirefoxOptions());
+    void testCreateWebDriverFirefox() {
+        webDriver = webDriverFactory.createWebDriver(new FirefoxOptions());
     }
 
     @Test
-    void testGetWebDriverOpera() throws IOException {
-        webDriver = webDriverFactory.getWebDriver(new OperaOptions());
+    void testCreateWebDriverOpera() {
+        webDriver = webDriverFactory.createWebDriver(new OperaOptions());
     }
 
     @Test
-    void testGetWebDriverHtmlUnit() throws IOException {
-        webDriver = webDriverFactory.getWebDriver(DesiredCapabilities.htmlUnit());
+    void testCreateWebDriverHtmlUnit() {
+        webDriver = webDriverFactory.createWebDriver(DesiredCapabilities.htmlUnit());
     }
 
     @Test
-    void testGetWebDriverSafari() throws IOException {
+    void testCreateWebDriverSafari() {
         assumeTrue(Os.getCurrent() == Os.MACOS, "SafariDriver is only available on MacOS");
 
-        webDriver = webDriverFactory.getWebDriver(new SafariOptions());
+        webDriver = webDriverFactory.createWebDriver(new SafariOptions());
     }
 
     @Test
-    void testGetWebDriverEdge() throws IOException {
+    void testCreateWebDriverEdge() {
         assumeTrue(Os.getCurrent() == Os.WINDOWS, "EdgeDriver is only available on Windows");
 
-        webDriver = webDriverFactory.getWebDriver(new EdgeOptions());
+        webDriver = webDriverFactory.createWebDriver(new EdgeOptions());
     }
 
     @AfterEach

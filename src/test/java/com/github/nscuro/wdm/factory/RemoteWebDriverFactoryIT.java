@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-import java.io.IOException;
 import java.util.Optional;
 
 /**
@@ -37,8 +36,8 @@ class RemoteWebDriverFactoryIT {
 
     @Test
     @Disabled("Requires a local Selenium Grid Hub instance")
-    void shouldBeAbleToInitiateRemoteWebDriverInstances() throws IOException {
-        webDriver = webDriverFactory.getWebDriver(new ChromeOptions());
+    void shouldBeAbleToInitiateRemoteWebDriverInstances() {
+        webDriver = webDriverFactory.createWebDriver(new ChromeOptions());
     }
 
     @AfterEach

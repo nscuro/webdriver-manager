@@ -1,17 +1,18 @@
 package com.github.nscuro.wdm.factory;
 
+import com.github.nscuro.wdm.Browser;
+import com.github.nscuro.wdm.binary.BinaryManager;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriver;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
-import javax.annotation.Nonnull;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.WebDriver;
-
-import com.github.nscuro.wdm.Browser;
-import com.github.nscuro.wdm.binary.BinaryManager;
+import static java.lang.String.format;
 
 public final class LocalWebDriverFactory implements WebDriverFactory {
 
@@ -19,14 +20,18 @@ public final class LocalWebDriverFactory implements WebDriverFactory {
 
     private final WebDriverFactoryConfig config;
 
-    public LocalWebDriverFactory(final BinaryManager binaryManager,
+    public LocalWebDriverFactory(@Nullable final BinaryManager binaryManager,
                                  final WebDriverFactoryConfig config) {
         this.binaryManager = binaryManager;
         this.config = config;
     }
 
-    public LocalWebDriverFactory(final BinaryManager binaryManager) {
+    public LocalWebDriverFactory(@Nullable final BinaryManager binaryManager) {
         this(binaryManager, new WebDriverFactoryConfig());
+    }
+
+    public LocalWebDriverFactory() {
+        this(null, new WebDriverFactoryConfig());
     }
 
     /**
@@ -43,26 +48,36 @@ public final class LocalWebDriverFactory implements WebDriverFactory {
      *
      * @param capabilities The desired capabilities
      * @return A {@link WebDriver} instance
-     * @throws IOException              When downloading the binary failed
-     * @throws IllegalArgumentException When the given {@link Capabilities} do not specify a browser name
+     * @throws WebDriverFactoryException When creating the {@link WebDriver} instance failed
+     * @throws IllegalArgumentException  When the given {@link Capabilities} do not specify a browser name
      */
     @Nonnull
     @Override
-    public WebDriver getWebDriver(final Capabilities capabilities) throws IOException {
+    public WebDriver createWebDriver(final Capabilities capabilities) {
         final Browser browser = Optional.ofNullable(capabilities.getBrowserName())
                 .filter(browserName -> !browserName.isEmpty())
                 .map(Browser::byName)
                 .orElseThrow(() -> new IllegalArgumentException("No browser name specified"));
 
         if (browser.doesRequireBinary()) {
+            if (binaryManager == null) {
+                throw new WebDriverFactoryException(capabilities,
+                        format("WebDriver for Browser \"%s\" requires a binary, but no %s was provided when constructing %s",
+                                browser, BinaryManager.class.getSimpleName(), LocalWebDriverFactory.class.getSimpleName()));
+            }
+
             final File webDriverBinary;
 
             final Optional<String> desiredVersion = config.getBinaryVersionForBrowser(browser);
 
-            if (desiredVersion.isPresent()) {
-                webDriverBinary = binaryManager.getBinary(browser, desiredVersion.get());
-            } else {
-                webDriverBinary = binaryManager.getBinary(browser);
+            try {
+                if (desiredVersion.isPresent()) {
+                    webDriverBinary = binaryManager.getBinary(browser, desiredVersion.get());
+                } else {
+                    webDriverBinary = binaryManager.getBinary(browser);
+                }
+            } catch (IOException e) {
+                throw new WebDriverFactoryException(capabilities, e);
             }
 
             binaryManager.registerBinary(webDriverBinary, browser);
@@ -79,8 +94,7 @@ public final class LocalWebDriverFactory implements WebDriverFactory {
                     .getConstructor(Capabilities.class)
                     .newInstance(capabilities);
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException | ClassNotFoundException e) {
-            // TODO Don't be so sloppy with these exceptions
-            throw new RuntimeException(e);
+            throw new WebDriverFactoryException(capabilities, e);
         }
     }
 

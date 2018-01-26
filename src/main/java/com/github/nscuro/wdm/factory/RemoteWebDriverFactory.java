@@ -28,7 +28,7 @@ public final class RemoteWebDriverFactory implements WebDriverFactory {
      */
     @Nonnull
     @Override
-    public WebDriver getWebDriver(final Capabilities capabilities) {
+    public WebDriver createWebDriver(final Capabilities capabilities) {
         return new RemoteWebDriver(gridHubUrl, capabilities);
     }
 
