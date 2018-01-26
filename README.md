@@ -24,17 +24,6 @@ Of course, browsers that do not require a separate driver binary are also suppor
 
 ## Setup
 ```xml
-<!-- 
-    webdriver-manager requires you to provide the Selenium dependencies
-    yourself. This is a good thing, because it allows you to manage the
-    Selenium version yourself based on your needs or requirements.
--->
-<dependency>
-    <groupId>org.seleniumhq.selenium</groupId>
-    <artifactId>selenium-java</artifactId>
-    <version>${selenium.version}</version>
-</dependency>
-
 <dependency>
     <groupId>com.github.nscuro</groupId>
     <artifactId>webdriver-manager</artifactId>
@@ -42,6 +31,32 @@ Of course, browsers that do not require a separate driver binary are also suppor
 </dependency>
 ```
 For the latest available version see [here](https://github.com/nscuro/webdriver-manager/releases).
+
+Note that `webdriver-manager` requires you to provide the actual Selenium dependencies yourself:
+```xml
+<dependency>
+    <groupId>org.seleniumhq.selenium</groupId>
+    <artifactId>selenium-java</artifactId>
+    <version>${selenium.version}</version>
+</dependency>
+
+<!-- Only required if you plan on using PhantomJS -->
+<dependency>
+    <groupId>com.codeborne</groupId>
+    <artifactId>phantomjsdriver</artifactId>
+    <version>${phantomjs-driver.version}</version>
+</dependency>
+
+<!-- Only required if you plan on using HTMLUnit -->
+<dependency>
+    <groupId>org.seleniumhq.selenium</groupId>
+    <artifactId>htmlunit-driver</artifactId>
+    <version>${htmlunit-driver.version}</version>
+</dependency>
+```
+Optimally, this allows you to update to a newer Selenium version without having to wait for
+`webdriver-manager` to do it. As long as Selenium does not introduce breaking changes, this
+should work just fine.
 
 ## Usage
 
