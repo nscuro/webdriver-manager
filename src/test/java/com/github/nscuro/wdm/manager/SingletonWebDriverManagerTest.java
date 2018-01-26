@@ -17,17 +17,17 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class SingleWebDriverManagerTest {
+class SingletonWebDriverManagerTest {
 
     private WebDriverFactory webDriverFactory;
 
-    private SingleWebDriverManager webDriverManager;
+    private SingletonWebDriverManager webDriverManager;
 
     @BeforeEach
     void beforeEach() {
         webDriverFactory = mock(WebDriverFactory.class);
 
-        webDriverManager = new SingleWebDriverManager(webDriverFactory);
+        webDriverManager = new SingletonWebDriverManager(webDriverFactory);
     }
 
     @Nested

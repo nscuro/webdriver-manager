@@ -15,9 +15,9 @@ import static java.util.Objects.requireNonNull;
 /**
  * A {@link WebDriverManager} that manages a single {@link WebDriver} instance.
  */
-public class SingleWebDriverManager implements WebDriverManager {
+public class SingletonWebDriverManager implements WebDriverManager {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SingleWebDriverManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SingletonWebDriverManager.class);
 
     private final WebDriverFactory webDriverFactory;
 
@@ -25,7 +25,7 @@ public class SingleWebDriverManager implements WebDriverManager {
 
     private Capabilities currentCapabilities;
 
-    public SingleWebDriverManager(final WebDriverFactory webDriverFactory) {
+    public SingletonWebDriverManager(final WebDriverFactory webDriverFactory) {
         this.webDriverFactory = webDriverFactory;
     }
 
