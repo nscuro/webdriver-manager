@@ -6,10 +6,13 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
+
+import static java.lang.String.format;
 
 public final class LocalWebDriverFactory implements WebDriverFactory {
 
@@ -17,14 +20,18 @@ public final class LocalWebDriverFactory implements WebDriverFactory {
 
     private final WebDriverFactoryConfig config;
 
-    public LocalWebDriverFactory(final BinaryManager binaryManager,
+    public LocalWebDriverFactory(@Nullable final BinaryManager binaryManager,
                                  final WebDriverFactoryConfig config) {
         this.binaryManager = binaryManager;
         this.config = config;
     }
 
-    public LocalWebDriverFactory(final BinaryManager binaryManager) {
+    public LocalWebDriverFactory(@Nullable final BinaryManager binaryManager) {
         this(binaryManager, new WebDriverFactoryConfig());
+    }
+
+    public LocalWebDriverFactory() {
+        this(null, new WebDriverFactoryConfig());
     }
 
     /**
@@ -53,6 +60,12 @@ public final class LocalWebDriverFactory implements WebDriverFactory {
                 .orElseThrow(() -> new IllegalArgumentException("No browser name specified"));
 
         if (browser.doesRequireBinary()) {
+            if (binaryManager == null) {
+                throw new WebDriverFactoryException(capabilities,
+                        format("WebDriver for Browser \"%s\" requires a binary, but no %s was provided when constructing %s",
+                                browser, BinaryManager.class.getSimpleName(), LocalWebDriverFactory.class.getSimpleName()));
+            }
+
             final File webDriverBinary;
 
             final Optional<String> desiredVersion = config.getBinaryVersionForBrowser(browser);
