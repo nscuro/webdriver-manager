@@ -46,7 +46,7 @@ public final class LocalWebDriverFactory implements WebDriverFactory {
      */
     @Nonnull
     @Override
-    public WebDriver getWebDriver(final Capabilities capabilities) {
+    public WebDriver createWebDriver(final Capabilities capabilities) {
         final Browser browser = Optional.ofNullable(capabilities.getBrowserName())
                 .filter(browserName -> !browserName.isEmpty())
                 .map(Browser::byName)

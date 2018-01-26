@@ -14,6 +14,6 @@ public interface WebDriverFactory {
      * @return A {@link WebDriver} instance
      */
     @Nonnull
-    WebDriver getWebDriver(final Capabilities capabilities);
+    WebDriver createWebDriver(final Capabilities capabilities);
 
 }

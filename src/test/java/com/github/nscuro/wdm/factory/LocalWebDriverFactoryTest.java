@@ -23,14 +23,14 @@ class LocalWebDriverFactoryTest {
     }
 
     @Nested
-    class GetWebDriverTest {
+    class CreateWebDriverTest {
 
         @Test
         void shouldThrowExceptionWhenNoBrowserNameWasProvided() {
             final MutableCapabilities desiredCapabilities = new MutableCapabilities();
 
             assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> webDriverFactory.getWebDriver(desiredCapabilities));
+                    .isThrownBy(() -> webDriverFactory.createWebDriver(desiredCapabilities));
         }
 
     }

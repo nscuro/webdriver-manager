@@ -33,7 +33,7 @@ public class SingleWebDriverManager implements WebDriverManager {
     @Override
     public WebDriver getWebDriver(final Capabilities capabilities) {
         if (currentWebDriver == null) {
-            currentWebDriver = webDriverFactory.getWebDriver(capabilities);
+            currentWebDriver = webDriverFactory.createWebDriver(capabilities);
             currentCapabilities = capabilities;
         } else {
             if (!Objects.equals(currentCapabilities, capabilities)) {

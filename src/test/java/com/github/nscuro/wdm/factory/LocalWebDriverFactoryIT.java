@@ -33,37 +33,37 @@ class LocalWebDriverFactoryIT {
     }
 
     @Test
-    void testGetWebDriverChrome() {
-        webDriver = webDriverFactory.getWebDriver(new ChromeOptions());
+    void testCreateWebDriverChrome() {
+        webDriver = webDriverFactory.createWebDriver(new ChromeOptions());
     }
 
     @Test
-    void testGetWebDriverFirefox() {
-        webDriver = webDriverFactory.getWebDriver(new FirefoxOptions());
+    void testCreateWebDriverFirefox() {
+        webDriver = webDriverFactory.createWebDriver(new FirefoxOptions());
     }
 
     @Test
-    void testGetWebDriverOpera() {
-        webDriver = webDriverFactory.getWebDriver(new OperaOptions());
+    void testCreateWebDriverOpera() {
+        webDriver = webDriverFactory.createWebDriver(new OperaOptions());
     }
 
     @Test
-    void testGetWebDriverHtmlUnit() {
-        webDriver = webDriverFactory.getWebDriver(DesiredCapabilities.htmlUnit());
+    void testCreateWebDriverHtmlUnit() {
+        webDriver = webDriverFactory.createWebDriver(DesiredCapabilities.htmlUnit());
     }
 
     @Test
-    void testGetWebDriverSafari() {
+    void testCreateWebDriverSafari() {
         assumeTrue(Os.getCurrent() == Os.MACOS, "SafariDriver is only available on MacOS");
 
-        webDriver = webDriverFactory.getWebDriver(new SafariOptions());
+        webDriver = webDriverFactory.createWebDriver(new SafariOptions());
     }
 
     @Test
-    void testGetWebDriverEdge() {
+    void testCreateWebDriverEdge() {
         assumeTrue(Os.getCurrent() == Os.WINDOWS, "EdgeDriver is only available on Windows");
 
-        webDriver = webDriverFactory.getWebDriver(new EdgeOptions());
+        webDriver = webDriverFactory.createWebDriver(new EdgeOptions());
     }
 
     @AfterEach

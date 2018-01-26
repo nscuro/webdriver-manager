@@ -39,7 +39,7 @@ class SingleWebDriverManagerTest {
 
             final Capabilities capabilities = new ChromeOptions();
 
-            given(webDriverFactory.getWebDriver(any(Capabilities.class)))
+            given(webDriverFactory.createWebDriver(any(Capabilities.class)))
                     .willReturn(webDriverInstance);
 
             assertThat(webDriverManager.getWebDriver(capabilities)).isEqualTo(webDriverInstance);
@@ -51,7 +51,7 @@ class SingleWebDriverManagerTest {
         void shouldReturnCurrentWebDriverInstanceWhenCapabilitiesAreTheSame() throws IOException {
             final WebDriver webDriverInstance = mock(WebDriver.class);
 
-            given(webDriverFactory.getWebDriver(any(Capabilities.class)))
+            given(webDriverFactory.createWebDriver(any(Capabilities.class)))
                     .willReturn(webDriverInstance)
                     .willThrow(new AssertionError("webDriverFactory should only be called once"));
 
@@ -65,14 +65,14 @@ class SingleWebDriverManagerTest {
 
             final Capabilities initialCapabilities = new ChromeOptions();
 
-            given(webDriverFactory.getWebDriver(eq(initialCapabilities)))
+            given(webDriverFactory.createWebDriver(eq(initialCapabilities)))
                     .willReturn(initialWebDriverInstance);
 
             final WebDriver secondWebDriverInstance = mock(WebDriver.class);
 
             final Capabilities secondCapabilities = new FirefoxOptions();
 
-            given(webDriverFactory.getWebDriver(eq(secondCapabilities)))
+            given(webDriverFactory.createWebDriver(eq(secondCapabilities)))
                     .willReturn(secondWebDriverInstance);
 
 
