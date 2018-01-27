@@ -10,6 +10,11 @@
 This project aims to simplify the process of constructing a `WebDriver` instance in [Selenium](https://github.com/SeleniumHQ/selenium) test cases
 by taking care of downloading the required binaries at runtime and unifying the way instances are created.
 
+Overall, there are 3 things `webdriver-manager` can do for you:
+- [Downloading WebDriver binaries](#downloading-webdriver-binaries)
+- [Instantiating WebDriver](#instantiating-webdriver)
+- [Managing WebDriver instances](#managing-webdriver-instances)
+
 ## Supported Browsers
 - [x] Google Chrome ([chromedriver](https://sites.google.com/a/chromium.org/chromedriver/))
 - [x] Mozilla Firefox ([geckodriver](https://github.com/mozilla/geckodriver))
@@ -60,13 +65,14 @@ should work just fine.
 
 ## Usage
 
-### Downloading Binaries
-WebDriver binaries can be downloaded using the `BinaryManager` class:
+### Downloading WebDriver binaries
+Binaries can be downloaded using the `BinaryManager` class:
 ```java
 final BinaryManager binaryManager = BinaryManager.builder()
     .defaultHttpClient() // you can provide your own using .httpClient(myHttpClient)
     .addChromeDriverBinaryDownloader()
-    // .addBinaryDownloader(myBinaryDownloader)
+    // .addDefaultBinaryDownloaders()
+    // .addBinaryDownloader(myCustomBinaryDownloader)
     .build();
 
 // Get a specific version for specific platform
@@ -91,7 +97,9 @@ export WDM_GH_USER=<your-github-username>
 export WDM_GH_TOKEN=<your-token>
 ```
 
-### Instantiating WebDriver locally
+### Instantiating WebDriver
+
+#### Instantiating WebDriver locally
 In your test or testing framework, you'd typically do the following:
 ```java
 private static WebDriverFactory webDriverFactory;
@@ -121,7 +129,7 @@ public void tearDown() {
 ```
 Be aware that `WebDriverFactory` won't take care of closing your `WebDriver` instance, you **have** to do this yourself.
 
-#### Specifying binary versions
+##### Specifying binary versions
 Per default, `LocalWebDriverFactory` will always download the latest version of a webdriver binary.
 This behavior may not always be what you want - i.e. you use an older browser version or the latest binary version
 does not support your system's architecture anymore.
@@ -135,7 +143,7 @@ config.setBinaryVersionForBrowser(Browser.CHROME, "2.32");
 final WebDriverFactory webDriverFactory = new LocalWebDriverFactory(BinaryManager.createDefault(), config);
 ```
 
-### Instantiating WebDriver remotely
+#### Instantiating WebDriver remotely
 Additionally to the local instantiation, you can use `WebDriverFactory` with a remote Selenium Grid Hub:
 ```java
 final WebDriverFactory webDriverFactory = new RemoteWebDriverFactory("http://my-grid-host:4444/wd/hub");
@@ -144,3 +152,6 @@ final WebDriver webDriver = webDriverFactory.getWebDriver(new FirefoxOptions());
 ```
 
 Because you will connect to a remote machine, there's naturally no need to download any binaries (on your machine, that is).
+
+## Managing WebDriver instances
+TODO
