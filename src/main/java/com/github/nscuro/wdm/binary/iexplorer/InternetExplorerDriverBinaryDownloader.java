@@ -56,11 +56,17 @@ public class InternetExplorerDriverBinaryDownloader implements BinaryDownloader 
         this.httpClient = httpClient;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean supportsBrowser(final Browser browser) {
         return Browser.INTERNET_EXPLORER == browser;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public File download(final String version, final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException {
@@ -80,13 +86,17 @@ public class InternetExplorerDriverBinaryDownloader implements BinaryDownloader 
                 .filter(release -> release.getVersion().equals(version))
                 .filter(release -> release.getArchitecture() == architecture)
                 .findAny()
-                .orElseThrow(() -> new NoSuchElementException(""));
+                .orElseThrow(() -> new NoSuchElementException(
+                        format("No binary available for version %s and architecture %s", version, architecture)));
 
         return BinaryExtractor
                 .fromArchiveFile(downloadArchivedRelease(matchingRelease))
                 .unZip(destinationFilePath, entryIsFile().and(entryNameStartsWithIgnoringCase(BINARY_NAME)));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public File downloadLatest(final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException {
@@ -96,7 +106,8 @@ public class InternetExplorerDriverBinaryDownloader implements BinaryDownloader 
                 .stream()
                 .filter(release -> release.getArchitecture() == architecture)
                 .max(Comparator.comparing(InternetExplorerRelease::getVersion))
-                .orElseThrow(() -> new NoSuchElementException(""));
+                .orElseThrow(() -> new NoSuchElementException(
+                        format("Unable to determine latest release for architecture %s", architecture)));
 
         final String version = latestRelease.getVersion();
         LOGGER.debug("Latest InternetExplorer Driver version is {}", version);
