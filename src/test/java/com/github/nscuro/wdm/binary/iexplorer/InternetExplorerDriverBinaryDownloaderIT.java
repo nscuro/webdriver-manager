@@ -23,6 +23,11 @@ class InternetExplorerDriverBinaryDownloaderIT extends AbstractBinaryDownloaderI
     }
 
     @Test
+    void testDownloadSpecificVersion() throws IOException {
+        downloadedFile = binaryDownloader.download("3.5", Os.WINDOWS, Architecture.X64, DOWNLOAD_DESTINATION_DIR_PATH);
+    }
+
+    @Test
     void testDownloadLatestForWin64() throws IOException {
         downloadedFile = binaryDownloader.downloadLatest(Os.WINDOWS, Architecture.X64, DOWNLOAD_DESTINATION_DIR_PATH);
     }
