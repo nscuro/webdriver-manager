@@ -9,6 +9,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariOptions;
@@ -64,6 +65,13 @@ class LocalWebDriverFactoryIT {
         assumeTrue(Os.getCurrent() == Os.WINDOWS, "EdgeDriver is only available on Windows");
 
         webDriver = webDriverFactory.createWebDriver(new EdgeOptions());
+    }
+
+    @Test
+    void testCreateWebDriverInternetExplorer() {
+        assumeTrue(Os.getCurrent() == Os.WINDOWS, "InternetExplorer is only available on Windows");
+
+        webDriver = webDriverFactory.createWebDriver(new InternetExplorerOptions());
     }
 
     @AfterEach
