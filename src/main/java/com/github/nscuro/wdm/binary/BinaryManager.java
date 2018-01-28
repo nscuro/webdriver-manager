@@ -8,6 +8,7 @@ import com.github.nscuro.wdm.binary.chrome.ChromeDriverBinaryDownloader;
 import com.github.nscuro.wdm.binary.edge.MicrosoftWebDriverBinaryDownloader;
 import com.github.nscuro.wdm.binary.firefox.GeckoDriverBinaryDownloader;
 import com.github.nscuro.wdm.binary.github.GitHubReleasesService;
+import com.github.nscuro.wdm.binary.iexplorer.InternetExplorerDriverBinaryDownloader;
 import com.github.nscuro.wdm.binary.opera.OperaChromiumDriverBinaryDownloader;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -203,6 +204,17 @@ public interface BinaryManager {
         }
 
         /**
+         * Add the {@link InternetExplorerDriverBinaryDownloader}.
+         *
+         * @return A {@link Builder} instance
+         */
+        public Builder addInternetExplorerDriverBinaryDownloader() {
+            binaryDownloaders.add(new InternetExplorerDriverBinaryDownloader(httpClient));
+
+            return this;
+        }
+
+        /**
          * Add a custom {@link BinaryDownloader}.
          *
          * @param binaryDownloader The binary downloader to add
@@ -223,6 +235,7 @@ public interface BinaryManager {
          *     - {@link GeckoDriverBinaryDownloader}
          *     - {@link OperaChromiumDriverBinaryDownloader}
          *     - {@link MicrosoftWebDriverBinaryDownloader}
+         *     - {@link InternetExplorerDriverBinaryDownloader}
          * </pre>
          *
          * @return A {@link Builder} instance
@@ -232,7 +245,8 @@ public interface BinaryManager {
                     .addChromeDriverBinaryDownloader()
                     .addGeckoDriverBinaryDownloader()
                     .addOperaChromiumDriverBinaryDownloader()
-                    .addMicrosoftWebDriverBinaryDownloader();
+                    .addMicrosoftWebDriverBinaryDownloader()
+                    .addInternetExplorerDriverBinaryDownloader();
         }
 
         public BinaryManager build() {
