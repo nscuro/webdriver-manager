@@ -15,7 +15,7 @@ by taking care of downloading the required binaries at runtime and unifying the 
 - [x] Mozilla Firefox ([geckodriver](https://github.com/mozilla/geckodriver))
 - [x] Opera ([operachromiumdriver](https://github.com/operasoftware/operachromiumdriver))
 - [ ] PhantomJS
-- [ ] Microsoft Internet Explorer
+- [x] Microsoft Internet Explorer ([InternetExplorerDriver](https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver))
 - [x] Microsoft Edge ([Microsoft WebDriver](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/))
  
 Of course, browsers that do not require a separate driver binary are also supported:
