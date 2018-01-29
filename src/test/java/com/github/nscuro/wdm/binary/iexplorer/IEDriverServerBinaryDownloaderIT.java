@@ -10,16 +10,16 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-class InternetExplorerDriverBinaryDownloaderIT extends AbstractBinaryDownloaderIT {
+class IEDriverServerBinaryDownloaderIT extends AbstractBinaryDownloaderIT {
 
-    private InternetExplorerDriverBinaryDownloader binaryDownloader;
+    private IEDriverServerBinaryDownloader binaryDownloader;
 
     @Override
     @BeforeEach
     protected void beforeEach() {
         super.beforeEach();
 
-        binaryDownloader = new InternetExplorerDriverBinaryDownloader(getHttpClient());
+        binaryDownloader = new IEDriverServerBinaryDownloader(getHttpClient());
     }
 
     @Test

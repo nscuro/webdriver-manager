@@ -8,7 +8,7 @@ import com.github.nscuro.wdm.binary.chrome.ChromeDriverBinaryDownloader;
 import com.github.nscuro.wdm.binary.edge.MicrosoftWebDriverBinaryDownloader;
 import com.github.nscuro.wdm.binary.firefox.GeckoDriverBinaryDownloader;
 import com.github.nscuro.wdm.binary.github.GitHubReleasesService;
-import com.github.nscuro.wdm.binary.iexplorer.InternetExplorerDriverBinaryDownloader;
+import com.github.nscuro.wdm.binary.iexplorer.IEDriverServerBinaryDownloader;
 import com.github.nscuro.wdm.binary.opera.OperaChromiumDriverBinaryDownloader;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -204,12 +204,12 @@ public interface BinaryManager {
         }
 
         /**
-         * Add the {@link InternetExplorerDriverBinaryDownloader}.
+         * Add the {@link IEDriverServerBinaryDownloader}.
          *
          * @return A {@link Builder} instance
          */
-        public Builder addInternetExplorerDriverBinaryDownloader() {
-            binaryDownloaders.add(new InternetExplorerDriverBinaryDownloader(httpClient));
+        public Builder addIEDriverServerBinaryDownloader() {
+            binaryDownloaders.add(new IEDriverServerBinaryDownloader(httpClient));
 
             return this;
         }
@@ -235,7 +235,7 @@ public interface BinaryManager {
          *     - {@link GeckoDriverBinaryDownloader}
          *     - {@link OperaChromiumDriverBinaryDownloader}
          *     - {@link MicrosoftWebDriverBinaryDownloader}
-         *     - {@link InternetExplorerDriverBinaryDownloader}
+         *     - {@link IEDriverServerBinaryDownloader}
          * </pre>
          *
          * @return A {@link Builder} instance
@@ -246,7 +246,7 @@ public interface BinaryManager {
                     .addGeckoDriverBinaryDownloader()
                     .addOperaChromiumDriverBinaryDownloader()
                     .addMicrosoftWebDriverBinaryDownloader()
-                    .addInternetExplorerDriverBinaryDownloader();
+                    .addIEDriverServerBinaryDownloader();
         }
 
         public BinaryManager build() {

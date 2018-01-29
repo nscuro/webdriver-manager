@@ -24,12 +24,12 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.github.nscuro.wdm.binary.BinaryExtractor.FileSelectors.entryIsFile;
 import static com.github.nscuro.wdm.binary.BinaryExtractor.FileSelectors.entryNameStartsWithIgnoringCase;
@@ -40,11 +40,11 @@ import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_ZIP;
 import static java.lang.String.format;
 
 /**
- * A {@link BinaryDownloader} for Microsoft's Internet Explorer Driver.
+ * A {@link BinaryDownloader} for Microsoft's IEDriverServer.
  */
-public class InternetExplorerDriverBinaryDownloader implements BinaryDownloader {
+public class IEDriverServerBinaryDownloader implements BinaryDownloader {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(InternetExplorerDriverBinaryDownloader.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(IEDriverServerBinaryDownloader.class);
 
     private static final String BASE_URL = "https://selenium-release.storage.googleapis.com/";
 
@@ -52,7 +52,7 @@ public class InternetExplorerDriverBinaryDownloader implements BinaryDownloader 
 
     private final HttpClient httpClient;
 
-    public InternetExplorerDriverBinaryDownloader(final HttpClient httpClient) {
+    public IEDriverServerBinaryDownloader(final HttpClient httpClient) {
         this.httpClient = httpClient;
     }
 
@@ -74,14 +74,14 @@ public class InternetExplorerDriverBinaryDownloader implements BinaryDownloader 
 
         final Path destinationFilePath = FileUtils.buildBinaryDestinationPath(Browser.INTERNET_EXPLORER, version, os, architecture, destinationDirPath);
         if (destinationFilePath.toFile().exists()) {
-            LOGGER.debug("InternetExplorer Driver v{} was already downloaded", version);
+            LOGGER.debug("IEDriverServer v{} was already downloaded", version);
 
             return destinationFilePath.toFile();
         } else {
-            LOGGER.debug("Downloading InternetExplorer Driver v{}", version);
+            LOGGER.debug("Downloading IEDriverServer v{}", version);
         }
 
-        final InternetExplorerRelease matchingRelease = getAvailableReleases()
+        final IEDriverServerRelease matchingRelease = getAvailableReleases()
                 .stream()
                 .filter(release -> release.getVersion().equals(version))
                 .filter(release -> release.getArchitecture() == architecture)
@@ -102,23 +102,23 @@ public class InternetExplorerDriverBinaryDownloader implements BinaryDownloader 
     public File downloadLatest(final Os os, final Architecture architecture, final Path destinationDirPath) throws IOException {
         requireWindowsOs(os);
 
-        final InternetExplorerRelease latestRelease = getAvailableReleases()
+        final IEDriverServerRelease latestRelease = getAvailableReleases()
                 .stream()
                 .filter(release -> release.getArchitecture() == architecture)
-                .max(Comparator.comparing(InternetExplorerRelease::getVersion))
+                .max(Comparator.comparing(IEDriverServerRelease::getVersion))
                 .orElseThrow(() -> new NoSuchElementException(
                         format("Unable to determine latest release for architecture %s", architecture)));
 
         final String version = latestRelease.getVersion();
-        LOGGER.debug("Latest InternetExplorer Driver version is {}", version);
+        LOGGER.debug("Latest IEDriverServer version is {}", version);
 
         final Path destinationFilePath = FileUtils.buildBinaryDestinationPath(Browser.INTERNET_EXPLORER, version, os, architecture, destinationDirPath);
         if (destinationFilePath.toFile().exists()) {
-            LOGGER.debug("InternetExplorer Driver v{} was already downloaded", version);
+            LOGGER.debug("IEDriverServer v{} was already downloaded", version);
 
             return destinationFilePath.toFile();
         } else {
-            LOGGER.debug("Downloading InternetExplorer Driver v{}", version);
+            LOGGER.debug("Downloading IEDriverServer v{}", version);
         }
 
         return BinaryExtractor
@@ -127,48 +127,43 @@ public class InternetExplorerDriverBinaryDownloader implements BinaryDownloader 
     }
 
     @Nonnull
-    private List<InternetExplorerRelease> getAvailableReleases() throws IOException {
-        return httpClient.execute(new HttpGet(BASE_URL), httpResponse -> {
-            final List<InternetExplorerRelease> availableReleases = new ArrayList<>();
-
+    private List<IEDriverServerRelease> getAvailableReleases() throws IOException {
+        final Document directoryDocument = httpClient.execute(new HttpGet(BASE_URL), httpResponse -> {
             try (final InputStream inputStream = httpResponse.getEntity().getContent()) {
-                final Document document = Jsoup
-                        .parse(inputStream, StandardCharsets.UTF_8.name(), BASE_URL, Parser.xmlParser());
-
-                document
-                        .select("Contents > Key")
-                        .stream()
-                        .filter(element -> element.text().contains(BINARY_NAME))
-                        .map(versionLink -> {
-                            final String version = versionLink.text().split("/")[0];
-
-                            final Architecture architecture;
-                            if (versionLink.text().contains("x64")) {
-                                architecture = Architecture.X64;
-                            } else if (versionLink.text().toLowerCase().contains("win32")) {
-                                architecture = Architecture.X86;
-                            } else {
-                                LOGGER.warn("Unable to detect architecture from \"{}\"", versionLink.text());
-                                return null;
-                            }
-
-                            return new InternetExplorerRelease(version, architecture, BASE_URL + versionLink.text());
-                        })
-                        .filter(Objects::nonNull)
-                        .forEach(availableReleases::add);
+                return Jsoup.parse(inputStream, StandardCharsets.UTF_8.name(), BASE_URL, Parser.xmlParser());
             }
-
-            return availableReleases;
         });
+
+        return directoryDocument
+                .select("Contents > Key")
+                .stream()
+                .filter(element -> element.text().contains(BINARY_NAME))
+                .map(versionLink -> {
+                    final String version = versionLink.text().split("/")[0];
+
+                    final Architecture architecture;
+                    if (versionLink.text().contains("x64")) {
+                        architecture = Architecture.X64;
+                    } else if (versionLink.text().toLowerCase().contains("win32")) {
+                        architecture = Architecture.X86;
+                    } else {
+                        LOGGER.warn("Unable to detect architecture from \"{}\"", versionLink.text());
+                        return null;
+                    }
+
+                    return new IEDriverServerRelease(version, architecture, BASE_URL + versionLink.text());
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     @Nonnull
-    private File downloadArchivedRelease(final InternetExplorerRelease release) throws IOException {
+    private File downloadArchivedRelease(final IEDriverServerRelease release) throws IOException {
         final HttpGet request = new HttpGet(release.getDownloadUrl());
         request.setHeader(HttpHeaders.ACCEPT, format("%s,%s", APPLICATION_ZIP, APPLICATION_X_ZIP_COMPRESSED));
 
         final Path targetFilePath = Files.createTempFile(format("%s_%s-%s", BINARY_NAME, release.getVersion(), release.getArchitecture()), null);
-        LOGGER.debug("Downloading archived release to {}", targetFilePath);
+        LOGGER.debug("Downloading archived IEDriverServer release to {}", targetFilePath);
 
         return httpClient.execute(request, httpResponse -> {
             verifyStatusCodeIsAnyOf(httpResponse, HttpStatus.SC_OK);
@@ -186,7 +181,7 @@ public class InternetExplorerDriverBinaryDownloader implements BinaryDownloader 
 
     private void requireWindowsOs(final Os os) {
         if (os != Os.WINDOWS) {
-            throw new IllegalArgumentException("Internet Explorer Driver is only supported on Windows");
+            throw new IllegalArgumentException("IEDriverServer is only supported on Windows systems");
         }
     }
 

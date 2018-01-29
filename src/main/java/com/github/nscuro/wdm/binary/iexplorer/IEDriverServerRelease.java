@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-class InternetExplorerRelease {
+class IEDriverServerRelease {
 
     private final String version;
 
