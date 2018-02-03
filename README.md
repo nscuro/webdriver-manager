@@ -29,6 +29,8 @@ Of course, browsers that do not require a separate driver binary are also suppor
 - [x] Safari
 
 ## Setup
+*Java 8 or higher is required!*  
+
 ```xml
 <dependency>
     <groupId>com.github.nscuro</groupId>
@@ -69,16 +71,32 @@ should work just fine.
 ### Downloading WebDriver binaries
 Binaries can be downloaded using the `BinaryManager` class:
 ```java
-final BinaryManager binaryManager = BinaryManager.builder()
-    .defaultHttpClient() // you can provide your own using .httpClient(myHttpClient)
-    .addChromeDriverBinaryDownloader()
-    // .addDefaultBinaryDownloaders()
-    // .addBinaryDownloader(myCustomBinaryDownloader)
-    .build();
+BinaryManager binaryManager = BinaryManager.createDefault();
 
-// Get a specific version for specific platform
-final File binaryFile = binaryManager.getBinary(Browser.CHROME, "2.33", Os.WINDOWS, Architecture.X64);
+// Download specific binary for Chrome on specific OS and architecture
+File binaryFile = binaryManager.getBinary(Browser.CHROME, "2.34", Os.MACOS, Architecture.X64);
+
+// Download latest binary for Edge on specific OS and architecture
+File binaryFile = binaryManager.getBinary(Browser.EDGE, Os.WINDOWS, Architecture.X86);
+
+// Download specific binary version for Firefox, auto-detect OS and architecture
+File binaryFile = binaryManager.getBinary(Browser.FIREFOX, "v0.18.0");
+
+// Download latest binary for Opera, auto-detect OS and architecture
+File binaryFile = binaryManager.getBinary(Browser.OPERA);
 ```
+
+Using `BinaryManager.createDefault();` will provide you with a `BinaryManager` instance that
+should be able to fulfill all basic needs. You can however use a builder for customization purposes:
+```java
+BinaryManager binaryManager = BinaryManager.builder()
+    .httpClient(myHttpClient) // If you don't care, you can also use .defaultHttpClient()
+    .addGeckoDriverBinaryDownloader() // Each builtin downloader can be added separately
+    .addBinaryDownloader(myBinaryDownloader) // You can easily provide your own downloader
+    // If you don't care and just want all default downloaders, there's always .addDefaultBinaryDownloaders()
+    .build();
+```
+
 Binaries will be downloaded to `$HOME/.webdriver-manager` and can be programmatically deleted 
 using `binaryManager.cleanUp()`.
 
