@@ -8,6 +8,9 @@ import com.github.nscuro.wdm.Browser;
 
 import lombok.Data;
 
+/**
+ * Programmatic configuration for {@link WebDriverFactory}.
+ */
 @Data
 public final class WebDriverFactoryConfig {
 

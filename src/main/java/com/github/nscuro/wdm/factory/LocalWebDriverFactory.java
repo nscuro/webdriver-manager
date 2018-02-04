@@ -14,24 +14,47 @@ import java.util.Optional;
 
 import static java.lang.String.format;
 
+/**
+ * A {@link WebDriverFactory} that creates local {@link WebDriver} instances.
+ */
 public final class LocalWebDriverFactory implements WebDriverFactory {
 
     private final BinaryManager binaryManager;
 
     private final WebDriverFactoryConfig config;
 
+    /**
+     * Create a {@link LocalWebDriverFactory} that is able to download binaries if necessary.
+     *
+     * @param binaryManager The {@link BinaryManager} to use for downloading binaries
+     * @param config        The {@link WebDriverFactoryConfig} to use
+     */
     public LocalWebDriverFactory(@Nullable final BinaryManager binaryManager,
                                  final WebDriverFactoryConfig config) {
         this.binaryManager = binaryManager;
         this.config = config;
     }
 
+    /**
+     * Create a {@link LocalWebDriverFactory} that is able to download binaries if necessary.
+     *
+     * @param binaryManager The {@link BinaryManager} to use for downloading binaries
+     */
     public LocalWebDriverFactory(@Nullable final BinaryManager binaryManager) {
         this(binaryManager, new WebDriverFactoryConfig());
     }
 
+    /**
+     * Create a {@link LocalWebDriverFactory} without {@link BinaryManager}.
+     * <p>
+     * Note that the resulting {@link LocalWebDriverFactory} instance will not be
+     * able to download any binaries, so you might only be able to create instances
+     * of {@link WebDriver} for browsers that do not require a separate binary.
+     *
+     * @since 0.1.3
+     */
     public LocalWebDriverFactory() {
-        this(null, new WebDriverFactoryConfig());
+        this(null);
     }
 
     /**
@@ -50,6 +73,8 @@ public final class LocalWebDriverFactory implements WebDriverFactory {
      * @return A {@link WebDriver} instance
      * @throws WebDriverFactoryException When creating the {@link WebDriver} instance failed
      * @throws IllegalArgumentException  When the given {@link Capabilities} do not specify a browser name
+     * @see LocalWebDriverFactory#LocalWebDriverFactory(BinaryManager)
+     * @see LocalWebDriverFactory#LocalWebDriverFactory(BinaryManager, WebDriverFactoryConfig)
      */
     @Nonnull
     @Override
