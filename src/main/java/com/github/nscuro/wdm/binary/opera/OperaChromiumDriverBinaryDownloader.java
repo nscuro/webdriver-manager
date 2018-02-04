@@ -24,6 +24,9 @@ import static com.github.nscuro.wdm.binary.BinaryExtractor.FileSelectors.entryIs
 import static com.github.nscuro.wdm.binary.BinaryExtractor.FileSelectors.entryNameStartsWithIgnoringCase;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * A {@link BinaryDownloader} for Opera's <a href="https://github.com/operasoftware/operachromiumdriver">operachromiumdriver</a>.
+ */
 public final class OperaChromiumDriverBinaryDownloader implements BinaryDownloader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GeckoDriverBinaryDownloader.class);
