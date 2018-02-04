@@ -11,6 +11,9 @@ import java.util.Optional;
 
 import static java.lang.String.format;
 
+/**
+ * HTTP related utility methods.
+ */
 public final class HttpUtils {
 
     private HttpUtils() {
