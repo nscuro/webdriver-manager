@@ -21,7 +21,7 @@ Overall, there are 3 things `webdriver-manager` can do for you:
 - [x] Mozilla Firefox ([geckodriver](https://github.com/mozilla/geckodriver))
 - [x] Opera ([operachromiumdriver](https://github.com/operasoftware/operachromiumdriver))
 - [ ] PhantomJS
-- [ ] Microsoft Internet Explorer
+- [x] Microsoft Internet Explorer ([IEDriverServer](https://msdn.microsoft.com/en-us/library/dn800898(v=vs.85).aspx))
 - [x] Microsoft Edge ([Microsoft WebDriver](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/))
  
 Of course, browsers that do not require a separate driver binary are also supported:

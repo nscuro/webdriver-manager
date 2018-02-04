@@ -68,12 +68,10 @@ public class SingletonWebDriverManager implements WebDriverManager {
      * @throws IllegalArgumentException When the given instance is not managed by this class
      */
     @Override
-    public void quitWebDriver(final WebDriver webDriver) {
+    public synchronized void quitWebDriver(final WebDriver webDriver) {
         if (currentWebDriver == null) {
             throw new IllegalStateException("Cannot quit any WebDriver instance: No instance is currently active");
-        }
-
-        if (currentWebDriver != requireNonNull(webDriver, "No WebDriver instance provided")) {
+        } else if (currentWebDriver != requireNonNull(webDriver, "No WebDriver instance provided")) {
             throw new IllegalArgumentException("The given WebDriver instance is not managed by this class");
         }
 
@@ -91,11 +89,11 @@ public class SingletonWebDriverManager implements WebDriverManager {
         Optional.ofNullable(currentWebDriver).ifPresent(this::quitWebDriver);
     }
 
-    Optional<WebDriver> getCurrentWebDriver() {
+    public Optional<WebDriver> getCurrentWebDriver() {
         return Optional.ofNullable(currentWebDriver);
     }
 
-    Optional<Capabilities> getCurrentCapabilities() {
+    public Optional<Capabilities> getCurrentCapabilities() {
         return Optional.ofNullable(currentCapabilities);
     }
 
