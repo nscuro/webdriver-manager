@@ -12,6 +12,9 @@ import java.nio.file.Path;
 
 import static java.lang.String.format;
 
+/**
+ * File related utility methods.
+ */
 public final class FileUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
@@ -20,7 +23,10 @@ public final class FileUtils {
     }
 
     /**
-     * @param dirPath
+     * Ensure that the directory at a given {@link Path} exists.
+     *
+     * @param dirPath The {@link Path} to ensure the existence of
+     * @throws IllegalStateException When given path exists, but does not point to a directory
      */
     public static void ensureExistenceOfDir(final Path dirPath) {
         final File dir = dirPath.toFile();
@@ -56,6 +62,16 @@ public final class FileUtils {
         }
     }
 
+    /**
+     * Build a destination {@link Path} to deploy a binary with the given attributes to.
+     *
+     * @param browser      The {@link Browser} the binary is for
+     * @param version      The binary's version
+     * @param os           The {@link Os} the binary was compiled for
+     * @param architecture The {@link Architecture} the binary was compiled for
+     * @param basePath     Base {@link Path} of the destination
+     * @return The destination {@link Path}
+     */
     @Nonnull
     public static Path buildBinaryDestinationPath(final Browser browser, final String version,
                                                   final Os os, final Architecture architecture,

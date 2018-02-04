@@ -10,6 +10,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
 
+/**
+ * A {@link WebDriverFactory} that creates {@link WebDriver} instances remotely.
+ */
 public final class RemoteWebDriverFactory implements WebDriverFactory {
 
     private final URL gridHubUrl;

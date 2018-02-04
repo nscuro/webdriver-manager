@@ -41,6 +41,8 @@ import static java.lang.String.format;
 
 /**
  * A {@link BinaryDownloader} for Microsoft's IEDriverServer.
+ *
+ * @since 0.1.3
  */
 public class IEDriverServerBinaryDownloader implements BinaryDownloader {
 

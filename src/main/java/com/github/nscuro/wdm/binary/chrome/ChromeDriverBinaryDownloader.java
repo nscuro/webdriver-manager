@@ -33,6 +33,9 @@ import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_ZIP;
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * A {@link BinaryDownloader} for Google's <a href="https://sites.google.com/a/chromium.org/chromedriver/">ChromeDriver</a>.
+ */
 public final class ChromeDriverBinaryDownloader implements BinaryDownloader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ChromeDriverBinaryDownloader.class);

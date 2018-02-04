@@ -1,9 +1,15 @@
 package com.github.nscuro.wdm.factory;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriver;
 
 import static java.lang.String.format;
 
+/**
+ * Exception that is thrown when {@link WebDriver} instantiation via {@link WebDriverFactory} failed.
+ *
+ * @since 0.1.2
+ */
 public class WebDriverFactoryException extends RuntimeException {
 
     WebDriverFactoryException(final Capabilities capabilities, final String message) {

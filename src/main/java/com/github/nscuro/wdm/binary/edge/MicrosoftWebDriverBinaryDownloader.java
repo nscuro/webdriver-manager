@@ -34,6 +34,8 @@ import static java.lang.String.format;
 
 /**
  * A {@link BinaryDownloader} for Microsoft's <a href="https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/">Microsoft WebDriver</a>.
+ *
+ * @since 0.1.2
  */
 public final class MicrosoftWebDriverBinaryDownloader implements BinaryDownloader {
 

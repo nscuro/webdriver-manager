@@ -25,6 +25,9 @@ import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_GZIP;
 import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_ZIP;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * A {@link BinaryDownloader} for Mozilla's <a href="https://github.com/mozilla/geckodriver">geckodriver</a>.
+ */
 public final class GeckoDriverBinaryDownloader implements BinaryDownloader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GeckoDriverBinaryDownloader.class);

@@ -14,6 +14,8 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A {@link WebDriverManager} that manages a single {@link WebDriver} instance.
+ *
+ * @since 0.1.3
  */
 public class SingletonWebDriverManager implements WebDriverManager {
 
