@@ -119,9 +119,33 @@ export WDM_GH_TOKEN=<your-token>
 
 ### Instantiating WebDriver
 
+With vanilla Selenium, in order to get a `WebDriver` instance up and running you'd have to do the following:
+```java
+// Manually download the required binary, placing it somewhere on your filesystem...
+
+System.setProperty("webdriver.chrome.driver", "/the/path/to/chromedriver.exe");
+
+WebDriver webDriver = new ChromeDriver(new ChromeOptions());
+```
+
+Whereas if you'd want to get a remote instance from your Selenium Grid, it'd be as easy as:
+```java
+WebDriver webDriver = new RemoteWebDriver(new URI("http://my-grid-domain:4444/wd/hub"), new ChromeOptions());
+```
+
+What `webdriver-manager` offers you is a [simple interface](https://nscuro.github.io/webdriver-manager/javadoc/com/github/nscuro/wdm/factory/WebDriverFactory.html) that reduces all this down to:
+```java
+// WebDriverFactory myWebDriverFactory = ...
+
+WebDriver webDriver = myWebDriverFactory.createWebDriver(new ChromeOptions());
+```
+
+There are two implementations of this interface, but you are of course free to write your own.
+
 #### Local instantiation
-Using the `LocalWebDriverFactory`, you can create WebDriver instances on the current machine.  
-It will automatically download any required WebDriver binaries, as long as you provide a `BinaryManager` instance at construction:
+
+Using the [`LocalWebDriverFactory`](https://nscuro.github.io/webdriver-manager/javadoc/com/github/nscuro/wdm/factory/LocalWebDriverFactory.html), you can create `WebDriver` instances on the current machine.  
+It will automatically download any required binaries, as long as you provide a `BinaryManager` instance at construction:
 
 ```java
 // With BinaryManager, the factory will be able to download required binaries
@@ -135,27 +159,30 @@ WebDriver webDriver = factory.createWebDriver(DesiredCapabilities.htmlUnit());
 ```
 
 ##### Specifying binary versions
+
 Per default, `LocalWebDriverFactory` will always download the latest version of a binary.
 This behavior may not always be what you want - i.e. you use an older browser version or the latest binary version
 does not support your system's architecture anymore.
 
-In order to solve this issue, you can provide a `WebDriverFactoryConfig` in which you explicitly state which version shall be downloaded:
+In order to solve this issue, you can provide a [`WebDriverFactoryConfig`](https://nscuro.github.io/webdriver-manager/javadoc/com/github/nscuro/wdm/factory/WebDriverFactoryConfig.html) in which you explicitly state which version shall be downloaded:
 ```java
 WebDriverFactoryConfig config = new WebDriverFactoryConfig();
 config.setBinaryVersionForBrowser(Browser.CHROME, "2.32");
+config.setBinaryVersionForBrowser(Browser.FIREFOX, "v0.17.0");
  
 WebDriverFactory factory = new LocalWebDriverFactory(BinaryManager.createDefault(), config);
 ```
 
 #### Remote instantiation
-Additionally to the local instantiation, you can use `WebDriverFactory` with a remote Selenium Grid Hub:
+
+Alternatively to the local instantiation, you can use [`RemoteWebDriverFactory`](https://nscuro.github.io/webdriver-manager/javadoc/com/github/nscuro/wdm/factory/RemoteWebDriverFactory.html) with your Selenium Grid server:
 ```java
-WebDriverFactory factory = new RemoteWebDriverFactory("http://my-grid-host:4444/wd/hub");
+WebDriverFactory factory = new RemoteWebDriverFactory("http://my-grid-domain:4444/wd/hub");
  
 WebDriver webDriver = factory.createWebDriver(new FirefoxOptions());
 ```
 
-Because you will connect to a remote machine, there's naturally no need to download any binaries (on your machine, that is).
+Because are connecting to a remote machine, there's naturally no need to download any binaries (on your machine, that is).
 
 ## Managing WebDriver instances
 TODO
