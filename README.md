@@ -102,9 +102,9 @@ Binaries will be downloaded to `$HOME/.webdriver-manager` and can be programmati
 using [`binaryManager.cleanUp()`](https://nscuro.github.io/webdriver-manager/javadoc/com/github/nscuro/wdm/binary/BinaryManager.html#cleanUp--).
 
 #### GitHub API
-Some binaries are being downloaded from GitHub (currently Firefox's `geckodriver` & Opera's `operachromiumdriver`).
+Some binaries are being downloaded from GitHub (currently Firefox's [`geckodriver`](https://github.com/mozilla/geckodriver) & Opera's [`operachromiumdriver`](https://github.com/operasoftware/operachromiumdriver)).
 GitHub **may** limit the amount of requests being performed against their API, in which case you must
-provide OAuth credentials in order to authorize yourself.
+provide [API credentials](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/) in order to authorize yourself.
 
 Currently, you need to set the `WDM_GH_USER` and `WDM_GH_TOKEN` **ENVIRONMENT** variables for
 this to work - where `WDM_GH_USER` is your GitHub username and `WDM_GH_TOKEN` is a *personal access token*
