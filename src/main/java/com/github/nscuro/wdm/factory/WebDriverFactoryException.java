@@ -4,6 +4,9 @@ import org.openqa.selenium.Capabilities;
 
 import static java.lang.String.format;
 
+/**
+ * @since 0.1.2
+ */
 public class WebDriverFactoryException extends RuntimeException {
 
     WebDriverFactoryException(final Capabilities capabilities, final String message) {

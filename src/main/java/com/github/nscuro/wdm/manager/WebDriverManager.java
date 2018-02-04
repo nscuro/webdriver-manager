@@ -5,6 +5,9 @@ import org.openqa.selenium.WebDriver;
 
 import javax.annotation.Nonnull;
 
+/**
+ * @since 0.1.3
+ */
 public interface WebDriverManager {
 
     /**

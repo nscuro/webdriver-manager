@@ -196,6 +196,7 @@ public interface BinaryManager {
          * Add the {@link MicrosoftWebDriverBinaryDownloader}.
          *
          * @return A {@link Builder} instance
+         * @since 0.1.2
          */
         public Builder addMicrosoftWebDriverBinaryDownloader() {
             binaryDownloaders.add(new MicrosoftWebDriverBinaryDownloader(httpClient));
@@ -207,6 +208,7 @@ public interface BinaryManager {
          * Add the {@link IEDriverServerBinaryDownloader}.
          *
          * @return A {@link Builder} instance
+         * @since 0.1.3
          */
         public Builder addIEDriverServerBinaryDownloader() {
             binaryDownloaders.add(new IEDriverServerBinaryDownloader(httpClient));
