@@ -69,7 +69,7 @@ should work just fine.
 ## Usage
 
 ### Downloading WebDriver binaries
-Binaries can be downloaded using the `BinaryManager` class:
+Binaries can be downloaded using the [`BinaryManager`](https://nscuro.github.io/webdriver-manager/javadoc/com/github/nscuro/wdm/binary/BinaryManager.html) class:
 ```java
 BinaryManager binaryManager = BinaryManager.createDefault();
 
@@ -96,9 +96,10 @@ BinaryManager binaryManager = BinaryManager.builder()
     // If you don't care and just want all default downloaders, there's always .addDefaultBinaryDownloaders()
     .build();
 ```
+Custom binary downloaders can be provided by implementing the [`BinaryDownloader`](https://nscuro.github.io/webdriver-manager/javadoc/com/github/nscuro/wdm/binary/BinaryDownloader.html) interface.
 
 Binaries will be downloaded to `$HOME/.webdriver-manager` and can be programmatically deleted 
-using `binaryManager.cleanUp()`.
+using [`binaryManager.cleanUp()`](https://nscuro.github.io/webdriver-manager/javadoc/com/github/nscuro/wdm/binary/BinaryManager.html#cleanUp--).
 
 #### GitHub API
 Some binaries are being downloaded from GitHub (currently Firefox's `geckodriver` & Opera's `operachromiumdriver`).
