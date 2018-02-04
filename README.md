@@ -185,4 +185,7 @@ WebDriver webDriver = factory.createWebDriver(new FirefoxOptions());
 Because are connecting to a remote machine, there's naturally no need to download any binaries (on your machine, that is).
 
 ## Managing WebDriver instances
-TODO
+
+Building upon the above `WebDriverFactory`, [`WebDriverManager`](https://nscuro.github.io/webdriver-manager/javadoc/com/github/nscuro/wdm/manager/WebDriverManager.html)s are used to manage the created instances (keeping references to them, limiting overall instance count, making sure they're properly closed...).
+
+For all available implementations, please refer to the [javadoc](https://nscuro.github.io/webdriver-manager/javadoc/com/github/nscuro/wdm/manager/package-summary.html).
