@@ -26,7 +26,7 @@ public class OperaChromiumDriverBinaryDownloaderIT extends AbstractBinaryDownloa
     @Test
     @Override
     protected void testDownloadSpecificVersion() throws IOException {
-        downloadedFile = binaryDownloader.download("2.32", Os.LINUX, Architecture.X64, DOWNLOAD_DESTINATION_DIR_PATH);
+        downloadedFile = binaryDownloader.download("v.2.32", Os.LINUX, Architecture.X64, DOWNLOAD_DESTINATION_DIR_PATH);
     }
 
     @Test
