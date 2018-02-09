@@ -45,9 +45,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- Dependency versions -->
-        <selenium.version>3.8.1</selenium.version>
+        <selenium.version>3.9.0</selenium.version>
         <phantomjs-driver.version>1.4.3</phantomjs-driver.version>
-        <htmlunit-driver.version>2.28.2</htmlunit-driver.version>
+        <htmlunit-driver.version>2.29.1</htmlunit-driver.version>
         <jsoup.version>1.11.2</jsoup.version>
         <apache-httpclient.version>4.5.4</apache-httpclient.version>
         <apache-commons-compress.version>1.15</apache-commons-compress.version>
