@@ -8,8 +8,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @DisplayName("The ChromeDriver binary downloader")
 class ChromeDriverBinaryDownloaderIT extends AbstractBinaryDownloaderIT {
@@ -41,6 +43,12 @@ class ChromeDriverBinaryDownloaderIT extends AbstractBinaryDownloaderIT {
     @Override
     protected void testDownloadLatest() throws IOException {
         downloadedFile = binaryDownloader.downloadLatest(Os.WINDOWS, Architecture.X64, DOWNLOAD_DESTINATION_DIR_PATH);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenDesiredVersionWasNotFound() {
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> downloadedFile = binaryDownloader.download("idonotexist", Os.WINDOWS, Architecture.X64, DOWNLOAD_DESTINATION_DIR_PATH));
     }
 
 }
