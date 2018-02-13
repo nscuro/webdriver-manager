@@ -25,7 +25,7 @@ public enum Browser {
 
     OPERA(Arrays.asList(BrowserType.OPERA, BrowserType.OPERA_BLINK), "org.openqa.selenium.opera.OperaDriver", "webdriver.opera.driver", true),
 
-    PHANTOM_JS(Collections.singletonList(BrowserType.PHANTOMJS), "org.openqa.selenium.phantomjs.PhantomJSDriver", "phantomjs.binary.path", true),
+    /* PHANTOM_JS(Collections.singletonList(BrowserType.PHANTOMJS), "org.openqa.selenium.phantomjs.PhantomJSDriver", "phantomjs.binary.path", true), */
 
     HTMLUNIT(Collections.singletonList(BrowserType.HTMLUNIT), "org.openqa.selenium.htmlunit.HtmlUnitDriver", null, false),
 

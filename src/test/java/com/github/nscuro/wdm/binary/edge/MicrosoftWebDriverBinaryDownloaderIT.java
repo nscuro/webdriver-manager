@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
 class MicrosoftWebDriverBinaryDownloaderIT extends AbstractBinaryDownloaderIT {
 
     private MicrosoftWebDriverBinaryDownloader binaryDownloader;
@@ -23,38 +21,15 @@ class MicrosoftWebDriverBinaryDownloaderIT extends AbstractBinaryDownloaderIT {
     }
 
     @Test
-    void testDownloadLatestForWindows64() throws IOException {
-        downloadedFile = binaryDownloader.downloadLatest(Os.WINDOWS, Architecture.X64, DOWNLOAD_DESTINATION_DIR_PATH);
+    @Override
+    protected void testDownloadSpecificVersion() throws IOException {
+        downloadedFile = binaryDownloader.download("4.15063", Os.WINDOWS, Architecture.X64, DOWNLOAD_DESTINATION_DIR_PATH);
     }
 
     @Test
-    void testDownloadLatestForWindows32() throws IOException {
+    @Override
+    protected void testDownloadLatest() throws IOException {
         downloadedFile = binaryDownloader.downloadLatest(Os.WINDOWS, Architecture.X86, DOWNLOAD_DESTINATION_DIR_PATH);
-    }
-
-    @Test
-    void testDownloadLatestForLinux64() {
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> downloadedFile = binaryDownloader.downloadLatest(Os.LINUX, Architecture.X64, DOWNLOAD_DESTINATION_DIR_PATH));
-
-    }
-
-    @Test
-    void testDownloadLatestForLinux32() {
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> downloadedFile = binaryDownloader.downloadLatest(Os.LINUX, Architecture.X86, DOWNLOAD_DESTINATION_DIR_PATH));
-    }
-
-    @Test
-    void testDownloadLatestForMac64() {
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> downloadedFile = binaryDownloader.downloadLatest(Os.MACOS, Architecture.X64, DOWNLOAD_DESTINATION_DIR_PATH));
-    }
-
-    @Test
-    void testDownloadLatestForMac32() {
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> downloadedFile = binaryDownloader.downloadLatest(Os.MACOS, Architecture.X86, DOWNLOAD_DESTINATION_DIR_PATH));
     }
 
 }

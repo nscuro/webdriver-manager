@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.nscuro</groupId>
@@ -243,15 +244,7 @@
                     <execution>
                         <goals>
                             <goal>integration-test</goal>
-                            <!--
-                                Because the integration tests perform a lot of downloading from
-                                remote services that may not always be available or responsive,
-                                we do not want to have failsafe attach to the verify goal.
-
-                                Having the build fail due to third party issues is not a good thing.
-
                             <goal>verify</goal>
-                            -->
                         </goals>
                     </execution>
                 </executions>

@@ -1,5 +1,7 @@
 package com.github.nscuro.wdm.binary;
 
+import com.github.nscuro.wdm.Architecture;
+import com.github.nscuro.wdm.Os;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.http.client.HttpClient;
@@ -10,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -33,6 +36,24 @@ public abstract class AbstractBinaryDownloaderIT {
                 .disableCookieManagement()
                 .build();
     }
+
+    /**
+     * Every {@link BinaryDownloader} should be tested on its "real-life functionality"
+     * of downloading a <strong>specific</strong> binary version.
+     * <p>
+     * It doesn't really matter which {@link Os} and {@link Architecture} is used here,
+     * picking one that seems like it's fully supported is fine.
+     */
+    protected abstract void testDownloadSpecificVersion() throws IOException;
+
+    /**
+     * Every {@link BinaryDownloader} should be tested on its "real-life functionality"
+     * of downloading the <strong>latest</strong> binary version.
+     * <p>
+     * It doesn't really matter which {@link Os} and {@link Architecture} is used here,
+     * picking one that seems like it's fully supported is fine.
+     */
+    protected abstract void testDownloadLatest() throws IOException;
 
     @AfterEach
     void afterEach() {

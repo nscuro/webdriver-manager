@@ -4,6 +4,7 @@ import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.BinaryManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -44,6 +45,7 @@ class LocalWebDriverFactoryIT {
     }
 
     @Test
+    @Disabled("Opera is not installed on most environments. Re-enable for local testing if desired.")
     void testCreateWebDriverOpera() {
         webDriver = webDriverFactory.createWebDriver(new OperaOptions());
     }

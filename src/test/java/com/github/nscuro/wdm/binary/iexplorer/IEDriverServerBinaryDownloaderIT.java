@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
 class IEDriverServerBinaryDownloaderIT extends AbstractBinaryDownloaderIT {
 
     private IEDriverServerBinaryDownloader binaryDownloader;
@@ -23,42 +21,15 @@ class IEDriverServerBinaryDownloaderIT extends AbstractBinaryDownloaderIT {
     }
 
     @Test
-    void testDownloadSpecificVersion() throws IOException {
-        downloadedFile = binaryDownloader.download("3.5", Os.WINDOWS, Architecture.X64, DOWNLOAD_DESTINATION_DIR_PATH);
+    @Override
+    protected void testDownloadSpecificVersion() throws IOException {
+        downloadedFile = binaryDownloader.download("3.8", Os.WINDOWS, Architecture.X64, DOWNLOAD_DESTINATION_DIR_PATH);
     }
 
     @Test
-    void testDownloadLatestForWin64() throws IOException {
-        downloadedFile = binaryDownloader.downloadLatest(Os.WINDOWS, Architecture.X64, DOWNLOAD_DESTINATION_DIR_PATH);
-    }
-
-    @Test
-    void testDownloadLatestForWin32() throws IOException {
+    @Override
+    protected void testDownloadLatest() throws IOException {
         downloadedFile = binaryDownloader.downloadLatest(Os.WINDOWS, Architecture.X86, DOWNLOAD_DESTINATION_DIR_PATH);
-    }
-
-    @Test
-    void testDownloadLatestForLinux64() {
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> downloadedFile = binaryDownloader.downloadLatest(Os.LINUX, Architecture.X64, DOWNLOAD_DESTINATION_DIR_PATH));
-    }
-
-    @Test
-    void testDownloadLatestForLinux32() {
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> downloadedFile = binaryDownloader.downloadLatest(Os.LINUX, Architecture.X86, DOWNLOAD_DESTINATION_DIR_PATH));
-    }
-
-    @Test
-    void testDownloadLatestForMac64() {
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> downloadedFile = binaryDownloader.downloadLatest(Os.MACOS, Architecture.X64, DOWNLOAD_DESTINATION_DIR_PATH));
-    }
-
-    @Test
-    void testDownloadLatestForMac32() {
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> downloadedFile = binaryDownloader.downloadLatest(Os.MACOS, Architecture.X86, DOWNLOAD_DESTINATION_DIR_PATH));
     }
 
 }
