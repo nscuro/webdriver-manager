@@ -1,6 +1,7 @@
 package com.github.nscuro.wdm.binary;
 
 import com.github.nscuro.wdm.Browser;
+import com.github.nscuro.wdm.Os;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 class BinaryManagerImplIT {
@@ -31,7 +33,9 @@ class BinaryManagerImplIT {
         @ParameterizedTest
         @EnumSource(Browser.class)
         void testGetLatestBinaryForCurrentOsAndArchitecture(final Browser browser) throws IOException {
-            assumeTrue(browser.doesRequireBinary());
+            assumeTrue(browser.doesRequireBinary(), "Only browsers that require a binary can be tested");
+            assumeFalse(Os.getCurrent() != Os.WINDOWS && (browser == Browser.EDGE || browser == Browser.INTERNET_EXPLORER),
+                    "Microsoft Edge and Internet Explorer are only supported on Windows systems");
 
             downloadedFile = binaryManager.getBinary(browser);
 
