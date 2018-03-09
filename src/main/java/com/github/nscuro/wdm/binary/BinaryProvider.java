@@ -1,6 +1,7 @@
 package com.github.nscuro.wdm.binary;
 
 import com.github.nscuro.wdm.Architecture;
+import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
 
 import javax.annotation.Nonnull;
@@ -10,6 +11,8 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 public interface BinaryProvider {
+
+    boolean providesBinaryForBrowser(final Browser browser);
 
     @Nonnull
     Optional<String> getLatestBinaryVersion(final Os os, final Architecture architecture) throws IOException;
