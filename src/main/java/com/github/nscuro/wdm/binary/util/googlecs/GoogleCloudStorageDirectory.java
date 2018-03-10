@@ -18,6 +18,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * @since 0.1.5
+ */
 public class GoogleCloudStorageDirectory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoogleCloudStorageDirectory.class);

@@ -22,6 +22,9 @@ import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * @since 0.1.5
+ */
 final class ZipBinaryExtractor implements BinaryExtractor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ZipBinaryExtractor.class);

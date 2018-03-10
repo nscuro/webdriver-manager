@@ -21,6 +21,9 @@ import java.util.function.Predicate;
 
 import static java.util.Objects.isNull;
 
+/**
+ * @since 0.1.5
+ */
 final class GZipTarballBinaryExtractor implements BinaryExtractor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GZipTarballBinaryExtractor.class);

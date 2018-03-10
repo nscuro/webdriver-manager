@@ -8,6 +8,9 @@ import java.util.Optional;
 
 import static java.lang.String.format;
 
+/**
+ * @since 0.1.5
+ */
 public class BinaryExtractorFactory {
 
     public final BinaryExtractor getBinaryExtractorForArchiveFile(final File archiveFile) {

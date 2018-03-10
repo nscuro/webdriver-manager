@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 
+/**
+ * @since 0.1.5
+ */
 public interface BinaryProvider {
 
     boolean providesBinaryForBrowser(final Browser browser);

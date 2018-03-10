@@ -33,6 +33,9 @@ import static com.github.nscuro.wdm.binary.util.compression.BinaryExtractor.File
 import static com.github.nscuro.wdm.binary.util.compression.BinaryExtractor.FileSelectors.entryNameStartsWithIgnoringCase;
 import static java.lang.String.format;
 
+/**
+ * @since 0.1.5
+ */
 public class ChromeDriverBinaryProvider implements BinaryProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ChromeDriverBinaryProvider.class);

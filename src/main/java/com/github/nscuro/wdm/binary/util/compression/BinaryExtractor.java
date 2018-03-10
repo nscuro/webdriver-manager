@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.function.Predicate;
 
+/**
+ * @since 0.1.5
+ */
 public interface BinaryExtractor {
 
     @Nonnull
