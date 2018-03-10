@@ -1,4 +1,4 @@
-package com.github.nscuro.wdm.binary.googlecs;
+package com.github.nscuro.wdm.binary.util.googlecs;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

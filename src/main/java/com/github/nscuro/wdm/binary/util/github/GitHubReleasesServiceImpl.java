@@ -1,4 +1,4 @@
-package com.github.nscuro.wdm.binary.github;
+package com.github.nscuro.wdm.binary.util.github;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nscuro.wdm.Platform;

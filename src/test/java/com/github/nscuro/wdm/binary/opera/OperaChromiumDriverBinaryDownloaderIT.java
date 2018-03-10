@@ -3,7 +3,7 @@ package com.github.nscuro.wdm.binary.opera;
 import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.AbstractBinaryDownloaderIT;
-import com.github.nscuro.wdm.binary.github.GitHubReleasesService;
+import com.github.nscuro.wdm.binary.util.github.GitHubReleasesService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

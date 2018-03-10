@@ -2,8 +2,8 @@ package com.github.nscuro.wdm.binary.chrome;
 
 import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Os;
-import com.github.nscuro.wdm.binary.googlecs.GoogleCloudStorageDirectory;
-import com.github.nscuro.wdm.binary.googlecs.GoogleCloudStorageEntry;
+import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageDirectory;
+import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageEntry;
 import org.apache.http.client.HttpClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;

@@ -1,4 +1,4 @@
-package com.github.nscuro.wdm.binary.googlecs;
+package com.github.nscuro.wdm.binary.util.googlecs;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;

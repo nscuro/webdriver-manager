@@ -7,7 +7,7 @@ import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.chrome.ChromeDriverBinaryDownloader;
 import com.github.nscuro.wdm.binary.edge.MicrosoftWebDriverBinaryDownloader;
 import com.github.nscuro.wdm.binary.firefox.GeckoDriverBinaryDownloader;
-import com.github.nscuro.wdm.binary.github.GitHubReleasesService;
+import com.github.nscuro.wdm.binary.util.github.GitHubReleasesService;
 import com.github.nscuro.wdm.binary.iexplorer.IEDriverServerBinaryDownloader;
 import com.github.nscuro.wdm.binary.opera.OperaChromiumDriverBinaryDownloader;
 import org.apache.http.client.HttpClient;
