@@ -4,8 +4,8 @@ import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.Platform;
-import com.github.nscuro.wdm.binary.BinaryExtractor;
 import com.github.nscuro.wdm.binary.BinaryProvider;
+import com.github.nscuro.wdm.binary.util.compression.BinaryExtractorFactory;
 import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageDirectory;
 import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageEntry;
 import org.apache.http.HttpHeaders;
@@ -25,17 +25,19 @@ import java.util.Comparator;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static com.github.nscuro.wdm.binary.BinaryExtractor.FileSelectors.entryIsFile;
-import static com.github.nscuro.wdm.binary.BinaryExtractor.FileSelectors.entryNameStartsWithIgnoringCase;
 import static com.github.nscuro.wdm.binary.util.HttpUtils.verifyContentTypeIsAnyOf;
 import static com.github.nscuro.wdm.binary.util.HttpUtils.verifyStatusCodeIsAnyOf;
 import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_X_ZIP_COMPRESSED;
 import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_ZIP;
+import static com.github.nscuro.wdm.binary.util.compression.BinaryExtractor.FileSelectors.entryIsFile;
+import static com.github.nscuro.wdm.binary.util.compression.BinaryExtractor.FileSelectors.entryNameStartsWithIgnoringCase;
 import static java.lang.String.format;
 
 public class ChromeDriverBinaryProvider implements BinaryProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ChromeDriverBinaryProvider.class);
+
+    private static final String DEFAULT_GCS_DIRECTORY_URL = "https://chromedriver.storage.googleapis.com/";
 
     private static final String BINARY_NAME = "chromedriver";
 
@@ -43,13 +45,20 @@ public class ChromeDriverBinaryProvider implements BinaryProvider {
 
     private final GoogleCloudStorageDirectory cloudStorageDirectory;
 
+    private final BinaryExtractorFactory binaryExtractorFactory;
+
     public ChromeDriverBinaryProvider(final HttpClient httpClient) {
-        this(httpClient, new GoogleCloudStorageDirectory(httpClient, "https://chromedriver.storage.googleapis.com/"));
+        this(httpClient,
+                new GoogleCloudStorageDirectory(httpClient, DEFAULT_GCS_DIRECTORY_URL),
+                new BinaryExtractorFactory());
     }
 
-    ChromeDriverBinaryProvider(final HttpClient httpClient, final GoogleCloudStorageDirectory cloudStorageDirectory) {
+    ChromeDriverBinaryProvider(final HttpClient httpClient,
+                               final GoogleCloudStorageDirectory cloudStorageDirectory,
+                               final BinaryExtractorFactory binaryExtractorFactory) {
         this.httpClient = httpClient;
         this.cloudStorageDirectory = cloudStorageDirectory;
+        this.binaryExtractorFactory = binaryExtractorFactory;
     }
 
     @Override
@@ -69,7 +78,6 @@ public class ChromeDriverBinaryProvider implements BinaryProvider {
                 .map(String::toLowerCase)
                 .filter(key -> key.contains(platform.getName()))
                 .map(key -> key.split("/")[0])
-                .sorted()
                 .max(Comparator.naturalOrder());
     }
 
@@ -87,9 +95,9 @@ public class ChromeDriverBinaryProvider implements BinaryProvider {
                 .map(GoogleCloudStorageEntry::getUrl)
                 .orElseThrow(NoSuchElementException::new);
 
-        return BinaryExtractor
-                .fromArchiveFile(downloadArchivedBinaryFile(downloadUrl))
-                .unZip(binaryDestinationPath, entryIsFile().and(entryNameStartsWithIgnoringCase(BINARY_NAME)));
+        return binaryExtractorFactory
+                .getBinaryExtractorForArchiveFile(downloadArchivedBinaryFile(downloadUrl))
+                .extractBinary(binaryDestinationPath, entryIsFile().and(entryNameStartsWithIgnoringCase(BINARY_NAME)));
     }
 
     @Nonnull
@@ -97,7 +105,7 @@ public class ChromeDriverBinaryProvider implements BinaryProvider {
         final HttpGet request = new HttpGet(downloadUrl);
         request.setHeader(HttpHeaders.ACCEPT, format("%s,%s", APPLICATION_ZIP, APPLICATION_X_ZIP_COMPRESSED));
 
-        final Path targetFilePath = Files.createTempFile("chromedriver_", null);
+        final Path targetFilePath = Files.createTempFile("chromedriver_", ".zip");
         LOGGER.debug("Downloading archived binary to {}", targetFilePath);
 
         return httpClient.execute(request, httpResponse -> {

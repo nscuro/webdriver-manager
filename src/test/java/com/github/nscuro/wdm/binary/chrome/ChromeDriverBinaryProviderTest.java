@@ -1,13 +1,18 @@
 package com.github.nscuro.wdm.binary.chrome;
 
 import com.github.nscuro.wdm.Architecture;
+import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
+import com.github.nscuro.wdm.binary.util.compression.BinaryExtractor;
+import com.github.nscuro.wdm.binary.util.compression.BinaryExtractorFactory;
 import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageDirectory;
 import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageEntry;
 import org.apache.http.client.HttpClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -17,6 +22,7 @@ import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -26,6 +32,8 @@ class ChromeDriverBinaryProviderTest {
 
     private GoogleCloudStorageDirectory cloudStorageDirectoryMock;
 
+    private BinaryExtractorFactory binaryExtractorFactoryMock;
+
     private ChromeDriverBinaryProvider binaryProvider;
 
     @BeforeEach
@@ -34,7 +42,27 @@ class ChromeDriverBinaryProviderTest {
 
         cloudStorageDirectoryMock = mock(GoogleCloudStorageDirectory.class);
 
-        binaryProvider = new ChromeDriverBinaryProvider(httpClientMock, cloudStorageDirectoryMock);
+        binaryExtractorFactoryMock = mock(BinaryExtractorFactory.class);
+
+        binaryProvider = new ChromeDriverBinaryProvider(httpClientMock, cloudStorageDirectoryMock, binaryExtractorFactoryMock);
+    }
+
+    @Nested
+    class ProvidesBinaryForBrowserTest {
+
+        @Test
+        void shouldReturnTrueForChromeBrowser() {
+            assertThat(binaryProvider.providesBinaryForBrowser(Browser.CHROME)).isTrue();
+        }
+
+        @ParameterizedTest
+        @EnumSource(Browser.class)
+        void shouldReturnFalseForEveryBrowserExceptChrome(final Browser browser) {
+            assumeFalse(Browser.CHROME.equals(browser));
+
+            assertThat(binaryProvider.providesBinaryForBrowser(browser)).isFalse();
+        }
+
     }
 
     @Nested
