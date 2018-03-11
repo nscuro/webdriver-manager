@@ -125,6 +125,12 @@ class ChromeDriverBinaryProviderTest {
         }
 
         @Test
+        void shouldReturnEmptyOptionalWhenPlatformIsNotSupported() throws IOException {
+            assertThat(binaryProvider.getLatestBinaryVersion(Os.MACOS, Architecture.X86))
+                    .isNotPresent();
+        }
+
+        @Test
         void shouldReturnEmptyOptionalWhenPlatformDoesNotMatch() throws IOException {
             given(cloudStorageDirectoryMock.getEntries())
                     .willReturn(singletonList(new GoogleCloudStorageEntry(format("2.2/%s", WIN32), null, null)));
