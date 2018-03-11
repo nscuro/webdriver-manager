@@ -3,7 +3,6 @@ package com.github.nscuro.wdm.binary.chrome;
 import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
-import com.github.nscuro.wdm.binary.util.compression.BinaryExtractor;
 import com.github.nscuro.wdm.binary.util.compression.BinaryExtractorFactory;
 import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageDirectory;
 import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageEntry;
