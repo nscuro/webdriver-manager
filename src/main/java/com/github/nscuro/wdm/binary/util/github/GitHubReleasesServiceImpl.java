@@ -2,6 +2,7 @@ package com.github.nscuro.wdm.binary.util.github;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nscuro.wdm.Platform;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthenticationException;
@@ -84,10 +85,14 @@ final class GitHubReleasesServiceImpl implements GitHubReleasesService {
     @Nonnull
     @Override
     public File downloadAsset(final GitHubReleaseAsset asset) throws IOException {
+        final String assetFileName = FilenameUtils.getBaseName(asset.getBrowserDownloadUrl());
+
+        final String assetFileExtension = FilenameUtils.getExtension(asset.getBrowserDownloadUrl());
+
         final HttpGet request = new HttpGet(asset.getBrowserDownloadUrl());
         request.setHeader(HttpHeaders.ACCEPT, asset.getContentType());
 
-        final Path targetFilePath = Files.createTempFile(asset.getName(), null);
+        final Path targetFilePath = Files.createTempFile(format("%s_", assetFileName), format(".%s", assetFileExtension));
 
         LOGGER.debug("Downloading archived binary to {}", targetFilePath);
 
