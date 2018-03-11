@@ -63,7 +63,7 @@ class ChromeDriverBinaryProviderTest {
         @ParameterizedTest
         @EnumSource(Browser.class)
         void shouldReturnFalseForEveryBrowserExceptChrome(final Browser browser) {
-            assumeFalse(Browser.CHROME.equals(browser));
+            assumeFalse(Browser.CHROME == browser);
 
             assertThat(binaryProvider.providesBinaryForBrowser(browser)).isFalse();
         }

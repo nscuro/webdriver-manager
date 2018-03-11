@@ -75,7 +75,7 @@ public class IEDriverServerBinaryProvider implements BinaryProvider {
     @Override
     public File download(final String version, final Os os, final Architecture architecture, final Path binaryDestinationPath) throws IOException {
         if (os != Os.WINDOWS) {
-            throw new NoSuchElementException(format("%s is only supported for Windows systems", BINARY_NAME));
+            throw new UnsupportedOperationException(format("%s is only supported for Windows systems", BINARY_NAME));
         }
 
         final String downloadUrl = cloudStorageDirectory
@@ -88,13 +88,15 @@ public class IEDriverServerBinaryProvider implements BinaryProvider {
                 .filter(release -> release.getVersion().equals(version))
                 .findAny()
                 .map(IEDriverServerRelease::getDownloadUrl)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException(
+                        format("No %s binary available for %s %s in version %s", BINARY_NAME, os, architecture, version)));
 
         return binaryExtractorFactory
                 .getBinaryExtractorForArchiveFile(cloudStorageDirectory.downloadFile(downloadUrl))
                 .extractBinary(binaryDestinationPath, entryIsFile().and(entryNameStartsWithIgnoringCase(BINARY_NAME)));
     }
 
+    @Nonnull
     private Optional<IEDriverServerRelease> toIEDriverServerRelease(final GoogleCloudStorageEntry entry) {
         if (!entry.getKey().contains(BINARY_NAME)) {
             return Optional.empty();
