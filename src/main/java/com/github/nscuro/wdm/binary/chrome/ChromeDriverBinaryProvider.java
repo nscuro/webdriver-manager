@@ -10,6 +10,8 @@ import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageEntry;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -28,6 +30,8 @@ import static java.lang.String.format;
  * @since 0.1.5
  */
 public class ChromeDriverBinaryProvider implements BinaryProvider {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChromeDriverBinaryProvider.class);
 
     private static final String DEFAULT_GCS_DIRECTORY_URL = "https://chromedriver.storage.googleapis.com/";
 
@@ -69,7 +73,7 @@ public class ChromeDriverBinaryProvider implements BinaryProvider {
 
         final List<GoogleCloudStorageEntry> cloudStorageEntries = cloudStorageDirectory.getEntries();
 
-        final String latestReleaseVersion = getLatestReleaseVersion(cloudStorageEntries);
+        final Optional<String> latestReleaseVersion = getLatestReleaseVersion(cloudStorageEntries);
 
         return cloudStorageDirectory
                 .getEntries()
@@ -80,7 +84,9 @@ public class ChromeDriverBinaryProvider implements BinaryProvider {
                 .map(key -> key.split("/")[0])
                 // For whatever reason there are versions higher than LATEST_RELEASE in the directory
                 // that are older than any of those equal to or lower than LATEST_RELEASE...
-                .filter(version -> Comparator.comparing(String::trim).compare(version, latestReleaseVersion) <= 0)
+                .filter(version -> latestReleaseVersion
+                        .map(latestVersion -> Comparator.comparing(String::trim).compare(version, latestVersion) <= 0)
+                        .orElse(true))
                 .max(Comparator.naturalOrder());
     }
 
@@ -114,19 +120,22 @@ public class ChromeDriverBinaryProvider implements BinaryProvider {
      * @param directoryEntries Entries of the {@link GoogleCloudStorageDirectory}
      * @return The latest release version of ChromeDriver
      * @throws IOException
-     * @throws IllegalStateException When no {@code LATEST_RELEASE} file was found in the provided directory entries
      */
     @Nonnull
-    private String getLatestReleaseVersion(final List<GoogleCloudStorageEntry> directoryEntries) throws IOException {
-        final String latestReleaseFileUrl = directoryEntries
+    private Optional<String> getLatestReleaseVersion(final List<GoogleCloudStorageEntry> directoryEntries) throws IOException {
+        final Optional<String> latestReleaseFileUrl = directoryEntries
                 .stream()
                 .filter(entry -> entry.getKey().equals("LATEST_RELEASE"))
                 .findAny()
-                .map(GoogleCloudStorageEntry::getUrl)
-                .orElseThrow(() -> new IllegalStateException("Unable to determine latest release version"));
+                .map(GoogleCloudStorageEntry::getUrl);
 
-        return httpClient.execute(new HttpGet(latestReleaseFileUrl),
-                httpResponse -> EntityUtils.toString(httpResponse.getEntity()));
+        if (!latestReleaseFileUrl.isPresent()) {
+            LOGGER.warn("Unable to determine latest release version: No LATEST_RELEASE file found in directory");
+            return Optional.empty();
+        }
+
+        return Optional.of(httpClient.execute(new HttpGet(latestReleaseFileUrl.get()),
+                httpResponse -> EntityUtils.toString(httpResponse.getEntity())));
     }
 
 }
