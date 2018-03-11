@@ -60,7 +60,7 @@ final class ZipBinaryExtractor implements BinaryExtractor {
             }
         }
 
-        throw new NoSuchElementException("No binary file was extracted");
+        throw new NoSuchElementException("Nothing file was extracted");
     }
 
 }

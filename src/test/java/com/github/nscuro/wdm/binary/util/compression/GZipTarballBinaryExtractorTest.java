@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class ZipBinaryExtractorTest extends AbstractBinaryExtractorTest {
+class GZipTarballBinaryExtractorTest extends AbstractBinaryExtractorTest {
 
     private BinaryExtractor binaryExtractor;
 
@@ -33,14 +33,14 @@ class ZipBinaryExtractorTest extends AbstractBinaryExtractorTest {
         private File archiveFile;
 
         @Test
-        void shouldUnzipMatchingFileFromArchive() throws IOException {
-            archiveFile = getTestArchiveFile("test-unzip.zip");
+        void shouldExtractMatchingFileFromArchive() throws IOException {
+            archiveFile = getTestArchiveFile("test-untargz.gz");
 
-            binaryExtractor = new ZipBinaryExtractor(archiveFile);
+            binaryExtractor = new GZipTarballBinaryExtractor(archiveFile);
 
             extractedFile = binaryExtractor
-                    .extractBinary(Files.createTempFile("unzipped-file", null),
-                            entry -> entry.getName().equals("unzip-successful.txt"));
+                    .extractBinary(Files.createTempFile("untargzed-file", null),
+                            entry -> entry.getName().equals("untargz-successful.txt"));
 
             assertThat(extractedFile).exists();
             assertThat(archiveFile).doesNotExist();
@@ -51,7 +51,7 @@ class ZipBinaryExtractorTest extends AbstractBinaryExtractorTest {
             given(fileMock.exists())
                     .willReturn(false);
 
-            binaryExtractor = new ZipBinaryExtractor(fileMock);
+            binaryExtractor = new GZipTarballBinaryExtractor(fileMock);
 
             assertThatExceptionOfType(IllegalStateException.class)
                     .isThrownBy(() -> binaryExtractor.extractBinary(mock(Path.class), entry -> false));
@@ -65,7 +65,7 @@ class ZipBinaryExtractorTest extends AbstractBinaryExtractorTest {
             given(fileMock.canRead())
                     .willReturn(false);
 
-            binaryExtractor = new ZipBinaryExtractor(fileMock);
+            binaryExtractor = new GZipTarballBinaryExtractor(fileMock);
 
             assertThatExceptionOfType(IllegalStateException.class)
                     .isThrownBy(() -> binaryExtractor.extractBinary(mock(Path.class), entry -> false));
@@ -73,13 +73,13 @@ class ZipBinaryExtractorTest extends AbstractBinaryExtractorTest {
 
         @Test
         void shouldThrowExceptionWhenNothingWasExtracted() throws IOException {
-            archiveFile = getTestArchiveFile("test-unzip.zip");
+            archiveFile = getTestArchiveFile("test-untargz.gz");
 
-            binaryExtractor = new ZipBinaryExtractor(archiveFile);
+            binaryExtractor = new GZipTarballBinaryExtractor(archiveFile);
 
             assertThatExceptionOfType(NoSuchElementException.class)
                     .isThrownBy(() -> extractedFile = binaryExtractor
-                            .extractBinary(Files.createTempFile("unzipped-file", null),
+                            .extractBinary(Files.createTempFile("untargzed-file", null),
                                     entry -> entry.getName().equals("doesNotExist.txt")));
         }
 
