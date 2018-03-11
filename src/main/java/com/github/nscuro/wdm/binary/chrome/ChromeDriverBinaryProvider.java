@@ -72,7 +72,7 @@ public class ChromeDriverBinaryProvider implements BinaryProvider {
     @Nonnull
     @Override
     public Optional<String> getLatestBinaryVersion(final Os os, final Architecture architecture) throws IOException {
-        final ChromeDriverPlatform platform = ChromeDriverPlatform.valueOf(os, architecture);
+        final Platform platform = ChromeDriverPlatform.valueOf(os, architecture);
 
         return cloudStorageDirectory
                 .getEntries()
@@ -108,13 +108,13 @@ public class ChromeDriverBinaryProvider implements BinaryProvider {
         final HttpGet request = new HttpGet(downloadUrl);
         request.setHeader(HttpHeaders.ACCEPT, format("%s,%s", APPLICATION_ZIP, APPLICATION_X_ZIP_COMPRESSED));
 
-        final Path targetFilePath = Files.createTempFile("chromedriver_", ".zip");
-        LOGGER.debug("Downloading archived binary to {}", targetFilePath);
-
         return httpClient.execute(request, httpResponse -> {
             verifyStatusCodeIsAnyOf(httpResponse, HttpStatus.SC_OK);
 
             verifyContentTypeIsAnyOf(httpResponse, APPLICATION_ZIP, APPLICATION_X_ZIP_COMPRESSED);
+
+            final Path targetFilePath = Files.createTempFile("chromedriver_", ".zip");
+            LOGGER.debug("Downloading archived binary to {}", targetFilePath);
 
             try (final OutputStream fileOutputStream = Files.newOutputStream(targetFilePath)) {
                 Optional.ofNullable(httpResponse.getEntity())
