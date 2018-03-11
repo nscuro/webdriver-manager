@@ -14,6 +14,7 @@ import java.util.Optional;
  *
  * @see <a href="https://developer.github.com/v3/repos/releases/">REST API documentation</a>
  */
+@Deprecated
 public interface GitHubReleasesService {
 
     String ENV_GITHUB_USERNAME = "WDM_GH_USER";

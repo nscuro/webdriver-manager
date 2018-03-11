@@ -31,6 +31,7 @@ import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_OCTET_STREA
 import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_ZIP;
 import static java.lang.String.format;
 
+@Deprecated
 final class GitHubReleasesServiceImpl implements GitHubReleasesService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GitHubReleasesServiceImpl.class);
