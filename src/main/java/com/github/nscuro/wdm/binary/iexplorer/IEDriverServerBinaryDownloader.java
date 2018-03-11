@@ -44,6 +44,7 @@ import static java.lang.String.format;
  *
  * @since 0.1.3
  */
+@Deprecated
 public class IEDriverServerBinaryDownloader implements BinaryDownloader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IEDriverServerBinaryDownloader.class);
