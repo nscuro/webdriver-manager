@@ -27,7 +27,7 @@ import static java.lang.String.format;
 /**
  * @since 0.1.5
  */
-public class ChromeDriverBinaryProvider implements BinaryProvider {
+public final class ChromeDriverBinaryProvider implements BinaryProvider {
 
     private static final String DEFAULT_GCS_DIRECTORY_URL = "https://chromedriver.storage.googleapis.com/";
 

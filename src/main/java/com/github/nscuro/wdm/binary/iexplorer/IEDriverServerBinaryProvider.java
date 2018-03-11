@@ -26,7 +26,7 @@ import static java.lang.String.format;
 /**
  * @since 0.1.5
  */
-public class IEDriverServerBinaryProvider implements BinaryProvider {
+public final class IEDriverServerBinaryProvider implements BinaryProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IEDriverServerBinaryProvider.class);
 
