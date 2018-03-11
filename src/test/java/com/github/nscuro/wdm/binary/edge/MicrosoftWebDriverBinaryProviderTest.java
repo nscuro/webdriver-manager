@@ -1,63 +1,76 @@
-package com.github.nscuro.wdm.binary.iexplorer;
+package com.github.nscuro.wdm.binary.edge;
 
 import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
-import com.github.nscuro.wdm.binary.util.compression.BinaryExtractorFactory;
-import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageDirectory;
-import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageEntry;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.mockito.ArgumentMatcher;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.NoSuchElementException;
 
-import static java.lang.String.format;
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class IEDriverServerBinaryProviderTest {
+class MicrosoftWebDriverBinaryProviderTest {
 
-    private static final String PLATFORM_WIN32 = "Win32";
+    private static final String TEST_BASE_URL = "http://localhost/";
 
-    private static final String PLATFORM_X64 = "x64";
+    private HttpClient httpClientMock;
 
-    private GoogleCloudStorageDirectory cloudStorageDirectoryMock;
-
-    private BinaryExtractorFactory binaryExtractorFactoryMock;
-
-    private IEDriverServerBinaryProvider binaryProvider;
+    private MicrosoftWebDriverBinaryProvider binaryProvider;
 
     @BeforeEach
     void beforeEach() {
-        cloudStorageDirectoryMock = mock(GoogleCloudStorageDirectory.class);
+        httpClientMock = mock(HttpClient.class);
 
-        binaryExtractorFactoryMock = mock(BinaryExtractorFactory.class);
+        binaryProvider = new MicrosoftWebDriverBinaryProvider(httpClientMock, TEST_BASE_URL);
+    }
 
-        binaryProvider = new IEDriverServerBinaryProvider(cloudStorageDirectoryMock, binaryExtractorFactoryMock);
+    @Nested
+    class ConstructorTest {
+
+        @Test
+        void shouldThrowExceptionWhenNoHttpClientIsProvided() {
+            assertThatExceptionOfType(NullPointerException.class)
+                    .isThrownBy(() -> new MicrosoftWebDriverBinaryProvider(null, TEST_BASE_URL));
+        }
+
+        @Test
+        void shouldThrowExceptionWhenNoUrlIsProvided() {
+            assertThatExceptionOfType(NullPointerException.class)
+                    .isThrownBy(() -> new MicrosoftWebDriverBinaryProvider(httpClientMock, null));
+        }
+
     }
 
     @Nested
     class ProvidesBinaryForBrowserTest {
 
         @Test
-        void shouldReturnTrueForInternetExplorerBrowser() {
-            assertThat(binaryProvider.providesBinaryForBrowser(Browser.INTERNET_EXPLORER)).isTrue();
+        void shouldReturnTrueForEdgeBrowser() {
+            assertThat(binaryProvider.providesBinaryForBrowser(Browser.EDGE)).isTrue();
         }
 
         @ParameterizedTest
         @EnumSource(Browser.class)
-        void shouldReturnFalseForEveryBrowserExceptInternetExplorer(final Browser browser) {
-            assumeFalse(Browser.INTERNET_EXPLORER == browser);
+        void shouldReturnFalseForEveryBrowserExceptEdge(final Browser browser) {
+            assumeFalse(Browser.EDGE == browser);
 
             assertThat(binaryProvider.providesBinaryForBrowser(browser)).isFalse();
         }
@@ -69,20 +82,18 @@ class IEDriverServerBinaryProviderTest {
 
         @Test
         void shouldReturnLatestVersion() throws IOException {
-            given(cloudStorageDirectoryMock.getEntries())
+            //noinspection unchecked
+            given(httpClientMock.execute(argThat(isHttpGetWithUrl(TEST_BASE_URL)), any(ResponseHandler.class)))
                     .willReturn(Arrays.asList(
-                            new GoogleCloudStorageEntry(format("1.0/IEDriverServer_%s", PLATFORM_WIN32), null, null),
-                            new GoogleCloudStorageEntry(format("1.1/IEDriverServer_%s", PLATFORM_X64), null, null),
-                            new GoogleCloudStorageEntry(format("1.2/IEDriverServer_%s", PLATFORM_WIN32), null, null),
-                            // This entry shouldn't match as it doesn't contain the binary name
-                            new GoogleCloudStorageEntry(format("1.3/%s", PLATFORM_X64), null, null)
+                            new MicrosoftWebDriverRelease("1.1", null),
+                            new MicrosoftWebDriverRelease("1.2", null)
                     ));
 
             assertThat(binaryProvider.getLatestBinaryVersion(Os.WINDOWS, Architecture.X86))
                     .hasValue("1.2");
 
             assertThat(binaryProvider.getLatestBinaryVersion(Os.WINDOWS, Architecture.X64))
-                    .hasValue("1.1");
+                    .hasValue("1.2");
         }
 
         @ParameterizedTest
@@ -115,17 +126,23 @@ class IEDriverServerBinaryProviderTest {
 
             assertThatExceptionOfType(UnsupportedOperationException.class)
                     .isThrownBy(() -> binaryProvider.download(version, os, Architecture.X64, mockedPath));
+
         }
 
         @Test
         void shouldThrowExceptionWhenDesiredVersionDoesNotExist() throws IOException {
-            given(cloudStorageDirectoryMock.getEntries())
-                    .willReturn(Collections.emptyList());
+            //noinspection unchecked
+            given(httpClientMock.execute(argThat(isHttpGetWithUrl(TEST_BASE_URL)), any(ResponseHandler.class)))
+                    .willReturn(emptyList());
 
             assertThatExceptionOfType(NoSuchElementException.class)
                     .isThrownBy(() -> binaryProvider.download("doesNotMatter", Os.WINDOWS, Architecture.X86, mock(Path.class)));
         }
 
+    }
+
+    private static ArgumentMatcher<HttpGet> isHttpGetWithUrl(final String url) {
+        return argument -> argument.getURI().toString().equals(url);
     }
 
 }

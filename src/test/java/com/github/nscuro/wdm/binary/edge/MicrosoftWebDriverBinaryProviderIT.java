@@ -1,4 +1,4 @@
-package com.github.nscuro.wdm.binary.iexplorer;
+package com.github.nscuro.wdm.binary.edge;
 
 import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Os;
@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class IEDriverServerBinaryProviderIT extends AbstractBinaryProviderIT {
+class MicrosoftWebDriverBinaryProviderIT extends AbstractBinaryProviderIT {
 
     private BinaryProvider binaryProvider;
 
@@ -23,22 +23,23 @@ class IEDriverServerBinaryProviderIT extends AbstractBinaryProviderIT {
     protected void beforeEach() {
         super.beforeEach();
 
-        binaryProvider = new IEDriverServerBinaryProvider(httpClient);
+        binaryProvider = new MicrosoftWebDriverBinaryProvider(httpClient);
     }
 
     @ParameterizedTest
     @MethodSource("provideSupportedPlatforms")
-    void shouldReturnLatestVersionForSupportedPlatforms(final Os os, final Architecture architecture) throws IOException {
+    void shouldReturnLatestVersionForSupportedPlatforms(final Os os,
+                                                        final Architecture architecture) throws IOException {
         assertThat(binaryProvider.getLatestBinaryVersion(os, architecture))
-                .get().asString().matches("[0-9]+.[0-9]+(.[0-9])?");
+                .get().asString().matches("([0-9|.]+)");
     }
 
     @ParameterizedTest
     @MethodSource("provideBinaryVersionForSupportedPlatforms")
-    void shouldBeAbleToDownloadSpecificVersionForSupportedPlatforms(final String version, final Os os, final Architecture architecture) throws IOException {
+    void shouldBeAbleToDownloadSpecificVersionForSupportedPlatforms(final String version,
+                                                                    final Os os,
+                                                                    final Architecture architecture) throws IOException {
         downloadedFile = binaryProvider.download(version, os, architecture, getBinaryDestinationPath(getClass()));
-
-        assertThat(downloadedFile).exists();
     }
 
     private static Stream<Arguments> provideSupportedPlatforms() {
@@ -50,8 +51,8 @@ class IEDriverServerBinaryProviderIT extends AbstractBinaryProviderIT {
 
     private static Stream<Arguments> provideBinaryVersionForSupportedPlatforms() {
         return Stream.of(
-                Arguments.of("3.8", Os.WINDOWS, Architecture.X86),
-                Arguments.of("3.8", Os.WINDOWS, Architecture.X64)
+                Arguments.of("4.15063", Os.WINDOWS, Architecture.X86),
+                Arguments.of("4.15063", Os.WINDOWS, Architecture.X64)
         );
     }
 

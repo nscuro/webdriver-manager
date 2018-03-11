@@ -37,6 +37,7 @@ import static java.lang.String.format;
  *
  * @since 0.1.2
  */
+@Deprecated
 public final class MicrosoftWebDriverBinaryDownloader implements BinaryDownloader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MicrosoftWebDriverBinaryDownloader.class);
