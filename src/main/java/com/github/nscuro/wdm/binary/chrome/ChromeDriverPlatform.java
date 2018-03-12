@@ -32,16 +32,7 @@ enum ChromeDriverPlatform implements Platform {
         this.architectures = architectures;
     }
 
-    @Deprecated // TODO: Delete once ChromeDriverBinaryDownloader has been completely replaced
-    static ChromeDriverPlatform valueOf(final Os os, final Architecture architecture) {
-        return Arrays.stream(values())
-                .filter(platform -> platform.os.equals(os))
-                .filter(platform -> platform.architectures.contains(architecture))
-                .findAny()
-                .orElseThrow(IllegalArgumentException::new);
-    }
-
-    static Optional<ChromeDriverPlatform> valueOf2(final Os os, final Architecture architecture) {
+    static Optional<ChromeDriverPlatform> valueOf(final Os os, final Architecture architecture) {
         return Arrays.stream(values())
                 .filter(platform -> platform.os == os)
                 .filter(platform -> platform.architectures.contains(architecture))

@@ -59,7 +59,7 @@ public final class ChromeDriverBinaryProvider implements BinaryProvider {
     @Nonnull
     @Override
     public Optional<String> getLatestBinaryVersion(final Os os, final Architecture architecture) throws IOException {
-        final Optional<ChromeDriverPlatform> platform = ChromeDriverPlatform.valueOf2(os, architecture);
+        final Optional<ChromeDriverPlatform> platform = ChromeDriverPlatform.valueOf(os, architecture);
 
         if (!platform.isPresent()) {
             return Optional.empty();
@@ -85,7 +85,7 @@ public final class ChromeDriverBinaryProvider implements BinaryProvider {
     @Nonnull
     @Override
     public File download(final String version, final Os os, final Architecture architecture, final Path binaryDestinationPath) throws IOException {
-        final ChromeDriverPlatform platform = ChromeDriverPlatform.valueOf2(os, architecture)
+        final ChromeDriverPlatform platform = ChromeDriverPlatform.valueOf(os, architecture)
                 .orElseThrow(() -> new UnsupportedOperationException(format("%s %s is not supported by ChromeDriver", os, architecture)));
 
         final String downloadUrl = cloudStorageDirectory
