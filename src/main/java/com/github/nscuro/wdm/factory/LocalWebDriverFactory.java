@@ -1,7 +1,6 @@
 package com.github.nscuro.wdm.factory;
 
 import com.github.nscuro.wdm.Browser;
-import com.github.nscuro.wdm.binary.BinaryManager;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 

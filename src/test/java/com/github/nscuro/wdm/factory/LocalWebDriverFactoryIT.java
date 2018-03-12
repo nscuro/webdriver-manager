@@ -1,7 +1,6 @@
 package com.github.nscuro.wdm.factory;
 
 import com.github.nscuro.wdm.Os;
-import com.github.nscuro.wdm.binary.BinaryManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;

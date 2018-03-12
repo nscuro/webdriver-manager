@@ -1,6 +1,5 @@
 package com.github.nscuro.wdm.binary.util.compression;
 
-import com.github.nscuro.wdm.binary.BinaryExtractor;
 import org.junit.jupiter.api.AfterEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
