@@ -39,37 +39,37 @@ class GeckoDriverPlatformTest {
         @Test
         void shouldIdentifyWin32() {
             assertThat(GeckoDriverPlatform.valueOf(Os.WINDOWS, Architecture.X86))
-                    .isEqualTo(GeckoDriverPlatform.WIN32);
+                    .hasValue(GeckoDriverPlatform.WIN32);
         }
 
         @Test
         void shouldIdentifyWin64() {
             assertThat(GeckoDriverPlatform.valueOf(Os.WINDOWS, Architecture.X64))
-                    .isEqualTo(GeckoDriverPlatform.WIN64);
+                    .hasValue(GeckoDriverPlatform.WIN64);
         }
 
         @Test
         void shouldIdentifyLinux32() {
             assertThat(GeckoDriverPlatform.valueOf(Os.LINUX, Architecture.X86))
-                    .isEqualTo(GeckoDriverPlatform.LINUX32);
+                    .hasValue(GeckoDriverPlatform.LINUX32);
         }
 
         @Test
         void shouldIdentifyLinux64() {
             assertThat(GeckoDriverPlatform.valueOf(Os.LINUX, Architecture.X64))
-                    .isEqualTo(GeckoDriverPlatform.LINUX64);
+                    .hasValue(GeckoDriverPlatform.LINUX64);
         }
 
         @Test
         void shouldIdentifyMac64() {
             assertThat(GeckoDriverPlatform.valueOf(Os.MACOS, Architecture.X64))
-                    .isEqualTo(GeckoDriverPlatform.MACOS);
+                    .hasValue(GeckoDriverPlatform.MACOS);
         }
 
         @Test
         void shouldNotIdentifyMac32() {
-            assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> GeckoDriverPlatform.valueOf(Os.MACOS, Architecture.X86));
+            assertThat(GeckoDriverPlatform.valueOf(Os.MACOS, Architecture.X86))
+                    .isNotPresent();
         }
 
     }

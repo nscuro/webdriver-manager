@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class GitHubRelease {
+public class GitHubRelease {
 
     @JsonProperty("id")
     private Integer id;
