@@ -39,8 +39,6 @@ public class MicrosoftWebDriverBinaryProvider implements BinaryProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MicrosoftWebDriverBinaryProvider.class);
 
-    private static final String DEFAULT_BASE_URL = "https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/";
-
     private static final Pattern VERSION_PATTERN = Pattern.compile("Version: ([0-9|.]+) \\|.*");
 
     private final HttpClient httpClient;
@@ -48,7 +46,7 @@ public class MicrosoftWebDriverBinaryProvider implements BinaryProvider {
     private final String binaryDownloadPageUrl;
 
     public MicrosoftWebDriverBinaryProvider(final HttpClient httpClient) {
-        this(httpClient, DEFAULT_BASE_URL);
+        this(httpClient, "https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/");
     }
 
     MicrosoftWebDriverBinaryProvider(final HttpClient httpClient, final String binaryDownloadPageUrl) {
@@ -65,6 +63,7 @@ public class MicrosoftWebDriverBinaryProvider implements BinaryProvider {
     @Override
     public Optional<String> getLatestBinaryVersion(final Os os, final Architecture architecture) throws IOException {
         if (os != Os.WINDOWS) {
+            LOGGER.warn("Microsoft WebDriver is only supported on Windows systems");
             return Optional.empty();
         }
 
@@ -78,7 +77,7 @@ public class MicrosoftWebDriverBinaryProvider implements BinaryProvider {
     @Override
     public File download(final String version, final Os os, final Architecture architecture, final Path binaryDestinationPath) throws IOException {
         if (os != Os.WINDOWS) {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("Microsoft WebDriver is only supported on Windows systems");
         }
 
         final MicrosoftWebDriverRelease matchingRelease = getAvailableReleases()

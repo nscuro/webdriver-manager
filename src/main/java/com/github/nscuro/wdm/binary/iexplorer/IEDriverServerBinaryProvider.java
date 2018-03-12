@@ -57,6 +57,7 @@ public final class IEDriverServerBinaryProvider implements BinaryProvider {
     @Override
     public Optional<String> getLatestBinaryVersion(final Os os, final Architecture architecture) throws IOException {
         if (os != Os.WINDOWS) {
+            LOGGER.warn("IEDriverServer is only supported on Windows systems");
             return Optional.empty();
         }
 
@@ -75,7 +76,7 @@ public final class IEDriverServerBinaryProvider implements BinaryProvider {
     @Override
     public File download(final String version, final Os os, final Architecture architecture, final Path binaryDestinationPath) throws IOException {
         if (os != Os.WINDOWS) {
-            throw new UnsupportedOperationException(format("%s is only supported for Windows systems", BINARY_NAME));
+            throw new UnsupportedOperationException("IEDriverServer is only supported on Windows systems");
         }
 
         final String downloadUrl = cloudStorageDirectory
@@ -89,7 +90,7 @@ public final class IEDriverServerBinaryProvider implements BinaryProvider {
                 .findAny()
                 .map(IEDriverServerRelease::getDownloadUrl)
                 .orElseThrow(() -> new NoSuchElementException(
-                        format("No %s binary available for %s %s in version %s", BINARY_NAME, os, architecture, version)));
+                        format("No IEDriverServer binary available for %s %s in version %s", os, architecture, version)));
 
         return binaryExtractorFactory
                 .getBinaryExtractorForArchiveFile(cloudStorageDirectory.downloadFile(downloadUrl))

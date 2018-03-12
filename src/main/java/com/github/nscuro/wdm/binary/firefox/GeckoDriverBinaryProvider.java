@@ -60,7 +60,7 @@ public final class GeckoDriverBinaryProvider implements BinaryProvider {
         final Optional<GeckoDriverPlatform> platform = GeckoDriverPlatform.valueOf(os, architecture);
 
         if (!platform.isPresent()) {
-            LOGGER.warn("{} does not support the {} {} platform", BINARY_NAME, os, architecture);
+            LOGGER.warn("GeckoDriver is not supported on {} {}", os, architecture);
             return Optional.empty();
         }
 
@@ -78,7 +78,7 @@ public final class GeckoDriverBinaryProvider implements BinaryProvider {
     public File download(final String version, final Os os, final Architecture architecture, final Path binaryDestinationPath) throws IOException {
         final GeckoDriverPlatform platform = GeckoDriverPlatform.valueOf(os, architecture)
                 .orElseThrow(() -> new UnsupportedOperationException(
-                        format("%s does not support the %s %s platform", BINARY_NAME, os, architecture)));
+                        format("GeckoDriver is not supported on %s %s", os, architecture)));
 
         final GitHubReleaseAsset matchingAsset = gitHubReleasesService
                 .getAllReleases()

@@ -10,6 +10,8 @@ import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageEntry;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -28,6 +30,8 @@ import static java.lang.String.format;
  * @since 0.1.5
  */
 public final class ChromeDriverBinaryProvider implements BinaryProvider {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChromeDriverBinaryProvider.class);
 
     private static final String BINARY_NAME = "chromedriver";
 
@@ -62,6 +66,7 @@ public final class ChromeDriverBinaryProvider implements BinaryProvider {
         final Optional<ChromeDriverPlatform> platform = ChromeDriverPlatform.valueOf(os, architecture);
 
         if (!platform.isPresent()) {
+            LOGGER.warn("ChromeDriver is not supported on {} {}", os, architecture);
             return Optional.empty();
         }
 
@@ -86,7 +91,8 @@ public final class ChromeDriverBinaryProvider implements BinaryProvider {
     @Override
     public File download(final String version, final Os os, final Architecture architecture, final Path binaryDestinationPath) throws IOException {
         final ChromeDriverPlatform platform = ChromeDriverPlatform.valueOf(os, architecture)
-                .orElseThrow(() -> new UnsupportedOperationException(format("%s %s is not supported by ChromeDriver", os, architecture)));
+                .orElseThrow(() -> new UnsupportedOperationException(
+                        format("ChromeDriver is not supported on %s %s", os, architecture)));
 
         final String downloadUrl = cloudStorageDirectory
                 .getEntries()
