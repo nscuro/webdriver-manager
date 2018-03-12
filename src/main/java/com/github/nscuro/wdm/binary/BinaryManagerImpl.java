@@ -20,16 +20,16 @@ import static java.util.Objects.requireNonNull;
 /**
  * @since 0.1.5
  */
-public class BinaryManagerV2Impl implements BinaryManagerV2 {
+public class BinaryManagerImpl implements BinaryManager {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BinaryManagerV2Impl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BinaryManagerImpl.class);
 
     private Path binaryDestinationDirPath;
 
     private final Set<BinaryProvider> binaryProviders;
 
-    BinaryManagerV2Impl(final Path binaryDestinationDirPath,
-                        final Set<BinaryProvider> binaryProviders) {
+    BinaryManagerImpl(final Path binaryDestinationDirPath,
+                      final Set<BinaryProvider> binaryProviders) {
         this.binaryDestinationDirPath = validateBinaryDestinationDirPath(binaryDestinationDirPath);
         this.binaryProviders = binaryProviders;
     }
@@ -39,21 +39,17 @@ public class BinaryManagerV2Impl implements BinaryManagerV2 {
     public File getWebDriverBinary(final Browser browser,
                                    @Nullable final String version,
                                    final Os os,
-                                   final Architecture architecture) {
+                                   final Architecture architecture) throws IOException {
         final BinaryProvider binaryProvider = getBinaryProviderForBrowser(browser);
 
         final String versionToDownload;
 
         if (version == null) {
-            try {
-                versionToDownload = binaryProvider
-                        .getLatestBinaryVersion(os, architecture)
-                        .orElseThrow(NoSuchElementException::new);
+            versionToDownload = binaryProvider
+                    .getLatestBinaryVersion(os, architecture)
+                    .orElseThrow(NoSuchElementException::new);
 
-                LOGGER.info("Latest version of {}'s WebDriver binary is {}", browser, versionToDownload);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            LOGGER.info("Latest version of {}'s WebDriver binary is {}", browser, versionToDownload);
         } else {
             versionToDownload = version;
         }
@@ -63,11 +59,7 @@ public class BinaryManagerV2Impl implements BinaryManagerV2 {
         final File webDriverBinaryFile;
 
         if (!binaryDestinationFilePath.toFile().exists()) {
-            try {
-                webDriverBinaryFile = binaryProvider.download(versionToDownload, os, architecture, binaryDestinationFilePath);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            webDriverBinaryFile = binaryProvider.download(versionToDownload, os, architecture, binaryDestinationFilePath);
         } else {
             LOGGER.info("{} already exists - Nothing to download", binaryDestinationFilePath);
             webDriverBinaryFile = binaryDestinationFilePath.toFile();

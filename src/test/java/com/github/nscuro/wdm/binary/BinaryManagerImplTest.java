@@ -7,13 +7,13 @@ import java.nio.file.Path;
 
 import org.junit.jupiter.api.BeforeEach;
 
-class BinaryManagerV2ImplTest {
+class BinaryManagerImplTest {
 
     private Path binaryDestinationFilePathMock;
 
     private BinaryProvider binaryProviderMock;
 
-    private BinaryManagerV2 binaryManager;
+    private BinaryManager binaryManager;
 
     @BeforeEach
     void beforeEach() {
@@ -21,7 +21,7 @@ class BinaryManagerV2ImplTest {
 
         binaryProviderMock = mock(BinaryProvider.class);
 
-        binaryManager = new BinaryManagerV2Impl(binaryDestinationFilePathMock, singleton(binaryProviderMock));
+        binaryManager = new BinaryManagerImpl(binaryDestinationFilePathMock, singleton(binaryProviderMock));
     }
 
 }

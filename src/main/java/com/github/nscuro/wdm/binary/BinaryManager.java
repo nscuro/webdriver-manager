@@ -14,6 +14,7 @@ import org.apache.http.impl.client.HttpClients;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -23,30 +24,30 @@ import java.util.Set;
 /**
  * @since 0.1.5
  */
-public interface BinaryManagerV2 {
+public interface BinaryManager {
 
     @Nonnull
-    File getWebDriverBinary(final Browser browser, @Nullable final String version, final Os os, final Architecture architecture);
+    File getWebDriverBinary(final Browser browser, @Nullable final String version, final Os os, final Architecture architecture) throws IOException;
 
     void registerWebDriverBinary(final Browser browser, final File webDriverBinaryFile);
 
     @Nonnull
-    default File getWebDriverBinary(final Browser browser) {
+    default File getWebDriverBinary(final Browser browser) throws IOException {
         return getWebDriverBinary(browser, null, Os.getCurrent(), Architecture.getCurrent());
     }
 
     @Nonnull
-    default File getWebDriverBinary(final Browser browser, final String version) {
+    default File getWebDriverBinary(final Browser browser, final String version) throws IOException {
         return getWebDriverBinary(browser, version, Os.getCurrent(), Architecture.getCurrent());
     }
 
     @Nonnull
-    default File getWebDriverBinary(final Browser browser, final Os os, final Architecture architecture) {
+    default File getWebDriverBinary(final Browser browser, final Os os, final Architecture architecture) throws IOException {
         return getWebDriverBinary(browser, null, os, architecture);
     }
 
     @Nonnull
-    static BinaryManagerV2 createDefault() {
+    static BinaryManager createDefault() {
         final Path binaryDestinationDirPath = Paths
                 .get(System.getProperty("user.home"))
                 .resolve(".webdriver-manager");
@@ -65,7 +66,7 @@ public interface BinaryManagerV2 {
                 new OperaChromiumDriverBinaryProvider(httpClient)
         ));
 
-        return new BinaryManagerV2Impl(binaryDestinationDirPath, binaryProviders);
+        return new BinaryManagerImpl(binaryDestinationDirPath, binaryProviders);
     }
 
 }

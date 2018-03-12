@@ -1,6 +1,7 @@
 package com.github.nscuro.wdm.factory;
 
 import com.github.nscuro.wdm.Browser;
+import com.github.nscuro.wdm.binary.BinaryManager;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 
@@ -96,15 +97,15 @@ public final class LocalWebDriverFactory implements WebDriverFactory {
 
             try {
                 if (desiredVersion.isPresent()) {
-                    webDriverBinary = binaryManager.getBinary(browser, desiredVersion.get());
+                    webDriverBinary = binaryManager.getWebDriverBinary(browser, desiredVersion.get());
                 } else {
-                    webDriverBinary = binaryManager.getBinary(browser);
+                    webDriverBinary = binaryManager.getWebDriverBinary(browser);
                 }
             } catch (IOException e) {
                 throw new WebDriverFactoryException(capabilities, e);
             }
 
-            binaryManager.registerBinary(webDriverBinary, browser);
+            binaryManager.registerWebDriverBinary(browser, webDriverBinary);
         }
 
         return getWebDriverInstance(browser, capabilities);
