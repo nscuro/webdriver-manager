@@ -1,6 +1,7 @@
 package com.github.nscuro.wdm.binary.util.github;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
@@ -15,7 +16,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -26,6 +31,9 @@ import java.util.Optional;
 
 import static com.github.nscuro.wdm.binary.util.HttpUtils.verifyContentTypeIsAnyOf;
 import static com.github.nscuro.wdm.binary.util.HttpUtils.verifyStatusCodeIsAnyOf;
+import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_GZIP;
+import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_OCTET_STREAM;
+import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_ZIP;
 import static java.lang.String.format;
 
 /**
@@ -64,7 +72,7 @@ public class GitHubReleasesServiceV2Impl implements GitHubReleasesServiceV2 {
     @Nonnull
     @Override
     public List<GitHubRelease> getAllReleases() throws IOException {
-        return objectMapper.readValue(performApiRequest("releases"), objectMapper.getTypeFactory()
+        return objectMapper.readValue(performApiRequest("/releases"), objectMapper.getTypeFactory()
                 .constructCollectionType(ArrayList.class, GitHubRelease.class));
     }
 
@@ -72,7 +80,7 @@ public class GitHubReleasesServiceV2Impl implements GitHubReleasesServiceV2 {
     @Override
     public Optional<GitHubRelease> getLatestRelease() throws IOException {
         try {
-            return Optional.of(objectMapper.readValue(performApiRequest("releases/latest"), GitHubRelease.class));
+            return Optional.of(objectMapper.readValue(performApiRequest("/releases/latest"), GitHubRelease.class));
         } catch (NoSuchElementException e) {
             return Optional.empty();
         }
@@ -82,7 +90,7 @@ public class GitHubReleasesServiceV2Impl implements GitHubReleasesServiceV2 {
     @Override
     public Optional<GitHubRelease> getReleaseById(final int id) throws IOException {
         try {
-            return Optional.of(objectMapper.readValue(performApiRequest(format("releases/%d", id)), GitHubRelease.class));
+            return Optional.of(objectMapper.readValue(performApiRequest(format("/releases/%d", id)), GitHubRelease.class));
         } catch (NoSuchElementException e) {
             return Optional.empty();
         }
@@ -92,10 +100,38 @@ public class GitHubReleasesServiceV2Impl implements GitHubReleasesServiceV2 {
     @Override
     public Optional<GitHubRelease> getReleaseByTagName(final String tagName) throws IOException {
         try {
-            return Optional.of(objectMapper.readValue(performApiRequest(format("releases/%s", tagName)), GitHubRelease.class));
+            return Optional.of(objectMapper.readValue(performApiRequest(format("/releases/%s", tagName)), GitHubRelease.class));
         } catch (NoSuchElementException e) {
             return Optional.empty();
         }
+    }
+
+    @Nonnull
+    @Override
+    public File downloadAsset(final GitHubReleaseAsset asset) throws IOException {
+        final String assetFileName = FilenameUtils.getBaseName(asset.getBrowserDownloadUrl());
+
+        final String assetFileExtension = FilenameUtils.getExtension(asset.getBrowserDownloadUrl());
+
+        final HttpGet request = new HttpGet(asset.getBrowserDownloadUrl());
+        request.setHeader(HttpHeaders.ACCEPT, asset.getContentType());
+
+        final Path targetFilePath = Files.createTempFile(format("%s_", assetFileName), format(".%s", assetFileExtension));
+
+        LOGGER.debug("Downloading {}.{} to {}", assetFileName, assetFileExtension, targetFilePath);
+
+        return httpClient.execute(request, httpResponse -> {
+            verifyStatusCodeIsAnyOf(httpResponse, HttpStatus.SC_OK);
+            verifyContentTypeIsAnyOf(httpResponse, APPLICATION_ZIP, APPLICATION_GZIP, APPLICATION_OCTET_STREAM);
+
+            try (final OutputStream fileOutputStream = Files.newOutputStream(targetFilePath)) {
+                Optional.ofNullable(httpResponse.getEntity())
+                        .orElseThrow(() -> new IllegalStateException("Response body was empty"))
+                        .writeTo(fileOutputStream);
+            }
+
+            return targetFilePath.toFile();
+        });
     }
 
     @Nonnull
@@ -131,12 +167,12 @@ public class GitHubReleasesServiceV2Impl implements GitHubReleasesServiceV2 {
             if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_FORBIDDEN
                     && rateLimitResetTime.isPresent()) {
                 throw new IOException(format("Request was rejected because your GitHub API rate limit is exceeded. "
-                        + "It will be reset at %s UTC time", rateLimitResetTime));
+                        + "It will be reset at %s UTC time", rateLimitResetTime.get()));
             } else if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
                 throw new NoSuchElementException();
             }
 
-            if (remainingRateLimit.isPresent() && remainingRateLimit.get() <= 55 && rateLimitResetTime.isPresent()) {
+            if (remainingRateLimit.isPresent() && remainingRateLimit.get() <= 10 && rateLimitResetTime.isPresent()) {
                 LOGGER.warn("You have only {} requests left until GitHub's API rate limit kicks in. "
                         + "It will be reset at {} UTC time", remainingRateLimit.get(), rateLimitResetTime.get());
             }
