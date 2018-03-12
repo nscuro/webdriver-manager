@@ -39,7 +39,7 @@ import static java.lang.String.format;
 /**
  * @since 0.1.5
  */
-public class GitHubReleasesServiceImpl implements GitHubReleasesService {
+final class GitHubReleasesServiceImpl implements GitHubReleasesService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GitHubReleasesServiceImpl.class);
 
