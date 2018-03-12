@@ -8,7 +8,7 @@ import com.github.nscuro.wdm.binary.BinaryProvider;
 import com.github.nscuro.wdm.binary.util.compression.BinaryExtractorFactory;
 import com.github.nscuro.wdm.binary.util.github.GitHubRelease;
 import com.github.nscuro.wdm.binary.util.github.GitHubReleaseAsset;
-import com.github.nscuro.wdm.binary.util.github.GitHubReleasesServiceV2;
+import com.github.nscuro.wdm.binary.util.github.GitHubReleasesService;
 import org.apache.http.client.HttpClient;
 
 import javax.annotation.Nonnull;
@@ -27,16 +27,16 @@ public final class OperaChromiumDriverBinaryProvider implements BinaryProvider {
 
     private static final String BINARY_NAME = "operadriver";
 
-    private final GitHubReleasesServiceV2 gitHubReleasesService;
+    private final GitHubReleasesService gitHubReleasesService;
 
     private final BinaryExtractorFactory binaryExtractorFactory;
 
     public OperaChromiumDriverBinaryProvider(final HttpClient httpClient) {
-        this(GitHubReleasesServiceV2.create(httpClient, "operasoftware", "operachromiumdriver"),
+        this(GitHubReleasesService.create(httpClient, "operasoftware", "operachromiumdriver"),
                 new BinaryExtractorFactory());
     }
 
-    OperaChromiumDriverBinaryProvider(final GitHubReleasesServiceV2 gitHubReleasesService,
+    OperaChromiumDriverBinaryProvider(final GitHubReleasesService gitHubReleasesService,
                                       final BinaryExtractorFactory binaryExtractorFactory) {
         this.gitHubReleasesService = gitHubReleasesService;
         this.binaryExtractorFactory = binaryExtractorFactory;

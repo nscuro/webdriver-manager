@@ -39,9 +39,9 @@ import static java.lang.String.format;
 /**
  * @since 0.1.5
  */
-public class GitHubReleasesServiceV2Impl implements GitHubReleasesServiceV2 {
+public class GitHubReleasesServiceImpl implements GitHubReleasesService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GitHubReleasesServiceV2Impl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GitHubReleasesServiceImpl.class);
 
     private static final String GITHUB_USERNAME = System.getenv("WDM_GH_USER");
 
@@ -53,17 +53,17 @@ public class GitHubReleasesServiceV2Impl implements GitHubReleasesServiceV2 {
 
     private final String repositoryUrl;
 
-    GitHubReleasesServiceV2Impl(final HttpClient httpClient,
-                                final String repositoryOwner,
-                                final String repositoryName) {
+    GitHubReleasesServiceImpl(final HttpClient httpClient,
+                              final String repositoryOwner,
+                              final String repositoryName) {
         this(httpClient, new ObjectMapper(), "https://api.github.com/", repositoryOwner, repositoryName);
     }
 
-    GitHubReleasesServiceV2Impl(final HttpClient httpClient,
-                                final ObjectMapper objectMapper,
-                                final String baseUrl,
-                                final String repositoryOwner,
-                                final String repositoryName) {
+    GitHubReleasesServiceImpl(final HttpClient httpClient,
+                              final ObjectMapper objectMapper,
+                              final String baseUrl,
+                              final String repositoryOwner,
+                              final String repositoryName) {
         this.httpClient = httpClient;
         this.objectMapper = objectMapper;
         this.repositoryUrl = getRepositoryUrl(baseUrl, repositoryOwner, repositoryName);

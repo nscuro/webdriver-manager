@@ -9,7 +9,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
-class GitHubReleasesServiceV2ImplTest {
+class GitHubReleasesServiceImplTest {
 
     private static final String REPOSITORY_OWNER = "someUser";
 
@@ -19,7 +19,7 @@ class GitHubReleasesServiceV2ImplTest {
 
     private static String baseUrl;
 
-    private GitHubReleasesServiceV2 gitHubReleasesService;
+    private GitHubReleasesService gitHubReleasesService;
 
     @BeforeAll
     static void beforeAll() {
@@ -34,7 +34,7 @@ class GitHubReleasesServiceV2ImplTest {
 
     @BeforeEach
     void beforeEach() {
-        gitHubReleasesService = new GitHubReleasesServiceV2Impl(HttpClients.createDefault(),
+        gitHubReleasesService = new GitHubReleasesServiceImpl(HttpClients.createDefault(),
                 new ObjectMapper(), baseUrl, REPOSITORY_OWNER, REPOSITORY_NAME);
     }
 

@@ -7,7 +7,7 @@ import com.github.nscuro.wdm.binary.BinaryProvider;
 import com.github.nscuro.wdm.binary.util.compression.BinaryExtractorFactory;
 import com.github.nscuro.wdm.binary.util.github.GitHubRelease;
 import com.github.nscuro.wdm.binary.util.github.GitHubReleaseAsset;
-import com.github.nscuro.wdm.binary.util.github.GitHubReleasesServiceV2;
+import com.github.nscuro.wdm.binary.util.github.GitHubReleasesService;
 import org.apache.http.client.HttpClient;
 
 import javax.annotation.Nonnull;
@@ -29,16 +29,16 @@ public final class GeckoDriverBinaryProvider implements BinaryProvider {
 
     private static final String BINARY_NAME = "geckodriver";
 
-    private final GitHubReleasesServiceV2 gitHubReleasesService;
+    private final GitHubReleasesService gitHubReleasesService;
 
     private final BinaryExtractorFactory binaryExtractorFactory;
 
     public GeckoDriverBinaryProvider(final HttpClient httpClient) {
-        this(GitHubReleasesServiceV2.create(httpClient, "mozilla", "geckodriver"),
+        this(GitHubReleasesService.create(httpClient, "mozilla", "geckodriver"),
                 new BinaryExtractorFactory());
     }
 
-    GeckoDriverBinaryProvider(final GitHubReleasesServiceV2 gitHubReleasesService,
+    GeckoDriverBinaryProvider(final GitHubReleasesService gitHubReleasesService,
                               final BinaryExtractorFactory binaryExtractorFactory) {
         this.gitHubReleasesService = gitHubReleasesService;
         this.binaryExtractorFactory = binaryExtractorFactory;

@@ -11,7 +11,7 @@ import java.util.Optional;
 /**
  * @since 0.1.5
  */
-public interface GitHubReleasesServiceV2 {
+public interface GitHubReleasesService {
 
     @Nonnull
     List<GitHubRelease> getAllReleases() throws IOException;
@@ -29,10 +29,10 @@ public interface GitHubReleasesServiceV2 {
     File downloadAsset(final GitHubReleaseAsset asset) throws IOException;
 
     @Nonnull
-    static GitHubReleasesServiceV2 create(final HttpClient httpClient,
-                                          final String repositoryOwner,
-                                          final String repositoryName) {
-        return new GitHubReleasesServiceV2Impl(httpClient, repositoryOwner, repositoryName);
+    static GitHubReleasesService create(final HttpClient httpClient,
+                                        final String repositoryOwner,
+                                        final String repositoryName) {
+        return new GitHubReleasesServiceImpl(httpClient, repositoryOwner, repositoryName);
     }
 
 }
