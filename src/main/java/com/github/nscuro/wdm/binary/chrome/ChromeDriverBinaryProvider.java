@@ -29,8 +29,6 @@ import static java.lang.String.format;
  */
 public final class ChromeDriverBinaryProvider implements BinaryProvider {
 
-    private static final String DEFAULT_GCS_DIRECTORY_URL = "https://chromedriver.storage.googleapis.com/";
-
     private static final String BINARY_NAME = "chromedriver";
 
     private final HttpClient httpClient;
@@ -41,7 +39,7 @@ public final class ChromeDriverBinaryProvider implements BinaryProvider {
 
     public ChromeDriverBinaryProvider(final HttpClient httpClient) {
         this(httpClient,
-                new GoogleCloudStorageDirectory(httpClient, DEFAULT_GCS_DIRECTORY_URL),
+                new GoogleCloudStorageDirectory(httpClient, "https://chromedriver.storage.googleapis.com/"),
                 new BinaryExtractorFactory());
     }
 
