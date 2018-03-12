@@ -30,7 +30,7 @@ public class BinaryManagerImpl implements BinaryManager {
 
     BinaryManagerImpl(final Path binaryDestinationDirPath,
                       final Set<BinaryProvider> binaryProviders) {
-        this.binaryDestinationDirPath = validateBinaryDestinationDirPath(binaryDestinationDirPath);
+        this.binaryDestinationDirPath = validateAndPrepareBinaryDestinationDirPath(binaryDestinationDirPath);
         this.binaryProviders = binaryProviders;
     }
 
@@ -66,7 +66,7 @@ public class BinaryManagerImpl implements BinaryManager {
         }
 
         if (!webDriverBinaryFile.setExecutable(true)) {
-            LOGGER.warn("{} was not made executable. "
+            LOGGER.warn("{} couldn't be made executable. "
                             + "You probably don't have sufficient permissions in your chosen binary destination directory",
                     webDriverBinaryFile);
         }
@@ -80,18 +80,27 @@ public class BinaryManagerImpl implements BinaryManager {
     }
 
     @Nonnull
-    private Path validateBinaryDestinationDirPath(final Path binaryDestinationDirPath) {
+    private Path validateAndPrepareBinaryDestinationDirPath(final Path binaryDestinationDirPath) {
         final File fileHandle = requireNonNull(binaryDestinationDirPath).toFile();
 
-        if (!fileHandle.exists()) {
-            throw new IllegalArgumentException(format("\"%s\" does not exist", fileHandle));
-        } else if (!fileHandle.isDirectory()) {
-            throw new IllegalArgumentException(format("\"%s\" is not a directory", fileHandle));
-        } else if (!fileHandle.canWrite()) {
-            throw new IllegalArgumentException(format("no write permissions for \"%s\"", fileHandle));
+        if (fileHandle.exists()) {
+            if (!fileHandle.isDirectory()) {
+                throw new IllegalArgumentException(format("\"%s\" is not a directory", fileHandle));
+            } else if (!fileHandle.canWrite()) {
+                throw new IllegalArgumentException(format("no write permissions for \"%s\"", fileHandle));
+            }
         } else {
-            return binaryDestinationDirPath;
+            if (!fileHandle.getParentFile().canWrite()) {
+                throw new IllegalArgumentException(
+                        format("cannot create directory at \"%s\": no write permissions in parent directory", fileHandle));
+            } else if (!fileHandle.mkdirs()) {
+                throw new IllegalStateException(format("Directory at \"%s\" has not been created", fileHandle));
+            } else {
+                LOGGER.info("Created directory at \"{}\"", fileHandle);
+            }
         }
+
+        return binaryDestinationDirPath;
     }
 
     @Nonnull
