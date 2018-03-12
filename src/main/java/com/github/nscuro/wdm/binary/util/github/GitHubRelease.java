@@ -1,7 +1,9 @@
 package com.github.nscuro.wdm.binary.util.github;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.nscuro.wdm.Platform;
 import lombok.Data;
 
 import java.util.Set;
@@ -27,5 +29,12 @@ public final class GitHubRelease {
 
     @JsonProperty("assets")
     private Set<GitHubReleaseAsset> assets;
+
+    @JsonIgnore
+    public boolean hasAssetForPlatform(final Platform platform) {
+        return getAssets()
+                .stream()
+                .anyMatch(asset -> asset.getName().toLowerCase().contains(platform.getName().toLowerCase()));
+    }
 
 }
