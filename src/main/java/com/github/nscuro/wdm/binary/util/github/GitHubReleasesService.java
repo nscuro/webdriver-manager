@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @since 0.2.0
@@ -15,15 +14,6 @@ public interface GitHubReleasesService {
 
     @Nonnull
     List<GitHubRelease> getAllReleases() throws IOException;
-
-    @Nonnull
-    Optional<GitHubRelease> getLatestRelease() throws IOException;
-
-    @Nonnull
-    Optional<GitHubRelease> getReleaseById(final int id) throws IOException;
-
-    @Nonnull
-    Optional<GitHubRelease> getReleaseByTagName(final String tagName) throws IOException;
 
     @Nonnull
     File downloadAsset(final GitHubReleaseAsset asset) throws IOException;

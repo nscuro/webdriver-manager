@@ -78,36 +78,6 @@ final class GitHubReleasesServiceImpl implements GitHubReleasesService {
 
     @Nonnull
     @Override
-    public Optional<GitHubRelease> getLatestRelease() throws IOException {
-        try {
-            return Optional.of(objectMapper.readValue(performApiRequest("/releases/latest"), GitHubRelease.class));
-        } catch (NoSuchElementException e) {
-            return Optional.empty();
-        }
-    }
-
-    @Nonnull
-    @Override
-    public Optional<GitHubRelease> getReleaseById(final int id) throws IOException {
-        try {
-            return Optional.of(objectMapper.readValue(performApiRequest(format("/releases/%d", id)), GitHubRelease.class));
-        } catch (NoSuchElementException e) {
-            return Optional.empty();
-        }
-    }
-
-    @Nonnull
-    @Override
-    public Optional<GitHubRelease> getReleaseByTagName(final String tagName) throws IOException {
-        try {
-            return Optional.of(objectMapper.readValue(performApiRequest(format("/releases/%s", tagName)), GitHubRelease.class));
-        } catch (NoSuchElementException e) {
-            return Optional.empty();
-        }
-    }
-
-    @Nonnull
-    @Override
     public File downloadAsset(final GitHubReleaseAsset asset) throws IOException {
         final String assetFileName = FilenameUtils.getBaseName(asset.getBrowserDownloadUrl());
 
@@ -135,7 +105,7 @@ final class GitHubReleasesServiceImpl implements GitHubReleasesService {
     }
 
     @Nonnull
-    private String performApiRequest(final String path) throws IOException {
+    String performApiRequest(final String path) throws IOException {
         final HttpGet request = new HttpGet(format("%s%s", repositoryUrl, path));
         request.setHeader(HttpHeaders.ACCEPT, "application/json; charset=utf-8");
 
@@ -157,25 +127,25 @@ final class GitHubReleasesServiceImpl implements GitHubReleasesService {
                     .map(Header::getValue)
                     .map(Integer::parseInt);
 
-            final Optional<LocalDateTime> rateLimitResetTime = Optional
+            final Optional<String> rateLimitResetMessage = Optional
                     .ofNullable(httpResponse.getFirstHeader("X-RateLimit-Reset"))
                     .map(Header::getValue)
                     .map(Long::parseLong)
                     .map(Instant::ofEpochSecond)
-                    .map(instant -> LocalDateTime.ofInstant(instant, ZoneOffset.UTC));
+                    .map(instant -> LocalDateTime.ofInstant(instant, ZoneOffset.UTC))
+                    .map(time -> format("It will be reset at %s UTC time", time));
 
-            if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_FORBIDDEN
-                    && rateLimitResetTime.isPresent()) {
-                throw new IOException(format("Request was rejected because your GitHub API rate limit is exceeded. "
-                        + "It will be reset at %s UTC time", rateLimitResetTime.get()));
+            if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_FORBIDDEN) {
+                throw new IOException(format(
+                        "Request was rejected because your GitHub API rate limit is exceeded. %s",
+                        rateLimitResetMessage.orElse("")));
             } else if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
                 throw new NoSuchElementException();
             }
 
-            if (remainingRateLimit.isPresent() && remainingRateLimit.get() <= 10 && rateLimitResetTime.isPresent()) {
-                LOGGER.warn("You have only {} requests left until GitHub's API rate limit kicks in. "
-                        + "It will be reset at {} UTC time", remainingRateLimit.get(), rateLimitResetTime.get());
-            }
+            remainingRateLimit.ifPresent(rateLimit ->
+                    LOGGER.warn("You have only {} requests left until GitHub's API rate limit kicks in. {}",
+                            rateLimit, rateLimitResetMessage.orElse("")));
 
             return EntityUtils.toString(httpResponse.getEntity());
         });
