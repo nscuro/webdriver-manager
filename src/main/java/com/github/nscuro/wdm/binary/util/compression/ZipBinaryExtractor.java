@@ -23,7 +23,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 
 /**
- * @since 0.1.5
+ * @since 0.2.0
  */
 final class ZipBinaryExtractor implements BinaryExtractor {
 

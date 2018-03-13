@@ -18,7 +18,7 @@ import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 
 /**
- * @since 0.1.5
+ * @since 0.2.0
  */
 public class BinaryManagerImpl implements BinaryManager {
 

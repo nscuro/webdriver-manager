@@ -24,7 +24,7 @@ import static com.github.nscuro.wdm.binary.util.compression.BinaryExtractor.File
 import static java.lang.String.format;
 
 /**
- * @since 0.1.5
+ * @since 0.2.0
  */
 public final class IEDriverServerBinaryProvider implements BinaryProvider {
 

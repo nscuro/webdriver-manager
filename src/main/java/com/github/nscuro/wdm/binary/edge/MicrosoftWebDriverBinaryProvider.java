@@ -33,7 +33,7 @@ import static com.github.nscuro.wdm.binary.util.HttpUtils.verifyStatusCodeIsAnyO
 import static java.util.Objects.requireNonNull;
 
 /**
- * @since 0.1.5
+ * @since 0.2.0
  */
 public class MicrosoftWebDriverBinaryProvider implements BinaryProvider {
 

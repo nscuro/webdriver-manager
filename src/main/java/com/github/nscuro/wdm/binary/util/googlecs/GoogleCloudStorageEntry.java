@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * @since 0.1.5
+ * @since 0.2.0
  */
 @Data
 @AllArgsConstructor

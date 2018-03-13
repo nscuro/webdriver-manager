@@ -23,7 +23,7 @@ import static java.lang.String.format;
 import static java.util.Objects.isNull;
 
 /**
- * @since 0.1.5
+ * @since 0.2.0
  */
 final class GZipTarballBinaryExtractor implements BinaryExtractor {
 

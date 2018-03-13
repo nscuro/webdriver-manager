@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @since 0.1.5
+ * @since 0.2.0
  */
 public interface GitHubReleasesService {
 

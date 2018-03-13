@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.util.function.Predicate;
 
 /**
- * @since 0.1.5
+ * @since 0.2.0
  */
 public interface BinaryExtractor {
 

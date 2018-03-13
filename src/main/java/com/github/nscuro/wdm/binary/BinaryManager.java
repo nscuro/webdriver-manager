@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @since 0.1.5
+ * @since 0.2.0
  */
 public interface BinaryManager {
 
@@ -53,7 +53,7 @@ public interface BinaryManager {
                 .resolve(".webdriver-manager");
 
         final HttpClient httpClient = HttpClients.custom()
-                .setUserAgent("webdriver-manager/0.1.5")
+                .setUserAgent("webdriver-manager/0.2.0")
                 .disableAuthCaching()
                 .disableCookieManagement()
                 .build();
