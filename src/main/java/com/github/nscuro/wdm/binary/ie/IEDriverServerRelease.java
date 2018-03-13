@@ -1,4 +1,4 @@
-package com.github.nscuro.wdm.binary.iexplorer;
+package com.github.nscuro.wdm.binary.ie;
 
 import com.github.nscuro.wdm.Architecture;
 import lombok.AllArgsConstructor;

@@ -6,7 +6,7 @@ import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.chrome.ChromeDriverBinaryProvider;
 import com.github.nscuro.wdm.binary.edge.MicrosoftWebDriverBinaryProvider;
 import com.github.nscuro.wdm.binary.firefox.GeckoDriverBinaryProvider;
-import com.github.nscuro.wdm.binary.iexplorer.IEDriverServerBinaryProvider;
+import com.github.nscuro.wdm.binary.ie.IEDriverServerBinaryProvider;
 import com.github.nscuro.wdm.binary.opera.OperaChromiumDriverBinaryProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClients;
