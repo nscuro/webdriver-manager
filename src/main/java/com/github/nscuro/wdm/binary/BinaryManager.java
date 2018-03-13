@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -30,6 +31,9 @@ public interface BinaryManager {
     File getWebDriverBinary(final Browser browser, @Nullable final String version, final Os os, final Architecture architecture) throws IOException;
 
     void registerWebDriverBinary(final Browser browser, final File webDriverBinaryFile);
+
+    @Nonnull
+    List<File> getLocalWebDriverBinaries();
 
     @Nonnull
     default File getWebDriverBinary(final Browser browser) throws IOException {

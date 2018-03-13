@@ -11,8 +11,13 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
@@ -20,9 +25,11 @@ import static java.util.Objects.requireNonNull;
 /**
  * @since 0.2.0
  */
-public class BinaryManagerImpl implements BinaryManager {
+final class BinaryManagerImpl implements BinaryManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BinaryManagerImpl.class);
+
+    private static final String WEB_DRIVER_BINARY_PREFIX = "wdm-webdriver";
 
     private Path binaryDestinationDirPath;
 
@@ -49,7 +56,8 @@ public class BinaryManagerImpl implements BinaryManager {
                     .getLatestBinaryVersion(os, architecture)
                     .orElseThrow(NoSuchElementException::new);
 
-            LOGGER.info("Latest version of {}'s WebDriver binary is {}", browser, versionToDownload);
+            LOGGER.info("Latest version of {}'s WebDriver binary for {} {} is {}",
+                    browser, os, architecture, versionToDownload);
         } else {
             versionToDownload = version;
         }
@@ -77,6 +85,16 @@ public class BinaryManagerImpl implements BinaryManager {
     @Override
     public void registerWebDriverBinary(final Browser browser, final File webDriverBinaryFile) {
 
+    }
+
+    @Nonnull
+    @Override
+    public List<File> getLocalWebDriverBinaries() {
+        return Optional
+                .ofNullable(binaryDestinationDirPath.toFile().listFiles(this::isWebDriverBinary))
+                .map(Arrays::stream)
+                .orElseGet(Stream::empty)
+                .collect(Collectors.toList());
     }
 
     @Nonnull
@@ -115,8 +133,12 @@ public class BinaryManagerImpl implements BinaryManager {
     @Nonnull
     private Path buildBinaryDestinationFilePath(final Browser browser, final String version, final Os os, final Architecture architecture) {
         return binaryDestinationDirPath
-                .resolve(format("wdm-webdriver_%s_%s-%s_%s", browser.name(),
+                .resolve(format("%s_%s_%s-%s_%s", WEB_DRIVER_BINARY_PREFIX, browser.name(),
                         os.name(), architecture.name(), version).toLowerCase());
+    }
+
+    private boolean isWebDriverBinary(final File file) {
+        return file.isFile() && file.getName().startsWith(WEB_DRIVER_BINARY_PREFIX);
     }
 
 }
