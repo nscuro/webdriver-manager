@@ -84,7 +84,21 @@ final class BinaryManagerImpl implements BinaryManager {
 
     @Override
     public void registerWebDriverBinary(final Browser browser, final File webDriverBinaryFile) {
+        if (!webDriverBinaryFile.exists()) {
+            throw new IllegalArgumentException(format("Cannot register WebDriver binary for %s: %s does not exist",
+                    browser, webDriverBinaryFile));
+        } else if (webDriverBinaryFile.isDirectory()) {
+            throw new IllegalArgumentException(format("Cannot register WebDriver binary for %s: %s is a directory",
+                    browser, webDriverBinaryFile));
+        }
 
+        final String binarySystemProperty = browser.getBinarySystemProperty()
+                .orElseThrow(() -> new UnsupportedOperationException(
+                        format("Cannot register WebDriver binary for %s: No binary system property", browser)));
+
+        System.setProperty(binarySystemProperty, webDriverBinaryFile.getAbsolutePath());
+
+        LOGGER.info("Registered \"{}\" as WebDriver binary for %s", webDriverBinaryFile.getAbsolutePath(), browser);
     }
 
     @Nonnull
