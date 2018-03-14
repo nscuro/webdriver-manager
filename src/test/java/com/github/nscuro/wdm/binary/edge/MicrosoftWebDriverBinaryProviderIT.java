@@ -31,7 +31,7 @@ class MicrosoftWebDriverBinaryProviderIT extends AbstractBinaryProviderIT {
     void shouldReturnLatestVersionForSupportedPlatforms(final Os os,
                                                         final Architecture architecture) throws IOException {
         assertThat(binaryProvider.getLatestBinaryVersion(os, architecture))
-                .get().asString().matches("([0-9|.]+)");
+                .isPresent().get().asString().matches("([0-9|.]+)");
     }
 
     @ParameterizedTest

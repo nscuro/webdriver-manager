@@ -5,6 +5,7 @@ import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.Platform;
 import com.github.nscuro.wdm.binary.BinaryProvider;
+import com.github.nscuro.wdm.binary.util.VersionComparator;
 import com.github.nscuro.wdm.binary.util.compression.BinaryExtractorFactory;
 import com.github.nscuro.wdm.binary.util.github.GitHubRelease;
 import com.github.nscuro.wdm.binary.util.github.GitHubReleaseAsset;
@@ -58,7 +59,7 @@ public final class OperaChromiumDriverBinaryProvider implements BinaryProvider {
                 .filter(release -> release.hasAssetForPlatform(platform))
                 .map(GitHubRelease::getTagName)
                 .map(this::normalizeTagName)
-                .max(Comparator.naturalOrder());
+                .max(new VersionComparator());
     }
 
     @Nonnull

@@ -5,6 +5,7 @@ import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.BinaryProvider;
 import com.github.nscuro.wdm.binary.util.MimeType;
+import com.github.nscuro.wdm.binary.util.VersionComparator;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -70,7 +71,7 @@ public class MicrosoftWebDriverBinaryProvider implements BinaryProvider {
         return getAvailableReleases()
                 .stream()
                 .map(MicrosoftWebDriverRelease::getVersion)
-                .max(Comparator.naturalOrder());
+                .max(new VersionComparator());
     }
 
     @Nonnull

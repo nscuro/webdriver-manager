@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,7 +32,9 @@ class GeckoDriverBinaryProviderIT extends AbstractBinaryProviderIT {
     @ParameterizedTest
     @MethodSource("provideSupportedPlatforms")
     void shouldReturnLatestVersionForSupportedPlatforms(final Os os, final Architecture architecture) throws IOException {
-        assertThat(binaryProvider.getLatestBinaryVersion(os, architecture))
+        final Optional<String> version = binaryProvider.getLatestBinaryVersion(os, architecture);
+        version.ifPresent(System.out::println);
+        assertThat(version)
                 .isPresent().get().asString().matches(VERSION_REGEX);
     }
 

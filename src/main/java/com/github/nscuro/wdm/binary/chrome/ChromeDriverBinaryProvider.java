@@ -4,6 +4,7 @@ import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.BinaryProvider;
+import com.github.nscuro.wdm.binary.util.VersionComparator;
 import com.github.nscuro.wdm.binary.util.compression.BinaryExtractorFactory;
 import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageDirectoryService;
 import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageEntry;
@@ -84,7 +85,7 @@ public final class ChromeDriverBinaryProvider implements BinaryProvider {
                 // For whatever reason there are versions higher than LATEST_RELEASE in the directory
                 // that are older than any of those equal to or lower than LATEST_RELEASE...
                 .filter(version -> Comparator.comparing(String::trim).compare(version, latestVersion) <= 0)
-                .max(Comparator.naturalOrder());
+                .max(new VersionComparator());
     }
 
     @Nonnull
@@ -114,7 +115,7 @@ public final class ChromeDriverBinaryProvider implements BinaryProvider {
      * e.g. {@link ChromeDriverPlatform#LINUX32}'s latest version is {@code 2.33}, even though
      * the latest version for all other platforms is {@code 2.36}.
      *
-     * @param directoryEntries Entries of the {@link GoogleCloudStorageDirectoryServiceImpl}
+     * @param directoryEntries Entries of the {@link GoogleCloudStorageDirectoryService}
      * @return The latest release version of ChromeDriver
      * @throws IOException
      */

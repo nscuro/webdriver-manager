@@ -4,6 +4,7 @@ import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.BinaryProvider;
+import com.github.nscuro.wdm.binary.util.VersionComparator;
 import com.github.nscuro.wdm.binary.util.compression.BinaryExtractorFactory;
 import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageDirectoryService;
 import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageEntry;
@@ -69,7 +70,7 @@ public final class IEDriverServerBinaryProvider implements BinaryProvider {
                 .map(Optional::get)
                 .filter(release -> release.getArchitecture() == architecture)
                 .map(IEDriverServerRelease::getVersion)
-                .max(Comparator.naturalOrder());
+                .max(new VersionComparator());
     }
 
     @Nonnull
