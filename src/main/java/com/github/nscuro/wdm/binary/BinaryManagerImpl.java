@@ -98,7 +98,7 @@ final class BinaryManagerImpl implements BinaryManager {
 
         System.setProperty(binarySystemProperty, webDriverBinaryFile.getAbsolutePath());
 
-        LOGGER.info("Registered \"{}\" as WebDriver binary for %s", webDriverBinaryFile.getAbsolutePath(), browser);
+        LOGGER.info("Registered \"{}\" as WebDriver binary for {}", webDriverBinaryFile.getAbsolutePath(), browser);
     }
 
     @Nonnull
