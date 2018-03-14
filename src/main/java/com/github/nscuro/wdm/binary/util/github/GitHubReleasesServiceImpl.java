@@ -143,9 +143,11 @@ final class GitHubReleasesServiceImpl implements GitHubReleasesService {
                 throw new NoSuchElementException();
             }
 
-            remainingRateLimit.ifPresent(rateLimit ->
-                    LOGGER.warn("You have only {} requests left until GitHub's API rate limit kicks in. {}",
-                            rateLimit, rateLimitResetMessage.orElse("")));
+            remainingRateLimit
+                    .filter(rateLimit -> rateLimit <= 10)
+                    .ifPresent(rateLimit ->
+                            LOGGER.warn("You have only {} requests left until GitHub's API rate limit kicks in. {}",
+                                    rateLimit, rateLimitResetMessage.orElse("")));
 
             return EntityUtils.toString(httpResponse.getEntity());
         });

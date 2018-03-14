@@ -91,8 +91,8 @@ final class GoogleCloudStorageDirectoryServiceImpl implements GoogleCloudStorage
             verifyContentTypeIsAnyOf(httpResponse, APPLICATION_ZIP, APPLICATION_X_ZIP_COMPRESSED);
 
             final Path targetFilePath = Files.createTempFile(format("%s_", fileName), format(".%s", fileExtension));
-            LOGGER.debug("Downloading \"{}\" to \"{}\" ({})", fileName, targetFilePath,
-                    httpResponse.getFirstHeader(HttpHeaders.CONTENT_LENGTH));
+            LOGGER.debug("Downloading \"{}.{}\" to \"{}\" ({})", fileName, fileExtension,
+                    targetFilePath, httpResponse.getFirstHeader(HttpHeaders.CONTENT_LENGTH));
 
             try (final OutputStream fileOutputStream = Files.newOutputStream(targetFilePath)) {
                 Optional.ofNullable(httpResponse.getEntity())
