@@ -34,15 +34,15 @@ import static java.lang.String.format;
 /**
  * @since 0.2.0
  */
-public class GoogleCloudStorageDirectory {
+final class GoogleCloudStorageDirectoryServiceImpl implements GoogleCloudStorageDirectoryService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GoogleCloudStorageDirectory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GoogleCloudStorageDirectoryServiceImpl.class);
 
     private final HttpClient httpClient;
 
     private final String directoryUrl;
 
-    public GoogleCloudStorageDirectory(final HttpClient httpClient, final String directoryUrl) {
+    GoogleCloudStorageDirectoryServiceImpl(final HttpClient httpClient, final String directoryUrl) {
         this.httpClient = httpClient;
         this.directoryUrl = directoryUrl;
     }
@@ -66,19 +66,8 @@ public class GoogleCloudStorageDirectory {
                     final Optional<String> url = key
                             .map(entryKey -> directoryUrl + entryKey);
 
-                    final Optional<Long> size = Optional
-                            .ofNullable(entry.selectFirst("Size"))
-                            .map(Element::text)
-                            .map(text -> {
-                                try {
-                                    return Long.parseLong(text);
-                                } catch (NumberFormatException e) {
-                                    return null;
-                                }
-                            });
-
-                    if (key.isPresent() && size.isPresent()) {
-                        return new GoogleCloudStorageEntry(key.get(), url.get(), size.get());
+                    if (key.isPresent()) {
+                        return new GoogleCloudStorageEntry(key.get(), url.get());
                     } else {
                         LOGGER.warn("Incomplete directory entry: \"{}\"", entry.text());
                         return null;
@@ -89,11 +78,11 @@ public class GoogleCloudStorageDirectory {
     }
 
     @Nonnull
-    public File downloadFile(final String fileUrl) throws IOException {
-        final String fileName = FilenameUtils.getBaseName(fileUrl);
-        final String fileExtension = FilenameUtils.getExtension(fileUrl);
+    public File downloadFile(final GoogleCloudStorageEntry fileEntry) throws IOException {
+        final String fileName = FilenameUtils.getBaseName(fileEntry.getUrl());
+        final String fileExtension = FilenameUtils.getExtension(fileEntry.getUrl());
 
-        final HttpGet request = new HttpGet(fileUrl);
+        final HttpGet request = new HttpGet(fileEntry.getUrl());
         request.setHeader(HttpHeaders.ACCEPT, format("%s,%s", APPLICATION_ZIP, APPLICATION_X_ZIP_COMPRESSED));
 
         return httpClient.execute(request, httpResponse -> {

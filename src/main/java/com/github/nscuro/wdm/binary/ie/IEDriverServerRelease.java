@@ -1,17 +1,32 @@
 package com.github.nscuro.wdm.binary.ie;
 
 import com.github.nscuro.wdm.Architecture;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageEntry;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-@Data
-@AllArgsConstructor
-class IEDriverServerRelease {
+@ToString
+@EqualsAndHashCode(callSuper = false)
+final class IEDriverServerRelease extends GoogleCloudStorageEntry {
 
     private final String version;
 
     private final Architecture architecture;
 
-    private final String downloadUrl;
+    IEDriverServerRelease(final String key, final String url,
+                          final String version, final Architecture architecture) {
+        super(key, url);
+
+        this.version = version;
+        this.architecture = architecture;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public Architecture getArchitecture() {
+        return architecture;
+    }
 
 }

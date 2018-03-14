@@ -4,7 +4,7 @@ import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.util.compression.BinaryExtractorFactory;
-import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageDirectory;
+import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageDirectoryService;
 import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageEntry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -31,7 +31,7 @@ class IEDriverServerBinaryProviderTest {
 
     private static final String PLATFORM_X64 = "x64";
 
-    private GoogleCloudStorageDirectory cloudStorageDirectoryMock;
+    private GoogleCloudStorageDirectoryService cloudStorageDirectoryMock;
 
     private BinaryExtractorFactory binaryExtractorFactoryMock;
 
@@ -39,7 +39,7 @@ class IEDriverServerBinaryProviderTest {
 
     @BeforeEach
     void beforeEach() {
-        cloudStorageDirectoryMock = mock(GoogleCloudStorageDirectory.class);
+        cloudStorageDirectoryMock = mock(GoogleCloudStorageDirectoryService.class);
 
         binaryExtractorFactoryMock = mock(BinaryExtractorFactory.class);
 
@@ -71,11 +71,11 @@ class IEDriverServerBinaryProviderTest {
         void shouldReturnLatestVersion() throws IOException {
             given(cloudStorageDirectoryMock.getEntries())
                     .willReturn(Arrays.asList(
-                            new GoogleCloudStorageEntry(format("1.0/IEDriverServer_%s", PLATFORM_WIN32), null, null),
-                            new GoogleCloudStorageEntry(format("1.1/IEDriverServer_%s", PLATFORM_X64), null, null),
-                            new GoogleCloudStorageEntry(format("1.2/IEDriverServer_%s", PLATFORM_WIN32), null, null),
+                            new GoogleCloudStorageEntry(format("1.0/IEDriverServer_%s", PLATFORM_WIN32), null),
+                            new GoogleCloudStorageEntry(format("1.1/IEDriverServer_%s", PLATFORM_X64), null),
+                            new GoogleCloudStorageEntry(format("1.2/IEDriverServer_%s", PLATFORM_WIN32), null),
                             // This entry shouldn't match as it doesn't contain the binary name
-                            new GoogleCloudStorageEntry(format("1.3/%s", PLATFORM_X64), null, null)
+                            new GoogleCloudStorageEntry(format("1.3/%s", PLATFORM_X64), null)
                     ));
 
             assertThat(binaryProvider.getLatestBinaryVersion(Os.WINDOWS, Architecture.X86))

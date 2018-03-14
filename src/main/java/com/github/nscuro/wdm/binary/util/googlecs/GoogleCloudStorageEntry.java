@@ -1,19 +1,30 @@
 package com.github.nscuro.wdm.binary.util.googlecs;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * @since 0.2.0
  */
-@Data
-@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class GoogleCloudStorageEntry {
 
     private final String key;
 
     private final String url;
 
-    private final Long size;
+    public GoogleCloudStorageEntry(final String key, final String url) {
+        this.key = key;
+        this.url = url;
+    }
+
+    public final String getKey() {
+        return key;
+    }
+
+    public final String getUrl() {
+        return url;
+    }
 
 }

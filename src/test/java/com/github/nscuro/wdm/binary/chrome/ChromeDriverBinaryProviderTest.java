@@ -4,7 +4,7 @@ import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.util.compression.BinaryExtractorFactory;
-import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageDirectory;
+import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageDirectoryService;
 import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageEntry;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -35,7 +35,7 @@ class ChromeDriverBinaryProviderTest {
 
     private HttpClient httpClientMock;
 
-    private GoogleCloudStorageDirectory cloudStorageDirectoryMock;
+    private GoogleCloudStorageDirectoryService cloudStorageDirectoryMock;
 
     private BinaryExtractorFactory binaryExtractorFactoryMock;
 
@@ -45,7 +45,7 @@ class ChromeDriverBinaryProviderTest {
     void beforeEach() {
         httpClientMock = mock(HttpClient.class);
 
-        cloudStorageDirectoryMock = mock(GoogleCloudStorageDirectory.class);
+        cloudStorageDirectoryMock = mock(GoogleCloudStorageDirectoryService.class);
 
         binaryExtractorFactoryMock = mock(BinaryExtractorFactory.class);
 
@@ -74,17 +74,17 @@ class ChromeDriverBinaryProviderTest {
     class GetLatestBinaryVersionTest {
 
         private final GoogleCloudStorageEntry LATEST_RELEASE_ENTRY =
-                new GoogleCloudStorageEntry("LATEST_RELEASE", "LATEST_RELEASE_URL", null);
+                new GoogleCloudStorageEntry("LATEST_RELEASE", "LATEST_RELEASE_URL");
 
         @Test
         void shouldReturnLatestAvailableVersionNotHigherThanSuggestedByReleaseFile() throws IOException {
             given(cloudStorageDirectoryMock.getEntries())
                     .willReturn(Arrays.asList(
-                            new GoogleCloudStorageEntry(format("1.1/%s", MAC64), null, null),
-                            new GoogleCloudStorageEntry(format("1.1/%s", LINUX64), null, null),
-                            new GoogleCloudStorageEntry(format("1.2/%s", MAC64), null, null),
-                            new GoogleCloudStorageEntry(format("1.3/%s", MAC64), null, null),
-                            new GoogleCloudStorageEntry(format("1.3/%s", LINUX64), null, null),
+                            new GoogleCloudStorageEntry(format("1.1/%s", MAC64), null),
+                            new GoogleCloudStorageEntry(format("1.1/%s", LINUX64), null),
+                            new GoogleCloudStorageEntry(format("1.2/%s", MAC64), null),
+                            new GoogleCloudStorageEntry(format("1.3/%s", MAC64), null),
+                            new GoogleCloudStorageEntry(format("1.3/%s", LINUX64), null),
                             LATEST_RELEASE_ENTRY
                     ));
 
@@ -118,7 +118,7 @@ class ChromeDriverBinaryProviderTest {
         void shouldReturnEmptyOptionalWhenPlatformDoesNotMatch() throws IOException {
             given(cloudStorageDirectoryMock.getEntries())
                     .willReturn(Arrays.asList(
-                            new GoogleCloudStorageEntry(format("2.2/%s", WIN32), null, null),
+                            new GoogleCloudStorageEntry(format("2.2/%s", WIN32), null),
                             LATEST_RELEASE_ENTRY)
                     );
 

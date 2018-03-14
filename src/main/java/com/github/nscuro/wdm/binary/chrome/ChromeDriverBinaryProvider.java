@@ -5,7 +5,7 @@ import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.BinaryProvider;
 import com.github.nscuro.wdm.binary.util.compression.BinaryExtractorFactory;
-import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageDirectory;
+import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageDirectoryService;
 import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageEntry;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -37,18 +37,18 @@ public final class ChromeDriverBinaryProvider implements BinaryProvider {
 
     private final HttpClient httpClient;
 
-    private final GoogleCloudStorageDirectory cloudStorageDirectory;
+    private final GoogleCloudStorageDirectoryService cloudStorageDirectory;
 
     private final BinaryExtractorFactory binaryExtractorFactory;
 
     public ChromeDriverBinaryProvider(final HttpClient httpClient) {
         this(httpClient,
-                new GoogleCloudStorageDirectory(httpClient, "https://chromedriver.storage.googleapis.com/"),
+                GoogleCloudStorageDirectoryService.create(httpClient, "https://chromedriver.storage.googleapis.com/"),
                 new BinaryExtractorFactory());
     }
 
     ChromeDriverBinaryProvider(final HttpClient httpClient,
-                               final GoogleCloudStorageDirectory cloudStorageDirectory,
+                               final GoogleCloudStorageDirectoryService cloudStorageDirectory,
                                final BinaryExtractorFactory binaryExtractorFactory) {
         this.httpClient = httpClient;
         this.cloudStorageDirectory = cloudStorageDirectory;
@@ -94,17 +94,16 @@ public final class ChromeDriverBinaryProvider implements BinaryProvider {
                 .orElseThrow(() -> new UnsupportedOperationException(
                         format("ChromeDriver is not supported on %s %s", os, architecture)));
 
-        final String downloadUrl = cloudStorageDirectory
+        final GoogleCloudStorageEntry binaryFileEntry = cloudStorageDirectory
                 .getEntries()
                 .stream()
                 .filter(entry -> entry.getKey().contains(version))
                 .filter(entry -> entry.getKey().contains(platform.getName()))
                 .findAny()
-                .map(GoogleCloudStorageEntry::getUrl)
                 .orElseThrow(NoSuchElementException::new);
 
         return binaryExtractorFactory
-                .getBinaryExtractorForArchiveFile(cloudStorageDirectory.downloadFile(downloadUrl))
+                .getBinaryExtractorForArchiveFile(cloudStorageDirectory.downloadFile(binaryFileEntry))
                 .extractBinary(binaryDestinationPath, entryIsFile().and(entryNameStartsWithIgnoringCase(BINARY_NAME)));
     }
 
@@ -115,7 +114,7 @@ public final class ChromeDriverBinaryProvider implements BinaryProvider {
      * e.g. {@link ChromeDriverPlatform#LINUX32}'s latest version is {@code 2.33}, even though
      * the latest version for all other platforms is {@code 2.36}.
      *
-     * @param directoryEntries Entries of the {@link GoogleCloudStorageDirectory}
+     * @param directoryEntries Entries of the {@link GoogleCloudStorageDirectoryServiceImpl}
      * @return The latest release version of ChromeDriver
      * @throws IOException
      */

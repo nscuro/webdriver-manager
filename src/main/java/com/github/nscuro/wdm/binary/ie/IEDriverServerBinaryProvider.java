@@ -5,7 +5,7 @@ import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.BinaryProvider;
 import com.github.nscuro.wdm.binary.util.compression.BinaryExtractorFactory;
-import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageDirectory;
+import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageDirectoryService;
 import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageEntry;
 import org.apache.http.client.HttpClient;
 import org.slf4j.Logger;
@@ -34,15 +34,15 @@ public final class IEDriverServerBinaryProvider implements BinaryProvider {
 
     private static final String BINARY_NAME = "IEDriverServer";
 
-    private final GoogleCloudStorageDirectory cloudStorageDirectory;
+    private final GoogleCloudStorageDirectoryService cloudStorageDirectory;
 
     private final BinaryExtractorFactory binaryExtractorFactory;
 
     public IEDriverServerBinaryProvider(final HttpClient httpClient) {
-        this(new GoogleCloudStorageDirectory(httpClient, DEFAULT_GCS_DIRECTORY_URL), new BinaryExtractorFactory());
+        this(GoogleCloudStorageDirectoryService.create(httpClient, DEFAULT_GCS_DIRECTORY_URL), new BinaryExtractorFactory());
     }
 
-    IEDriverServerBinaryProvider(final GoogleCloudStorageDirectory cloudStorageDirectory,
+    IEDriverServerBinaryProvider(final GoogleCloudStorageDirectoryService cloudStorageDirectory,
                                  final BinaryExtractorFactory binaryExtractorFactory) {
         this.cloudStorageDirectory = cloudStorageDirectory;
         this.binaryExtractorFactory = binaryExtractorFactory;
@@ -79,7 +79,7 @@ public final class IEDriverServerBinaryProvider implements BinaryProvider {
             throw new UnsupportedOperationException("IEDriverServer is only supported on Windows systems");
         }
 
-        final String downloadUrl = cloudStorageDirectory
+        final IEDriverServerRelease matchingRelease = cloudStorageDirectory
                 .getEntries()
                 .stream()
                 .map(this::toIEDriverServerRelease)
@@ -88,12 +88,11 @@ public final class IEDriverServerBinaryProvider implements BinaryProvider {
                 .filter(release -> release.getArchitecture() == architecture)
                 .filter(release -> release.getVersion().equals(version))
                 .findAny()
-                .map(IEDriverServerRelease::getDownloadUrl)
                 .orElseThrow(() -> new NoSuchElementException(
                         format("No IEDriverServer binary available for %s %s in version %s", os, architecture, version)));
 
         return binaryExtractorFactory
-                .getBinaryExtractorForArchiveFile(cloudStorageDirectory.downloadFile(downloadUrl))
+                .getBinaryExtractorForArchiveFile(cloudStorageDirectory.downloadFile(matchingRelease))
                 .extractBinary(binaryDestinationPath, entryIsFile().and(entryNameStartsWithIgnoringCase(BINARY_NAME)));
     }
 
@@ -115,7 +114,7 @@ public final class IEDriverServerBinaryProvider implements BinaryProvider {
             return Optional.empty();
         }
 
-        return Optional.of(new IEDriverServerRelease(version, architecture, entry.getUrl()));
+        return Optional.of(new IEDriverServerRelease(entry.getKey(), entry.getUrl(), version, architecture));
     }
 
 }
