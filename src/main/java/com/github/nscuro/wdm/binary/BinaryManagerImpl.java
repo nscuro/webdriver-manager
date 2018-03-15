@@ -29,7 +29,7 @@ final class BinaryManagerImpl implements BinaryManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BinaryManagerImpl.class);
 
-    private static final String WEB_DRIVER_BINARY_PREFIX = "wdm-webdriver";
+    static final String WEB_DRIVER_BINARY_PREFIX = "wdm-webdriver";
 
     private Path binaryDestinationDirPath;
 
@@ -151,7 +151,7 @@ final class BinaryManagerImpl implements BinaryManager {
                         os.name(), architecture.name(), version).toLowerCase());
     }
 
-    private boolean isWebDriverBinary(final File file) {
+    boolean isWebDriverBinary(final File file) {
         return file.isFile() && file.getName().startsWith(WEB_DRIVER_BINARY_PREFIX);
     }
 

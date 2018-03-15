@@ -8,8 +8,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -142,12 +144,84 @@ class BinaryManagerImplTest {
 
     @Nested
     class RegisterWebDriverBinaryTest {
-        // TODO
+
+        private File binaryFileMock;
+
+        @BeforeEach
+        void beforeEach() {
+            binaryFileMock = mock(File.class);
+        }
+
+        @Test
+        void shouldThrowExceptionWhenFileDoesNotExist() {
+            given(binaryFileMock.exists())
+                    .willReturn(false);
+
+            assertThatExceptionOfType(IllegalArgumentException.class)
+                    .isThrownBy(() -> binaryManager.registerWebDriverBinary(Browser.CHROME, binaryFileMock))
+                    .withMessageContaining("does not exist");
+        }
+
+        @Test
+        void shouldThrowExceptionWhenFileIsDirectory() {
+            given(binaryFileMock.exists())
+                    .willReturn(true);
+
+            given(binaryFileMock.isDirectory())
+                    .willReturn(true);
+
+            assertThatExceptionOfType(IllegalArgumentException.class)
+                    .isThrownBy(() -> binaryManager.registerWebDriverBinary(Browser.CHROME, binaryFileMock))
+                    .withMessageContaining("is a directory");
+        }
+
+        @Test
+        void shouldThrowExceptionWhenBrowserDoesNotDefineSystemProperty() {
+            given(binaryFileMock.exists())
+                    .willReturn(true);
+
+            given(binaryFileMock.isDirectory())
+                    .willReturn(false);
+
+            // Can't mock Browser as it's an Enum class (effectively final)
+            final Browser browserWithoutSystemProperty = Arrays
+                    .stream(Browser.values())
+                    .filter(browser -> !browser.getBinarySystemProperty().isPresent())
+                    .findAny()
+                    .orElseThrow(() -> new IllegalStateException("No Browser found that does not provide a system property"));
+
+            assertThatExceptionOfType(UnsupportedOperationException.class)
+                    .isThrownBy(() -> binaryManager.registerWebDriverBinary(browserWithoutSystemProperty, binaryFileMock));
+        }
+
     }
 
     @Nested
     class GetLocalWebDriverBinariesTest {
-        // TODO
+
+        @Test
+        void shouldReturnListOfExistingWebDriverBinaries() {
+            final File fileMock = mock(File.class);
+
+            given(fileMock.getName())
+                    .willReturn(BinaryManagerImpl.WEB_DRIVER_BINARY_PREFIX + "_some-binary-file");
+
+            given(binaryDestinationDirFileMock.listFiles(any(FileFilter.class)))
+                    .willReturn(new File[]{fileMock});
+
+            assertThat(binaryManager.getLocalWebDriverBinaries())
+                    .containsOnly(fileMock);
+        }
+
+        @Test
+        void shouldReturnEmptyListWhenDirectoryIsEmpty() {
+            given(binaryDestinationDirFileMock.listFiles(any(FileFilter.class)))
+                    .willReturn(new File[]{});
+
+            assertThat(binaryManager.getLocalWebDriverBinaries())
+                    .isEmpty();
+        }
+
     }
 
     @Nested
@@ -254,6 +328,48 @@ class BinaryManagerImplTest {
             assertThatExceptionOfType(IllegalStateException.class)
                     .isThrownBy(() -> binaryManager.validateAndPrepareBinaryDestinationDirPath(binaryDestinationDirPathMock))
                     .withMessageContaining("has not been created");
+        }
+
+    }
+
+    @Nested
+    class IsWebDriverBinaryTest {
+
+        private File inputFileMock;
+
+        @BeforeEach
+        void beforeEach() {
+            inputFileMock = mock(File.class);
+        }
+
+        @Test
+        void shouldReturnFalseWhenInputIsNotAFile() {
+            given(inputFileMock.isFile())
+                    .willReturn(false);
+
+            assertThat(binaryManager.isWebDriverBinary(inputFileMock)).isFalse();
+        }
+
+        @Test
+        void shouldReturnFalseWhenInputNameDoesNotMatchTheWebDriverBinaryScheme() {
+            given(inputFileMock.isFile())
+                    .willReturn(true);
+
+            given(inputFileMock.getName())
+                    .willReturn("notAWebDriverBinary");
+
+            assertThat(binaryManager.isWebDriverBinary(inputFileMock)).isFalse();
+        }
+
+        @Test
+        void shouldReturnTrueWhenInputIsAFileAndNamesMatchesTheWebDriverBinaryScheme() {
+            given(inputFileMock.isFile())
+                    .willReturn(true);
+
+            given(inputFileMock.getName())
+                    .willReturn(BinaryManagerImpl.WEB_DRIVER_BINARY_PREFIX + "_someBrowser");
+
+            assertThat(binaryManager.isWebDriverBinary(inputFileMock)).isTrue();
         }
 
     }
