@@ -16,7 +16,6 @@ import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Comparator;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -31,8 +30,6 @@ public final class IEDriverServerBinaryProvider implements BinaryProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IEDriverServerBinaryProvider.class);
 
-    private static final String DEFAULT_GCS_DIRECTORY_URL = "https://selenium-release.storage.googleapis.com/";
-
     private static final String BINARY_NAME = "IEDriverServer";
 
     private final GoogleCloudStorageDirectoryService cloudStorageDirectory;
@@ -40,7 +37,8 @@ public final class IEDriverServerBinaryProvider implements BinaryProvider {
     private final BinaryExtractorFactory binaryExtractorFactory;
 
     public IEDriverServerBinaryProvider(final HttpClient httpClient) {
-        this(GoogleCloudStorageDirectoryService.create(httpClient, DEFAULT_GCS_DIRECTORY_URL), new BinaryExtractorFactory());
+        this(GoogleCloudStorageDirectoryService.create(httpClient, "https://selenium-release.storage.googleapis.com/"),
+                new BinaryExtractorFactory());
     }
 
     IEDriverServerBinaryProvider(final GoogleCloudStorageDirectoryService cloudStorageDirectory,
