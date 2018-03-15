@@ -1,4 +1,4 @@
-package com.github.nscuro.wdm.binary.firefox;
+package com.github.nscuro.wdm.binary.opera;
 
 import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Browser;
@@ -23,13 +23,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class GeckoDriverBinaryProviderTest {
+class OperaChromiumDriverBinaryProviderTest {
 
     private GitHubReleasesService gitHubReleasesServiceMock;
 
     private BinaryExtractorFactory binaryExtractorFactoryMock;
 
-    private GeckoDriverBinaryProvider binaryProvider;
+    private OperaChromiumDriverBinaryProvider binaryProvider;
 
     @BeforeEach
     void beforeEach() {
@@ -37,7 +37,7 @@ class GeckoDriverBinaryProviderTest {
 
         binaryExtractorFactoryMock = mock(BinaryExtractorFactory.class);
 
-        binaryProvider = new GeckoDriverBinaryProvider(gitHubReleasesServiceMock,
+        binaryProvider = new OperaChromiumDriverBinaryProvider(gitHubReleasesServiceMock,
                 binaryExtractorFactoryMock);
     }
 
@@ -45,14 +45,14 @@ class GeckoDriverBinaryProviderTest {
     class ProvidesBinaryForBrowserTest {
 
         @Test
-        void shouldReturnTrueForFirefoxBrowser() {
-            assertThat(binaryProvider.providesBinaryForBrowser(Browser.FIREFOX)).isTrue();
+        void shouldReturnTrueForOperaBrowser() {
+            assertThat(binaryProvider.providesBinaryForBrowser(Browser.OPERA)).isTrue();
         }
 
         @ParameterizedTest
         @EnumSource(Browser.class)
-        void shouldReturnFalseForEveryBrowserExceptFirefox(final Browser browser) {
-            assumeFalse(Browser.FIREFOX == browser);
+        void shouldReturnFalseForEveryBrowserExceptOpera(final Browser browser) {
+            assumeFalse(Browser.OPERA == browser);
 
             assertThat(binaryProvider.providesBinaryForBrowser(browser)).isFalse();
         }
@@ -67,7 +67,7 @@ class GeckoDriverBinaryProviderTest {
             final GitHubRelease oldReleaseMock = mock(GitHubRelease.class);
 
             given(oldReleaseMock.getTagName())
-                    .willReturn("v0.18.0");
+                    .willReturn("v.2.2");
 
             given(oldReleaseMock.hasAssetForPlatform(any(Platform.class)))
                     .willReturn(true);
@@ -75,7 +75,7 @@ class GeckoDriverBinaryProviderTest {
             final GitHubRelease newReleaseMock = mock(GitHubRelease.class);
 
             given(oldReleaseMock.getTagName())
-                    .willReturn("v0.19.1");
+                    .willReturn("v2.29");
 
             given(oldReleaseMock.hasAssetForPlatform(any(Platform.class)))
                     .willReturn(true);
@@ -87,7 +87,7 @@ class GeckoDriverBinaryProviderTest {
                     ));
 
             assertThat(binaryProvider.getLatestBinaryVersion(Os.WINDOWS, Architecture.X64))
-                    .hasValue("0.19.1");
+                    .hasValue("2.29");
         }
 
         @Test
@@ -118,7 +118,7 @@ class GeckoDriverBinaryProviderTest {
             given(gitHubReleasesServiceMock.getAllReleases())
                     .willReturn(Collections.singletonList(releaseMock));
 
-            assertThat(binaryProvider.getLatestBinaryVersion(Os.MACOS, Architecture.X64))
+            assertThat(binaryProvider.getLatestBinaryVersion(Os.WINDOWS, Architecture.X64))
                     .isNotPresent();
         }
 
