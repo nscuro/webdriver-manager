@@ -11,6 +11,8 @@ import com.github.nscuro.wdm.binary.util.github.GitHubRelease;
 import com.github.nscuro.wdm.binary.util.github.GitHubReleaseAsset;
 import com.github.nscuro.wdm.binary.util.github.GitHubReleasesService;
 import org.apache.http.client.HttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -22,9 +24,12 @@ import java.util.Optional;
 
 import static com.github.nscuro.wdm.binary.util.compression.BinaryExtractor.FileSelectors.entryIsFile;
 import static com.github.nscuro.wdm.binary.util.compression.BinaryExtractor.FileSelectors.entryNameStartsWithIgnoringCase;
+import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 
 public final class OperaChromiumDriverBinaryProvider implements BinaryProvider {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OperaChromiumDriverBinaryProvider.class);
 
     private static final String BINARY_NAME = "operadriver";
 
@@ -51,12 +56,17 @@ public final class OperaChromiumDriverBinaryProvider implements BinaryProvider {
     @Nonnull
     @Override
     public Optional<String> getLatestBinaryVersion(final Os os, final Architecture architecture) throws IOException {
-        final Platform platform = OperaChromiumDriverPlatform.valueOf(os, architecture);
+        final Optional<OperaChromiumDriverPlatform> platform = OperaChromiumDriverPlatform.valueOf(os, architecture);
+
+        if (!platform.isPresent()) {
+            LOGGER.warn("OperaChromiumDriver is not supported on {} {}", os, architecture);
+            return Optional.empty();
+        }
 
         return gitHubReleasesService
                 .getAllReleases()
                 .stream()
-                .filter(release -> release.hasAssetForPlatform(platform))
+                .filter(release -> release.hasAssetForPlatform(platform.get()))
                 .map(GitHubRelease::getTagName)
                 .map(this::normalizeTagName)
                 .max(new VersionComparator());
@@ -65,7 +75,9 @@ public final class OperaChromiumDriverBinaryProvider implements BinaryProvider {
     @Nonnull
     @Override
     public File download(final String version, final Os os, final Architecture architecture, final Path binaryDestinationPath) throws IOException {
-        final Platform platform = OperaChromiumDriverPlatform.valueOf(os, architecture);
+        final OperaChromiumDriverPlatform platform = OperaChromiumDriverPlatform.valueOf(os, architecture)
+                .orElseThrow(() -> new UnsupportedOperationException(
+                        format("OperaChromiumDriver is not supported on %s %s", os, architecture)));
 
         final GitHubReleaseAsset matchingAsset = gitHubReleasesService
                 .getAllReleases()

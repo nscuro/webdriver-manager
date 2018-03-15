@@ -7,6 +7,7 @@ import com.github.nscuro.wdm.Platform;
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -37,12 +38,11 @@ enum OperaChromiumDriverPlatform implements Platform {
         this.architecture = architecture;
     }
 
-    static Platform valueOf(final Os os, final Architecture architecture) {
+    static Optional<OperaChromiumDriverPlatform> valueOf(final Os os, final Architecture architecture) {
         return Arrays.stream(values())
                 .filter(platform -> platform.getOs() == os)
                 .filter(platform -> platform.getArchitectures().contains(architecture))
-                .findAny()
-                .orElseThrow(IllegalArgumentException::new);
+                .findAny();
     }
 
     @Nonnull

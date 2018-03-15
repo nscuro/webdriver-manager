@@ -40,37 +40,37 @@ class OperaChromiumDriverPlatformTest {
         @Test
         void shouldIdentifyWin32() {
             assertThat(OperaChromiumDriverPlatform.valueOf(Os.WINDOWS, Architecture.X86))
-                    .isEqualTo(OperaChromiumDriverPlatform.WIN32);
+                    .hasValue(OperaChromiumDriverPlatform.WIN32);
         }
 
         @Test
         void shouldIdentifyWin64() {
             assertThat(OperaChromiumDriverPlatform.valueOf(Os.WINDOWS, Architecture.X64))
-                    .isEqualTo(OperaChromiumDriverPlatform.WIN64);
+                    .hasValue(OperaChromiumDriverPlatform.WIN64);
         }
 
         @Test
         void shouldIdentifyLinux32() {
             assertThat(OperaChromiumDriverPlatform.valueOf(Os.LINUX, Architecture.X86))
-                    .isEqualTo(OperaChromiumDriverPlatform.LINUX32);
+                    .hasValue(OperaChromiumDriverPlatform.LINUX32);
         }
 
         @Test
         void shouldIdentifyLinux64() {
             assertThat(OperaChromiumDriverPlatform.valueOf(Os.LINUX, Architecture.X64))
-                    .isEqualTo(OperaChromiumDriverPlatform.LINUX64);
+                    .hasValue(OperaChromiumDriverPlatform.LINUX64);
         }
 
         @Test
         void shouldIdentifyMac64() {
             assertThat(OperaChromiumDriverPlatform.valueOf(Os.MACOS, Architecture.X64))
-                    .isEqualTo(OperaChromiumDriverPlatform.MAC64);
+                    .hasValue(OperaChromiumDriverPlatform.MAC64);
         }
 
         @Test
         void shouldNotIdentifyMac32() {
-            assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> OperaChromiumDriverPlatform.valueOf(Os.MACOS, Architecture.X86));
+            assertThat(OperaChromiumDriverPlatform.valueOf(Os.MACOS, Architecture.X86))
+                    .isNotPresent();
         }
 
     }
