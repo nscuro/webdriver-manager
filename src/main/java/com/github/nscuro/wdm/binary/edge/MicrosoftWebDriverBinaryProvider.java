@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -34,6 +33,9 @@ import static com.github.nscuro.wdm.binary.util.HttpUtils.verifyStatusCodeIsAnyO
 import static java.util.Objects.requireNonNull;
 
 /**
+ * A {@link BinaryProvider} for Microsoft's WebDriver implementation.
+ *
+ * @see <a href="https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/">Microsoft WebDriver homepage</a>
  * @since 0.2.0
  */
 public class MicrosoftWebDriverBinaryProvider implements BinaryProvider {
@@ -55,11 +57,17 @@ public class MicrosoftWebDriverBinaryProvider implements BinaryProvider {
         this.binaryDownloadPageUrl = requireNonNull(binaryDownloadPageUrl, "no binary download page URL provided");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean providesBinaryForBrowser(final Browser browser) {
         return Browser.EDGE == browser;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public Optional<String> getLatestBinaryVersion(final Os os, final Architecture architecture) throws IOException {
@@ -74,6 +82,9 @@ public class MicrosoftWebDriverBinaryProvider implements BinaryProvider {
                 .max(new VersionComparator());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public File download(final String version, final Os os, final Architecture architecture, final Path binaryDestinationPath) throws IOException {

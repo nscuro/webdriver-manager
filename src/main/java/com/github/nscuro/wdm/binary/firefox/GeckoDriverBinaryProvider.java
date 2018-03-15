@@ -27,6 +27,10 @@ import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 
 /**
+ * A {@link BinaryProvider} for Mozilla's GeckoDriver.
+ *
+ * @see <a href="https://developer.mozilla.org/en-US/docs/Mozilla/QA/Marionette/WebDriver">Mozilla WebDriver homepage</a>
+ * @see <a href="https://github.com/mozilla/geckodriver">GeckoDriver project page</a>
  * @since 0.2.0
  */
 public final class GeckoDriverBinaryProvider implements BinaryProvider {
@@ -50,11 +54,17 @@ public final class GeckoDriverBinaryProvider implements BinaryProvider {
         this.binaryExtractorFactory = binaryExtractorFactory;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean providesBinaryForBrowser(final Browser browser) {
         return Browser.FIREFOX == browser;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public Optional<String> getLatestBinaryVersion(final Os os, final Architecture architecture) throws IOException {
@@ -74,6 +84,9 @@ public final class GeckoDriverBinaryProvider implements BinaryProvider {
                 .max(new VersionComparator());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public File download(final String version, final Os os, final Architecture architecture, final Path binaryDestinationPath) throws IOException {

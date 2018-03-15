@@ -24,6 +24,8 @@ import static com.github.nscuro.wdm.binary.util.compression.BinaryExtractor.File
 import static java.lang.String.format;
 
 /**
+ * A {@link BinaryProvider} for Microsoft's IEDriverServer.
+ *
  * @since 0.2.0
  */
 public final class IEDriverServerBinaryProvider implements BinaryProvider {
@@ -47,11 +49,17 @@ public final class IEDriverServerBinaryProvider implements BinaryProvider {
         this.binaryExtractorFactory = binaryExtractorFactory;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean providesBinaryForBrowser(final Browser browser) {
         return Browser.INTERNET_EXPLORER == browser;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public Optional<String> getLatestBinaryVersion(final Os os, final Architecture architecture) throws IOException {
@@ -71,6 +79,9 @@ public final class IEDriverServerBinaryProvider implements BinaryProvider {
                 .max(new VersionComparator());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public File download(final String version, final Os os, final Architecture architecture, final Path binaryDestinationPath) throws IOException {

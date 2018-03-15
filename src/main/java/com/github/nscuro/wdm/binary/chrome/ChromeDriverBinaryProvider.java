@@ -28,6 +28,9 @@ import static com.github.nscuro.wdm.binary.util.compression.BinaryExtractor.File
 import static java.lang.String.format;
 
 /**
+ * A {@link BinaryProvider} for Google's ChromeDriver.
+ *
+ * @see <a href="https://sites.google.com/a/chromium.org/chromedriver/">ChromeDriver homepage</a>
  * @since 0.2.0
  */
 public final class ChromeDriverBinaryProvider implements BinaryProvider {
@@ -56,11 +59,17 @@ public final class ChromeDriverBinaryProvider implements BinaryProvider {
         this.binaryExtractorFactory = binaryExtractorFactory;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean providesBinaryForBrowser(final Browser browser) {
         return Browser.CHROME == browser;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public Optional<String> getLatestBinaryVersion(final Os os, final Architecture architecture) throws IOException {
@@ -88,6 +97,9 @@ public final class ChromeDriverBinaryProvider implements BinaryProvider {
                 .max(new VersionComparator());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public File download(final String version, final Os os, final Architecture architecture, final Path binaryDestinationPath) throws IOException {

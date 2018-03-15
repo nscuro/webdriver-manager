@@ -27,6 +27,12 @@ import static com.github.nscuro.wdm.binary.util.compression.BinaryExtractor.File
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * A {@link BinaryProvider} for Opera's OperaChromiumDriver.
+ *
+ * @see <a href="https://github.com/operasoftware/operachromiumdriver">OperaChromiumDriver project page</a>
+ * @since 0.2.0
+ */
 public final class OperaChromiumDriverBinaryProvider implements BinaryProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OperaChromiumDriverBinaryProvider.class);
@@ -48,11 +54,17 @@ public final class OperaChromiumDriverBinaryProvider implements BinaryProvider {
         this.binaryExtractorFactory = binaryExtractorFactory;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean providesBinaryForBrowser(final Browser browser) {
         return Browser.OPERA == browser;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public Optional<String> getLatestBinaryVersion(final Os os, final Architecture architecture) throws IOException {
@@ -72,6 +84,9 @@ public final class OperaChromiumDriverBinaryProvider implements BinaryProvider {
                 .max(new VersionComparator());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public File download(final String version, final Os os, final Architecture architecture, final Path binaryDestinationPath) throws IOException {
