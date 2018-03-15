@@ -36,7 +36,7 @@ public interface BinaryManager {
     List<File> getLocalWebDriverBinaries();
 
     @Nonnull
-    default File getWebDriverBinary(final Browser browser) throws IOException {
+    default File getLatestWebDriverBinary(final Browser browser) throws IOException {
         return getWebDriverBinary(browser, null, Os.getCurrent(), Architecture.getCurrent());
     }
 
@@ -46,7 +46,7 @@ public interface BinaryManager {
     }
 
     @Nonnull
-    default File getWebDriverBinary(final Browser browser, final Os os, final Architecture architecture) throws IOException {
+    default File getLatestWebDriverBinary(final Browser browser, final Os os, final Architecture architecture) throws IOException {
         return getWebDriverBinary(browser, null, os, architecture);
     }
 

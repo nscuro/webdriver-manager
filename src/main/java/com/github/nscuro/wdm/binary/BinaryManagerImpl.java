@@ -112,7 +112,7 @@ final class BinaryManagerImpl implements BinaryManager {
     }
 
     @Nonnull
-    private Path validateAndPrepareBinaryDestinationDirPath(final Path binaryDestinationDirPath) {
+    Path validateAndPrepareBinaryDestinationDirPath(final Path binaryDestinationDirPath) {
         final File fileHandle = requireNonNull(binaryDestinationDirPath).toFile();
 
         if (fileHandle.exists()) {
