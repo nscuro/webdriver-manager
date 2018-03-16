@@ -17,7 +17,6 @@ import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Comparator;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 

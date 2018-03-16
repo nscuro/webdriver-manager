@@ -1,7 +1,6 @@
 package com.github.nscuro.wdm.binary.util;
 
 import org.apache.http.Header;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 

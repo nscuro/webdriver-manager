@@ -1,12 +1,11 @@
 package com.github.nscuro.wdm.factory;
 
+import com.github.nscuro.wdm.Browser;
+import lombok.Data;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import com.github.nscuro.wdm.Browser;
-
-import lombok.Data;
 
 /**
  * Programmatic configuration for {@link WebDriverFactory}.

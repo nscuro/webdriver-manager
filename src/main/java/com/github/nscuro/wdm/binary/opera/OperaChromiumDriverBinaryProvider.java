@@ -3,7 +3,6 @@ package com.github.nscuro.wdm.binary.opera;
 import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
-import com.github.nscuro.wdm.Platform;
 import com.github.nscuro.wdm.binary.BinaryProvider;
 import com.github.nscuro.wdm.binary.util.VersionComparator;
 import com.github.nscuro.wdm.binary.util.compression.BinaryExtractorFactory;
@@ -18,7 +17,6 @@ import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Comparator;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
