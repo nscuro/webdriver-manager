@@ -49,12 +49,13 @@ public class MicrosoftWebDriverBinaryProvider implements BinaryProvider {
     private final String binaryDownloadPageUrl;
 
     public MicrosoftWebDriverBinaryProvider(final HttpClient httpClient) {
-        this(httpClient, "https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/");
+        this(requireNonNull(httpClient, "no HttpClient provided"),
+                "https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/");
     }
 
     MicrosoftWebDriverBinaryProvider(final HttpClient httpClient, final String binaryDownloadPageUrl) {
-        this.httpClient = requireNonNull(httpClient, "no HTTP client provided");
-        this.binaryDownloadPageUrl = requireNonNull(binaryDownloadPageUrl, "no binary download page URL provided");
+        this.httpClient = httpClient;
+        this.binaryDownloadPageUrl = binaryDownloadPageUrl;
     }
 
     /**

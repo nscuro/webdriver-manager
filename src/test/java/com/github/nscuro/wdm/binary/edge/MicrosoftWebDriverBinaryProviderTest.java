@@ -7,6 +7,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -27,6 +28,7 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
+@DisplayName("The Microsoft WebDriver BinaryProvider")
 class MicrosoftWebDriverBinaryProviderTest {
 
     private static final String TEST_BASE_URL = "http://localhost/";
@@ -43,32 +45,31 @@ class MicrosoftWebDriverBinaryProviderTest {
     }
 
     @Nested
-    class ConstructorTest {
+    @DisplayName("when being instantiated")
+    class PublicConstructorTest {
 
         @Test
+        @DisplayName("should throw an exception when no HttpClient was provided")
         void shouldThrowExceptionWhenNoHttpClientIsProvided() {
             assertThatExceptionOfType(NullPointerException.class)
-                    .isThrownBy(() -> new MicrosoftWebDriverBinaryProvider(null, TEST_BASE_URL));
-        }
-
-        @Test
-        void shouldThrowExceptionWhenNoUrlIsProvided() {
-            assertThatExceptionOfType(NullPointerException.class)
-                    .isThrownBy(() -> new MicrosoftWebDriverBinaryProvider(httpClientMock, null));
+                    .isThrownBy(() -> new MicrosoftWebDriverBinaryProvider(null));
         }
 
     }
 
     @Nested
+    @DisplayName("when indicating browser support")
     class ProvidesBinaryForBrowserTest {
 
         @Test
+        @DisplayName("should return true for Edge")
         void shouldReturnTrueForEdgeBrowser() {
             assertThat(binaryProvider.providesBinaryForBrowser(Browser.EDGE)).isTrue();
         }
 
-        @ParameterizedTest
+        @ParameterizedTest(name = "[{index}] browser={0}")
         @EnumSource(Browser.class)
+        @DisplayName("should return false for every browser except Edge")
         void shouldReturnFalseForEveryBrowserExceptEdge(final Browser browser) {
             assumeFalse(Browser.EDGE == browser);
 
@@ -78,9 +79,11 @@ class MicrosoftWebDriverBinaryProviderTest {
     }
 
     @Nested
+    @DisplayName("when determining the latest binary version")
     class GetLatestBinaryVersionTest {
 
         @Test
+        @DisplayName("should return the latest available version")
         void shouldReturnLatestVersion() throws IOException {
             //noinspection unchecked
             given(httpClientMock.execute(argThat(isHttpGetWithUrl(TEST_BASE_URL)), any(ResponseHandler.class)))
@@ -96,8 +99,9 @@ class MicrosoftWebDriverBinaryProviderTest {
                     .hasValue("1.2");
         }
 
-        @ParameterizedTest
+        @ParameterizedTest(name = "[{index}] os={0}")
         @EnumSource(Os.class)
+        @DisplayName("should return an empty Optional for every OS except Windows")
         void shouldReturnEmptyOptionalForEveryOsExceptWindows(final Os os) throws IOException {
             assumeFalse(Os.WINDOWS == os);
 
@@ -109,10 +113,12 @@ class MicrosoftWebDriverBinaryProviderTest {
     }
 
     @Nested
+    @DisplayName("when downloading binaries")
     class DownloadTest {
 
-        @ParameterizedTest
+        @ParameterizedTest(name = "[{index}] os={0}")
         @EnumSource(Os.class)
+        @DisplayName("should throw an exception for every OS except Windows")
         @SuppressWarnings("Duplicates")
         void shouldThrowExceptionForEveryOsExceptWindows(final Os os) {
             assumeFalse(Os.WINDOWS == os);
@@ -130,6 +136,7 @@ class MicrosoftWebDriverBinaryProviderTest {
         }
 
         @Test
+        @DisplayName("should throw an exception when desired version does not exist")
         void shouldThrowExceptionWhenDesiredVersionDoesNotExist() throws IOException {
             //noinspection unchecked
             given(httpClientMock.execute(argThat(isHttpGetWithUrl(TEST_BASE_URL)), any(ResponseHandler.class)))

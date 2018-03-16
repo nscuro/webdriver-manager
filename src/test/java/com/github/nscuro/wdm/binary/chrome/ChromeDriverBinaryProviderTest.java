@@ -55,7 +55,7 @@ class ChromeDriverBinaryProviderTest {
     }
 
     @Nested
-    @DisplayName("when indicating supported browsers")
+    @DisplayName("when indicating browser support")
     class ProvidesBinaryForBrowserTest {
 
         @Test

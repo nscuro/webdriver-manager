@@ -26,6 +26,7 @@ import java.util.Optional;
 import static com.github.nscuro.wdm.binary.util.compression.BinaryExtractor.FileSelectors.entryIsFile;
 import static com.github.nscuro.wdm.binary.util.compression.BinaryExtractor.FileSelectors.entryNameStartsWithIgnoringCase;
 import static java.lang.String.format;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A {@link BinaryProvider} for Google's ChromeDriver.
@@ -46,7 +47,7 @@ public final class ChromeDriverBinaryProvider implements BinaryProvider {
     private final BinaryExtractorFactory binaryExtractorFactory;
 
     public ChromeDriverBinaryProvider(final HttpClient httpClient) {
-        this(httpClient,
+        this(requireNonNull(httpClient, "no HttpClient provided"),
                 GoogleCloudStorageDirectoryService.create(httpClient, "https://chromedriver.storage.googleapis.com/"),
                 new BinaryExtractorFactory());
     }
