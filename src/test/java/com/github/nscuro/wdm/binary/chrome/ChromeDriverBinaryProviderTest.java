@@ -55,6 +55,19 @@ class ChromeDriverBinaryProviderTest {
     }
 
     @Nested
+    @DisplayName("when being instantiated")
+    class PublicConstructorTest {
+
+        @Test
+        @DisplayName("should throw an exception when no HttpClient was provided")
+        void shouldThrowExceptionWhenNoHttpClientIsProvided() {
+            assertThatExceptionOfType(NullPointerException.class)
+                    .isThrownBy(() -> new ChromeDriverBinaryProvider(null));
+        }
+
+    }
+
+    @Nested
     @DisplayName("when indicating browser support")
     class ProvidesBinaryForBrowserTest {
 

@@ -22,6 +22,7 @@ import java.util.Optional;
 import static com.github.nscuro.wdm.binary.util.compression.BinaryExtractor.FileSelectors.entryIsFile;
 import static com.github.nscuro.wdm.binary.util.compression.BinaryExtractor.FileSelectors.entryNameStartsWithIgnoringCase;
 import static java.lang.String.format;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A {@link BinaryProvider} for Microsoft's IEDriverServer.
@@ -39,7 +40,9 @@ public final class IEDriverServerBinaryProvider implements BinaryProvider {
     private final BinaryExtractorFactory binaryExtractorFactory;
 
     public IEDriverServerBinaryProvider(final HttpClient httpClient) {
-        this(GoogleCloudStorageDirectoryService.create(httpClient, "https://selenium-release.storage.googleapis.com/"),
+        this(GoogleCloudStorageDirectoryService
+                        .create(requireNonNull(httpClient, "no HttpClient provided"),
+                                "https://selenium-release.storage.googleapis.com/"),
                 new BinaryExtractorFactory());
     }
 

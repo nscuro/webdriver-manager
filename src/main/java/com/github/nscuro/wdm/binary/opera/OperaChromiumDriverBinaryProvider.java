@@ -44,7 +44,8 @@ public final class OperaChromiumDriverBinaryProvider implements BinaryProvider {
     private final BinaryExtractorFactory binaryExtractorFactory;
 
     public OperaChromiumDriverBinaryProvider(final HttpClient httpClient) {
-        this(GitHubReleasesService.create(httpClient, "operasoftware", "operachromiumdriver"),
+        this(GitHubReleasesService
+                        .create(requireNonNull(httpClient, "no HttpClient provided"), "operasoftware", "operachromiumdriver"),
                 new BinaryExtractorFactory());
     }
 

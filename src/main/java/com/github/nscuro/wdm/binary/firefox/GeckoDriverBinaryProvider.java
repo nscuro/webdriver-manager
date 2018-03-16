@@ -44,7 +44,8 @@ public final class GeckoDriverBinaryProvider implements BinaryProvider {
     private final BinaryExtractorFactory binaryExtractorFactory;
 
     public GeckoDriverBinaryProvider(final HttpClient httpClient) {
-        this(GitHubReleasesService.create(httpClient, "mozilla", "geckodriver"),
+        this(GitHubReleasesService
+                        .create(requireNonNull(httpClient, "no HttpClient provided"), "mozilla", "geckodriver"),
                 new BinaryExtractorFactory());
     }
 
