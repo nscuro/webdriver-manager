@@ -78,7 +78,7 @@ class GoogleCloudStorageDirectoryServiceImplIT {
                             format("%sfolder1/someotherfile.md", directoryUrl));
 
             verify(getRequestedFor(urlPathEqualTo("/"))
-                    .withHeader(HttpHeaders.ACCEPT, equalTo("application/xml")));
+                    .withHeader(HttpHeaders.ACCEPT, equalTo(format("%s, %s", MimeType.APPLICATION_XML, MimeType.APPLICATION_XML_UTF8))));
         }
 
         @Test
