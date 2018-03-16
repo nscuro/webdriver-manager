@@ -5,6 +5,7 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.ContentType;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -49,7 +50,13 @@ final class GoogleCloudStorageDirectoryServiceImpl implements GoogleCloudStorage
 
     @Nonnull
     public List<GoogleCloudStorageEntry> getEntries() throws IOException {
-        final Document directoryDocument = httpClient.execute(new HttpGet(directoryUrl), httpResponse -> {
+        final HttpGet request = new HttpGet(directoryUrl);
+        request.setHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_XML.getMimeType());
+
+        final Document directoryDocument = httpClient.execute(request, httpResponse -> {
+            verifyStatusCodeIsAnyOf(httpResponse, HttpStatus.SC_OK);
+            verifyContentTypeIsAnyOf(httpResponse, ContentType.APPLICATION_XML.getMimeType());
+
             try (final InputStream inputStream = httpResponse.getEntity().getContent()) {
                 return Jsoup.parse(inputStream, StandardCharsets.UTF_8.name(), directoryUrl, Parser.xmlParser());
             }
@@ -69,7 +76,7 @@ final class GoogleCloudStorageDirectoryServiceImpl implements GoogleCloudStorage
                     if (key.isPresent()) {
                         return new GoogleCloudStorageEntry(key.get(), url.get());
                     } else {
-                        LOGGER.warn("Incomplete directory entry: \"{}\"", entry.text());
+                        LOGGER.warn("No key found in entry \"{}\"", entry.text());
                         return null;
                     }
                 })
