@@ -5,6 +5,7 @@ import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.AbstractBinaryProviderIT;
 import com.github.nscuro.wdm.binary.BinaryProvider;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -15,6 +16,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("The GeckoDriver BinaryProvider")
 class GeckoDriverBinaryProviderIT extends AbstractBinaryProviderIT {
 
     private static final String VERSION_REGEX = "[0-9|.]+";
@@ -29,8 +31,9 @@ class GeckoDriverBinaryProviderIT extends AbstractBinaryProviderIT {
         binaryProvider = new GeckoDriverBinaryProvider(httpClient);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "[{index}] os={0} architecture={1}")
     @MethodSource("provideSupportedPlatforms")
+    @DisplayName("should return a latest version for all supported platforms")
     void shouldReturnLatestVersionForSupportedPlatforms(final Os os, final Architecture architecture) throws IOException {
         final Optional<String> version = binaryProvider.getLatestBinaryVersion(os, architecture);
         version.ifPresent(System.out::println);
@@ -38,8 +41,9 @@ class GeckoDriverBinaryProviderIT extends AbstractBinaryProviderIT {
                 .isPresent().get().asString().matches(VERSION_REGEX);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "[{index}] version={0} os={1} architecture={2}")
     @MethodSource("provideBinaryVersionForSupportedPlatforms")
+    @DisplayName("should be able to download a specific binary version for all supported platforms")
     void shouldBeAbleToDownloadSpecificVersionForSupportedPlatforms(final String version, final Os os, final Architecture architecture) throws IOException {
         downloadedFile = binaryProvider.download(version, os, architecture, getBinaryDestinationPath(getClass()));
 
