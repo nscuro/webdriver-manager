@@ -10,6 +10,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,6 +32,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
+@DisplayName("The ChromeDriver BinaryProvider")
 class ChromeDriverBinaryProviderTest {
 
     private HttpClient httpClientMock;
@@ -53,15 +55,18 @@ class ChromeDriverBinaryProviderTest {
     }
 
     @Nested
+    @DisplayName("when indicating supported browsers")
     class ProvidesBinaryForBrowserTest {
 
         @Test
+        @DisplayName("should return true for Chrome")
         void shouldReturnTrueForChromeBrowser() {
             assertThat(binaryProvider.providesBinaryForBrowser(Browser.CHROME)).isTrue();
         }
 
-        @ParameterizedTest
+        @ParameterizedTest(name = "[{index}] browser={0}")
         @EnumSource(Browser.class)
+        @DisplayName("should return false for every browser except Chrome")
         void shouldReturnFalseForEveryBrowserExceptChrome(final Browser browser) {
             assumeFalse(Browser.CHROME == browser);
 
@@ -71,12 +76,14 @@ class ChromeDriverBinaryProviderTest {
     }
 
     @Nested
+    @DisplayName("when determining the latest binary version")
     class GetLatestBinaryVersionTest {
 
         private final GoogleCloudStorageEntry LATEST_RELEASE_ENTRY =
                 new GoogleCloudStorageEntry("LATEST_RELEASE", "LATEST_RELEASE_URL");
 
         @Test
+        @DisplayName("should return latest available version that is not higher than that suggested by the LATEST_RELEASE file")
         void shouldReturnLatestAvailableVersionNotHigherThanSuggestedByReleaseFile() throws IOException {
             given(cloudStorageDirectoryMock.getEntries())
                     .willReturn(Arrays.asList(
@@ -100,7 +107,8 @@ class ChromeDriverBinaryProviderTest {
         }
 
         @Test
-        void shouldThrowExceptionWhenLatestReleaseFileCannotBeFound() throws IOException {
+        @DisplayName("should throw an exception when LATEST_RELEASE file couldn't be found")
+        void shouldThrowExceptionWhenLatestReleaseFileCouldNotBeFound() throws IOException {
             given(cloudStorageDirectoryMock.getEntries())
                     .willReturn(emptyList());
 
@@ -109,12 +117,14 @@ class ChromeDriverBinaryProviderTest {
         }
 
         @Test
+        @DisplayName("should return an empty Optional when the desired platform is not supported")
         void shouldReturnEmptyOptionalWhenPlatformIsNotSupported() throws IOException {
             assertThat(binaryProvider.getLatestBinaryVersion(Os.MACOS, Architecture.X86))
                     .isNotPresent();
         }
 
         @Test
+        @DisplayName("should return an empty Optional when no binary is available for the desired platform")
         void shouldReturnEmptyOptionalWhenPlatformDoesNotMatch() throws IOException {
             given(cloudStorageDirectoryMock.getEntries())
                     .willReturn(Arrays.asList(
