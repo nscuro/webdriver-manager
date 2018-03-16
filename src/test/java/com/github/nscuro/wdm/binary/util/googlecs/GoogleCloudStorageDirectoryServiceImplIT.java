@@ -21,9 +21,12 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -73,6 +76,9 @@ class GoogleCloudStorageDirectoryServiceImplIT {
                     .containsExactly(
                             format("%sfolder0/somefile.txt", directoryUrl),
                             format("%sfolder1/someotherfile.md", directoryUrl));
+
+            verify(getRequestedFor(urlPathEqualTo("/"))
+                    .withHeader(HttpHeaders.ACCEPT, equalTo("application/xml")));
         }
 
         @Test
