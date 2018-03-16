@@ -15,7 +15,7 @@ before_script:
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
 script:
-  - ./mvnw test integration-test jacoco:report
+  - ./mvnw test integration-test verify jacoco:report
 after_success:
   - ./mvnw coveralls:report
 branches:

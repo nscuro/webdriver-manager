@@ -35,9 +35,7 @@ class GeckoDriverBinaryProviderIT extends AbstractBinaryProviderIT {
     @MethodSource("provideSupportedPlatforms")
     @DisplayName("should return a latest version for all supported platforms")
     void shouldReturnLatestVersionForSupportedPlatforms(final Os os, final Architecture architecture) throws IOException {
-        final Optional<String> version = binaryProvider.getLatestBinaryVersion(os, architecture);
-        version.ifPresent(System.out::println);
-        assertThat(version)
+        assertThat(binaryProvider.getLatestBinaryVersion(os, architecture))
                 .isPresent().get().asString().matches(VERSION_REGEX);
     }
 
