@@ -32,6 +32,8 @@ import java.util.Optional;
 import static com.github.nscuro.wdm.binary.util.HttpUtils.verifyContentTypeIsAnyOf;
 import static com.github.nscuro.wdm.binary.util.HttpUtils.verifyStatusCodeIsAnyOf;
 import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_GZIP;
+import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_JSON;
+import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_JSON_UTF8;
 import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_OCTET_STREAM;
 import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_ZIP;
 import static java.lang.String.format;
@@ -107,7 +109,7 @@ final class GitHubReleasesServiceImpl implements GitHubReleasesService {
     @Nonnull
     String performApiRequest(final String path) throws IOException {
         final HttpGet request = new HttpGet(format("%s%s", repositoryUrl, path));
-        request.setHeader(HttpHeaders.ACCEPT, "application/json; charset=utf-8");
+        request.setHeader(HttpHeaders.ACCEPT, format("%s, %s", APPLICATION_JSON, APPLICATION_JSON_UTF8));
 
         getApiCredentials().ifPresent(credentials -> {
             try {
@@ -120,7 +122,8 @@ final class GitHubReleasesServiceImpl implements GitHubReleasesService {
 
         return httpClient.execute(request, httpResponse -> {
             verifyStatusCodeIsAnyOf(httpResponse, HttpStatus.SC_OK, HttpStatus.SC_FORBIDDEN, HttpStatus.SC_NOT_FOUND);
-            verifyContentTypeIsAnyOf(httpResponse, "application/json", "application/json; charset=utf-8");
+
+            verifyContentTypeIsAnyOf(httpResponse, APPLICATION_JSON, APPLICATION_JSON_UTF8);
 
             final Optional<Integer> remainingRateLimit = Optional
                     .ofNullable(httpResponse.getFirstHeader("X-RateLimit-Remaining"))

@@ -5,7 +5,6 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.entity.ContentType;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -28,6 +27,8 @@ import java.util.stream.Collectors;
 
 import static com.github.nscuro.wdm.binary.util.HttpUtils.verifyContentTypeIsAnyOf;
 import static com.github.nscuro.wdm.binary.util.HttpUtils.verifyStatusCodeIsAnyOf;
+import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_XML;
+import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_XML_UTF8;
 import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_X_ZIP_COMPRESSED;
 import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_ZIP;
 import static java.lang.String.format;
@@ -51,11 +52,12 @@ final class GoogleCloudStorageDirectoryServiceImpl implements GoogleCloudStorage
     @Nonnull
     public List<GoogleCloudStorageEntry> getEntries() throws IOException {
         final HttpGet request = new HttpGet(directoryUrl);
-        request.setHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_XML.getMimeType());
+        request.setHeader(HttpHeaders.ACCEPT, format("%s, %s", APPLICATION_XML, APPLICATION_XML_UTF8));
 
         final Document directoryDocument = httpClient.execute(request, httpResponse -> {
             verifyStatusCodeIsAnyOf(httpResponse, HttpStatus.SC_OK);
-            verifyContentTypeIsAnyOf(httpResponse, ContentType.APPLICATION_XML.getMimeType());
+
+            verifyContentTypeIsAnyOf(httpResponse, APPLICATION_XML, APPLICATION_XML_UTF8);
 
             try (final InputStream inputStream = httpResponse.getEntity().getContent()) {
                 return Jsoup.parse(inputStream, StandardCharsets.UTF_8.name(), directoryUrl, Parser.xmlParser());
