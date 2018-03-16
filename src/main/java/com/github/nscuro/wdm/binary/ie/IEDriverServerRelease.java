@@ -2,11 +2,7 @@ package com.github.nscuro.wdm.binary.ie;
 
 import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageEntry;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
-@ToString
-@EqualsAndHashCode(callSuper = false)
 final class IEDriverServerRelease extends GoogleCloudStorageEntry {
 
     private final String version;

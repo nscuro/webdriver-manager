@@ -1,13 +1,8 @@
 package com.github.nscuro.wdm.binary.util.googlecs;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 /**
  * @since 0.2.0
  */
-@ToString
-@EqualsAndHashCode
 public class GoogleCloudStorageEntry {
 
     private final String key;
