@@ -17,10 +17,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * @since 0.2.0
@@ -52,25 +52,77 @@ public interface BinaryManager {
 
     @Nonnull
     static BinaryManager createDefault() {
-        final Path binaryDestinationDirPath = Paths
-                .get(System.getProperty("user.home"))
-                .resolve(".webdriver-manager");
-
-        final HttpClient httpClient = HttpClients.custom()
-                .setUserAgent("webdriver-manager/0.2.0")
-                .disableAuthCaching()
-                .disableCookieManagement()
+        return builder()
+                .defaultHttpClient()
+                .defaultBinaryDestinationDir()
+                .addBinaryProvider(ChromeDriverBinaryProvider::new)
+                .addBinaryProvider(MicrosoftWebDriverBinaryProvider::new)
+                .addBinaryProvider(GeckoDriverBinaryProvider::new)
+                .addBinaryProvider(IEDriverServerBinaryProvider::new)
+                .addBinaryProvider(OperaChromiumDriverBinaryProvider::new)
                 .build();
+    }
 
-        final Set<BinaryProvider> binaryProviders = new HashSet<>(Arrays.asList(
-                new ChromeDriverBinaryProvider(httpClient),
-                new MicrosoftWebDriverBinaryProvider(httpClient),
-                new GeckoDriverBinaryProvider(httpClient),
-                new IEDriverServerBinaryProvider(httpClient),
-                new OperaChromiumDriverBinaryProvider(httpClient)
-        ));
+    @Nonnull
+    static Builder.HttpClientStep builder() {
+        return httpClient -> binaryDestinationDirPath -> new Builder(httpClient, binaryDestinationDirPath);
+    }
 
-        return new BinaryManagerImpl(binaryDestinationDirPath, binaryProviders);
+    final class Builder {
+
+        @FunctionalInterface
+        public interface HttpClientStep {
+            BinaryDestinationDirStep httpClient(final HttpClient httpClient);
+
+            default BinaryDestinationDirStep defaultHttpClient() {
+                return httpClient(HttpClients.custom()
+                        .setUserAgent("webdriver-manager/0.2.0")
+                        .disableAuthCaching()
+                        .disableCookieManagement()
+                        .build());
+            }
+        }
+
+        @FunctionalInterface
+        public interface BinaryDestinationDirStep {
+            Builder binaryDestinationDir(final Path binaryDestinationDirPath);
+
+            default Builder defaultBinaryDestinationDir() {
+                return binaryDestinationDir(Paths
+                        .get(System.getProperty("user.home"))
+                        .resolve(".webdriver-manager"));
+            }
+        }
+
+        private final HttpClient httpClient;
+
+        private final Path binaryDestinationDirPath;
+
+        private final Set<BinaryProvider> binaryProviders;
+
+        private Builder(final HttpClient httpClient,
+                        final Path binaryDestinationDirPath) {
+            this.httpClient = httpClient;
+            this.binaryDestinationDirPath = binaryDestinationDirPath;
+            this.binaryProviders = new HashSet<>();
+        }
+
+        @Nonnull
+        public BinaryManager build() {
+            return new BinaryManagerImpl(binaryDestinationDirPath, binaryProviders);
+        }
+
+        @Nonnull
+        public Builder addBinaryProvider(final BinaryProvider binaryProvider) {
+            this.binaryProviders.add(binaryProvider);
+            return this;
+        }
+
+        @Nonnull
+        public Builder addBinaryProvider(final Function<HttpClient, BinaryProvider> binaryProvider) {
+            return addBinaryProvider(binaryProvider.apply(this.httpClient));
+        }
+
     }
 
 }
