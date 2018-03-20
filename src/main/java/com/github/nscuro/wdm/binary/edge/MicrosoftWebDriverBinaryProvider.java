@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -113,6 +114,24 @@ public class MicrosoftWebDriverBinaryProvider implements BinaryProvider {
 
             return binaryDestinationFile;
         });
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(Browser.EDGE);
+    }
+
+    @Override
+    public boolean equals(final Object otherObject) {
+        if (otherObject == null) {
+            return false;
+        } else if (otherObject == this) {
+            return true;
+        } else if (!BinaryProvider.class.isInstance(otherObject)) {
+            return false;
+        }
+
+        return ((BinaryProvider) otherObject).providesBinaryForBrowser(Browser.EDGE);
     }
 
     @Nonnull

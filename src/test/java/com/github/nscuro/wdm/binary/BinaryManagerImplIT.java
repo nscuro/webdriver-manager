@@ -3,12 +3,14 @@ package com.github.nscuro.wdm.binary;
 import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
+import com.github.nscuro.wdm.binary.chrome.ChromeDriverBinaryProvider;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,13 +29,18 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class BinaryManagerImplIT {
 
-    private BinaryManager binaryManager;
+    private static BinaryManager binaryManager;
 
     private File downloadedFile;
 
-    @BeforeEach
-    void beforeEach() {
-        binaryManager = BinaryManager.createDefault();
+    @BeforeAll
+    static void beforeAll() throws IOException {
+        binaryManager = BinaryManager
+                .builder()
+                .defaultHttpClient()
+                .binaryDestinationDir(Files.createTempDirectory(BinaryManagerImplIT.class.getSimpleName()))
+                .addBinaryProvider(ChromeDriverBinaryProvider::new)
+                .build();
     }
 
     @Test

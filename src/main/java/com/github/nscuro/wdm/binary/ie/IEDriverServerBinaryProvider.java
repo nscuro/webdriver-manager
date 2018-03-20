@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.github.nscuro.wdm.binary.util.compression.BinaryExtractor.FileSelectors.entryIsFile;
@@ -107,6 +108,24 @@ public final class IEDriverServerBinaryProvider implements BinaryProvider {
         return binaryExtractorFactory
                 .getBinaryExtractorForArchiveFile(cloudStorageDirectory.downloadFile(matchingRelease))
                 .extractBinary(binaryDestinationPath, entryIsFile().and(entryNameStartsWithIgnoringCase(BINARY_NAME)));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(Browser.INTERNET_EXPLORER);
+    }
+
+    @Override
+    public boolean equals(final Object otherObject) {
+        if (otherObject == null) {
+            return false;
+        } else if (otherObject == this) {
+            return true;
+        } else if (!BinaryProvider.class.isInstance(otherObject)) {
+            return false;
+        }
+
+        return ((BinaryProvider) otherObject).providesBinaryForBrowser(Browser.INTERNET_EXPLORER);
     }
 
     @Nonnull

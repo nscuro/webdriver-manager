@@ -3,6 +3,7 @@ package com.github.nscuro.wdm.binary.edge;
 import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
+import com.github.nscuro.wdm.binary.BinaryProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
@@ -14,10 +15,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.ArgumentMatcher;
 
+import javax.annotation.Nonnull;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -146,6 +150,61 @@ class MicrosoftWebDriverBinaryProviderTest {
                     .isThrownBy(() -> binaryProvider.download("doesNotMatter", Os.WINDOWS, Architecture.X86, mock(Path.class)));
         }
 
+    }
+
+    @Nested
+    @DisplayName("when checking equality")
+    class EqualsTest {
+
+        @Test
+        @DisplayName("should return false when being compared with null")
+        void shouldReturnFalseWhenComparedWithNull() {
+            assertThat(binaryProvider.equals(null)).isFalse();
+        }
+
+        @Test
+        @DisplayName("should return true when being compared with itself")
+        void shouldReturnTrueWhenComparedWithItself() {
+            assertThat(binaryProvider.equals(binaryProvider)).isTrue();
+        }
+
+        @Test
+        @DisplayName("should return false when being compared with object that is not a BinaryProvider")
+        void shouldReturnFalseWhenComparedWithNonBinaryProvider() {
+            assertThat(binaryProvider.equals("noBinaryProvider")).isFalse();
+        }
+
+        @Test
+        @DisplayName("should return true when being compared with a BinaryProvider that provides binaries for the same browser")
+        void shouldReturnTrueWhenComparedWithBinaryProviderThatProvidesBinaryForSameBrowser() {
+            final BinaryProvider otherBinaryProvider = new BinaryProvider() {
+                @Override
+                public boolean providesBinaryForBrowser(final Browser browser) {
+                    return Browser.EDGE == browser;
+                }
+
+                @Nonnull
+                @Override
+                public Optional<String> getLatestBinaryVersion(final Os os, final Architecture architecture) {
+                    throw new UnsupportedOperationException();
+                }
+
+                @Nonnull
+                @Override
+                public File download(final String version, final Os os, final Architecture architecture, final Path binaryDestinationPath) {
+                    throw new UnsupportedOperationException();
+                }
+            };
+
+            assertThat(binaryProvider.equals(otherBinaryProvider)).isTrue();
+        }
+
+    }
+
+    @Test
+    @DisplayName("should have the same hashCode as the Edge browser")
+    void shouldHaveTheSameHashCodeAsEdgeBrowser() {
+        assertThat(binaryProvider.hashCode()).isEqualTo(Browser.EDGE.hashCode());
     }
 
     private static ArgumentMatcher<HttpGet> isHttpGetWithUrl(final String url) {

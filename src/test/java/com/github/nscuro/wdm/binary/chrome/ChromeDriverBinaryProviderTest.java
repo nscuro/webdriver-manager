@@ -3,6 +3,7 @@ package com.github.nscuro.wdm.binary.chrome;
 import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
+import com.github.nscuro.wdm.binary.BinaryProvider;
 import com.github.nscuro.wdm.binary.util.compression.BinaryExtractorFactory;
 import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageDirectoryService;
 import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageEntry;
@@ -16,9 +17,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
+import javax.annotation.Nonnull;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static com.github.nscuro.wdm.binary.chrome.ChromeDriverPlatform.LINUX64;
 import static com.github.nscuro.wdm.binary.chrome.ChromeDriverPlatform.MAC64;
@@ -153,6 +158,61 @@ class ChromeDriverBinaryProviderTest {
                     .isEmpty();
         }
 
+    }
+
+    @Nested
+    @DisplayName("when checking equality")
+    class EqualsTest {
+
+        @Test
+        @DisplayName("should return false when being compared with null")
+        void shouldReturnFalseWhenComparedWithNull() {
+            assertThat(binaryProvider.equals(null)).isFalse();
+        }
+
+        @Test
+        @DisplayName("should return true when being compared with itself")
+        void shouldReturnTrueWhenComparedWithItself() {
+            assertThat(binaryProvider.equals(binaryProvider)).isTrue();
+        }
+
+        @Test
+        @DisplayName("should return false when being compared with object that is not a BinaryProvider")
+        void shouldReturnFalseWhenComparedWithNonBinaryProvider() {
+            assertThat(binaryProvider.equals("noBinaryProvider")).isFalse();
+        }
+
+        @Test
+        @DisplayName("should return true when being compared with a BinaryProvider that provides binaries for the same browser")
+        void shouldReturnTrueWhenComparedWithBinaryProviderThatProvidesBinaryForSameBrowser() {
+            final BinaryProvider otherBinaryProvider = new BinaryProvider() {
+                @Override
+                public boolean providesBinaryForBrowser(final Browser browser) {
+                    return Browser.CHROME == browser;
+                }
+
+                @Nonnull
+                @Override
+                public Optional<String> getLatestBinaryVersion(final Os os, final Architecture architecture) {
+                    throw new UnsupportedOperationException();
+                }
+
+                @Nonnull
+                @Override
+                public File download(final String version, final Os os, final Architecture architecture, final Path binaryDestinationPath) {
+                    throw new UnsupportedOperationException();
+                }
+            };
+
+            assertThat(binaryProvider.equals(otherBinaryProvider)).isTrue();
+        }
+
+    }
+
+    @Test
+    @DisplayName("should have the same hashCode as the Chrome browser")
+    void shouldHaveTheSameHashCodeAsChromeBrowser() {
+        assertThat(binaryProvider.hashCode()).isEqualTo(Browser.CHROME.hashCode());
     }
 
 }

@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.github.nscuro.wdm.binary.util.compression.BinaryExtractor.FileSelectors.entryIsFile;
@@ -119,6 +120,24 @@ public final class ChromeDriverBinaryProvider implements BinaryProvider {
         return binaryExtractorFactory
                 .getBinaryExtractorForArchiveFile(cloudStorageDirectory.downloadFile(binaryFileEntry))
                 .extractBinary(binaryDestinationPath, entryIsFile().and(entryNameStartsWithIgnoringCase(BINARY_NAME)));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(Browser.CHROME);
+    }
+
+    @Override
+    public boolean equals(final Object otherObject) {
+        if (otherObject == null) {
+            return false;
+        } else if (otherObject == this) {
+            return true;
+        } else if (!BinaryProvider.class.isInstance(otherObject)) {
+            return false;
+        }
+
+        return ((BinaryProvider) otherObject).providesBinaryForBrowser(Browser.CHROME);
     }
 
     /**

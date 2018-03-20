@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.github.nscuro.wdm.binary.util.compression.BinaryExtractor.FileSelectors.entryIsFile;
@@ -106,6 +107,24 @@ public final class GeckoDriverBinaryProvider implements BinaryProvider {
         return binaryExtractorFactory
                 .getBinaryExtractorForArchiveFile(gitHubReleasesService.downloadAsset(matchingAsset))
                 .extractBinary(binaryDestinationPath, entryIsFile().and(entryNameStartsWithIgnoringCase(BINARY_NAME)));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(Browser.FIREFOX);
+    }
+
+    @Override
+    public boolean equals(final Object otherObject) {
+        if (otherObject == null) {
+            return false;
+        } else if (otherObject == this) {
+            return true;
+        } else if (!BinaryProvider.class.isInstance(otherObject)) {
+            return false;
+        }
+
+        return ((BinaryProvider) otherObject).providesBinaryForBrowser(Browser.FIREFOX);
     }
 
     @Nonnull
