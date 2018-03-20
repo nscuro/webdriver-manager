@@ -46,7 +46,7 @@ final class BinaryManagerImpl implements BinaryManager {
      */
     @Nonnull
     @Override
-    public File getWebDriverBinary(final Browser browser,
+    public synchronized File getWebDriverBinary(final Browser browser,
                                    @Nullable final String version,
                                    final Os os,
                                    final Architecture architecture) throws IOException {
@@ -89,7 +89,7 @@ final class BinaryManagerImpl implements BinaryManager {
      * {@inheritDoc}
      */
     @Override
-    public void registerWebDriverBinary(final Browser browser, final File webDriverBinaryFile) {
+    public synchronized void registerWebDriverBinary(final Browser browser, final File webDriverBinaryFile) {
         if (!webDriverBinaryFile.exists()) {
             throw new IllegalArgumentException(format("Cannot register WebDriver binary for %s: %s does not exist",
                     browser, webDriverBinaryFile));
