@@ -41,6 +41,9 @@ final class BinaryManagerImpl implements BinaryManager {
         this.binaryProviders = binaryProviders;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public File getWebDriverBinary(final Browser browser,
@@ -82,6 +85,9 @@ final class BinaryManagerImpl implements BinaryManager {
         return webDriverBinaryFile;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void registerWebDriverBinary(final Browser browser, final File webDriverBinaryFile) {
         if (!webDriverBinaryFile.exists()) {
@@ -101,6 +107,9 @@ final class BinaryManagerImpl implements BinaryManager {
         LOGGER.info("Registered \"{}\" as WebDriver binary for {}", webDriverBinaryFile.getAbsolutePath(), browser);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public List<File> getLocalWebDriverBinaries() {
