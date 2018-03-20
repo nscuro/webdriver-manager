@@ -23,6 +23,8 @@ import java.util.Set;
 import java.util.function.Function;
 
 /**
+ * A manager for WebDriver binaries.
+ *
  * @since 0.2.0
  */
 public interface BinaryManager {
