@@ -65,6 +65,9 @@ public final class GeckoDriverBinaryProvider implements BinaryProvider {
 
     /**
      * {@inheritDoc}
+     * <p>
+     * Note that the returned version will be normalized, which means {@code v0.19.0} becomes {@code 0.19.0}.
+     * Due to this, the version returned here is technically not <b>exactly</b> the same as on GitHub's releases page.
      */
     @Nonnull
     @Override
@@ -87,6 +90,9 @@ public final class GeckoDriverBinaryProvider implements BinaryProvider {
 
     /**
      * {@inheritDoc}
+     *
+     * @throws UnsupportedOperationException When the requested {@link Os} / {@link Architecture} combination is not supported
+     * @throws NoSuchElementException        When no binary for the requested criteria was found
      */
     @Nonnull
     @Override

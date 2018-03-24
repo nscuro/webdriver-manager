@@ -31,6 +31,7 @@ import java.util.regex.Pattern;
 
 import static com.github.nscuro.wdm.binary.util.HttpUtils.verifyContentTypeIsAnyOf;
 import static com.github.nscuro.wdm.binary.util.HttpUtils.verifyStatusCodeIsAnyOf;
+import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -61,6 +62,9 @@ public class MicrosoftWebDriverBinaryProvider implements BinaryProvider {
 
     /**
      * {@inheritDoc}
+     *
+     * @return {@code false} for every {@link Browser} except {@link Browser#EDGE},
+     *         in which case {@code true} is returned
      */
     @Override
     public boolean providesBinaryForBrowser(final Browser browser) {
@@ -69,6 +73,9 @@ public class MicrosoftWebDriverBinaryProvider implements BinaryProvider {
 
     /**
      * {@inheritDoc}
+     *
+     * @return {@link Optional#empty()} for every {@link Os} except {@link Os#WINDOWS},
+     *         in which case the latest binary version is returned
      */
     @Nonnull
     @Override
@@ -86,6 +93,9 @@ public class MicrosoftWebDriverBinaryProvider implements BinaryProvider {
 
     /**
      * {@inheritDoc}
+     *
+     * @throws UnsupportedOperationException When requesting an {@link Os} other than {@link Os#WINDOWS}
+     * @throws NoSuchElementException        When no binary is available for the requested version
      */
     @Nonnull
     @Override
@@ -107,8 +117,9 @@ public class MicrosoftWebDriverBinaryProvider implements BinaryProvider {
             final File binaryDestinationFile = binaryDestinationPath.toFile();
 
             try (final FileOutputStream fileOutputStream = new FileOutputStream(binaryDestinationFile)) {
-                Optional.ofNullable(httpResponse.getEntity())
-                        .orElseThrow(() -> new IllegalStateException("Body of response to download request is empty"))
+                Optional
+                        .ofNullable(httpResponse.getEntity())
+                        .orElseThrow(() -> new IOException(format("Response body is empty. Response was:\n%s", httpResponse)))
                         .writeTo(fileOutputStream);
             }
 

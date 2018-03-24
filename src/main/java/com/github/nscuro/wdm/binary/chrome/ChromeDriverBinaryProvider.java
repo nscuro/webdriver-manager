@@ -4,6 +4,7 @@ import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.BinaryProvider;
+import com.github.nscuro.wdm.binary.ie.IEDriverServerBinaryProvider;
 import com.github.nscuro.wdm.binary.util.VersionComparator;
 import com.github.nscuro.wdm.binary.util.compression.BinaryExtractorFactory;
 import com.github.nscuro.wdm.binary.util.googlecs.GoogleCloudStorageDirectoryService;
@@ -63,6 +64,9 @@ public final class ChromeDriverBinaryProvider implements BinaryProvider {
 
     /**
      * {@inheritDoc}
+     *
+     * @return {@code false} for every {@link Browser} except {@link Browser#CHROME},
+     *         in which case {@code true} is returned
      */
     @Override
     public boolean providesBinaryForBrowser(final Browser browser) {
@@ -101,6 +105,9 @@ public final class ChromeDriverBinaryProvider implements BinaryProvider {
 
     /**
      * {@inheritDoc}
+     *
+     * @throws UnsupportedOperationException When the requested {@link Os} / {@link Architecture} combination is not supported
+     * @throws NoSuchElementException        When no binary for the requested criteria was found
      */
     @Nonnull
     @Override
@@ -143,13 +150,17 @@ public final class ChromeDriverBinaryProvider implements BinaryProvider {
     /**
      * Determine the latest available release version.
      * <p>
-     * It is possible that this version is not the "latest" version for all platform,
-     * e.g. {@link ChromeDriverPlatform#LINUX32}'s latest version is {@code 2.33}, even though
-     * the latest version for all other platforms is {@code 2.36}.
+     * This is not an as trivial task as for {@link IEDriverServerBinaryProvider}, because the highest
+     * available version for ChromeDriver is not the latest.
+     * <p>
+     * At the time of writing this, there are versions {@code 2.4, 2.5, 2.6, 2.7, 2.8, 2.9} available,
+     * yet {@link 2.37} is the latest. Google is kind enough here to point us to the <b>actual</b> latest
+     * version through a LATEST_RELEASE file.
      *
      * @param directoryEntries Entries of the {@link GoogleCloudStorageDirectoryService}
      * @return The latest release version of ChromeDriver
-     * @throws IOException
+     * @throws IOException            In case of a network error
+     * @throws NoSuchElementException When the LATEST_RELEASE file has not been found
      */
     @Nonnull
     private String getLatestReleaseVersion(final List<GoogleCloudStorageEntry> directoryEntries) throws IOException {
