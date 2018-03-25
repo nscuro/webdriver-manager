@@ -57,6 +57,9 @@ public final class OperaChromiumDriverBinaryProvider implements BinaryProvider {
 
     /**
      * {@inheritDoc}
+     *
+     * @return {@code false} for every {@link Browser} except {@link Browser#OPERA},
+     *         in which case {@code true} is returned
      */
     @Override
     public boolean providesBinaryForBrowser(final Browser browser) {
@@ -65,6 +68,9 @@ public final class OperaChromiumDriverBinaryProvider implements BinaryProvider {
 
     /**
      * {@inheritDoc}
+     * <p>
+     * Note that the returned version will be normalized, which means {@code v.2.33} becomes {@code 2.33}.
+     * Due to this, the version returned here is technically not <b>exactly</b> the same as on GitHub's releases page.
      */
     @Nonnull
     @Override
@@ -87,6 +93,9 @@ public final class OperaChromiumDriverBinaryProvider implements BinaryProvider {
 
     /**
      * {@inheritDoc}
+     *
+     * @throws UnsupportedOperationException When the requested {@link Os} / {@link Architecture} combination is not supported
+     * @throws NoSuchElementException        When no binary for the requested criteria was found
      */
     @Nonnull
     @Override

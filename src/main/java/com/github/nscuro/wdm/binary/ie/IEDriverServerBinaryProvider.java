@@ -55,6 +55,9 @@ public final class IEDriverServerBinaryProvider implements BinaryProvider {
 
     /**
      * {@inheritDoc}
+     *
+     * @return {@code false} for every {@link Browser} except {@link Browser#INTERNET_EXPLORER},
+     *         in which case {@code true} is returned
      */
     @Override
     public boolean providesBinaryForBrowser(final Browser browser) {
@@ -63,6 +66,9 @@ public final class IEDriverServerBinaryProvider implements BinaryProvider {
 
     /**
      * {@inheritDoc}
+     *
+     * @return {@link Optional#empty()} for every {@link Os} except {@link Os#WINDOWS},
+     *         in which case the latest binary version is returned
      */
     @Nonnull
     @Override
@@ -85,6 +91,9 @@ public final class IEDriverServerBinaryProvider implements BinaryProvider {
 
     /**
      * {@inheritDoc}
+     *
+     * @throws UnsupportedOperationException When requesting an {@link Os} other than {@link Os#WINDOWS}
+     * @throws NoSuchElementException        When no binary is available for the requested version
      */
     @Nonnull
     @Override

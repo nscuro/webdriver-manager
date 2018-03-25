@@ -57,6 +57,9 @@ public final class GeckoDriverBinaryProvider implements BinaryProvider {
 
     /**
      * {@inheritDoc}
+     *
+     * @return {@code false} for every {@link Browser} except {@link Browser#FIREFOX},
+     *         in which case {@code true} is returned
      */
     @Override
     public boolean providesBinaryForBrowser(final Browser browser) {
