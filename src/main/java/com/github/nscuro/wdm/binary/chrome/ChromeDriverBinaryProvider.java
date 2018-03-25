@@ -99,7 +99,7 @@ public final class ChromeDriverBinaryProvider implements BinaryProvider {
                 .map(key -> key.split("/")[0])
                 // For whatever reason there are versions higher than LATEST_RELEASE in the directory
                 // that are older than any of those equal to or lower than LATEST_RELEASE...
-                .filter(version -> Comparator.comparing(String::trim).compare(version, latestVersion) <= 0)
+                .filter(version -> new VersionComparator().compare(version, latestVersion) <= 0)
                 .max(new VersionComparator());
     }
 
@@ -172,7 +172,7 @@ public final class ChromeDriverBinaryProvider implements BinaryProvider {
                 .orElseThrow(() -> new NoSuchElementException("Unable to determine latest release version: No LATEST_RELEASE file found in directory"));
 
         return httpClient.execute(new HttpGet(latestReleaseFileUrl),
-                httpResponse -> EntityUtils.toString(httpResponse.getEntity()));
+                httpResponse -> EntityUtils.toString(httpResponse.getEntity()).trim());
     }
 
 }
