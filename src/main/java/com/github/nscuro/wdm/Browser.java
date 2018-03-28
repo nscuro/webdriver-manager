@@ -1,17 +1,16 @@
 package com.github.nscuro.wdm;
 
-import static java.lang.String.format;
+import org.openqa.selenium.remote.BrowserType;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.openqa.selenium.remote.BrowserType;
+import static java.lang.String.format;
 
 public enum Browser {
 

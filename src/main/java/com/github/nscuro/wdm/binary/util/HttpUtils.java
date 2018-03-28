@@ -1,7 +1,6 @@
 package com.github.nscuro.wdm.binary.util;
 
 import org.apache.http.Header;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 
@@ -52,7 +51,7 @@ public final class HttpUtils {
                 .orElseThrow(() -> new IllegalStateException("HTTP response does not define any content type"));
 
         return Arrays.stream(contentTypes)
-                .filter(contentType -> contentType.equals(actualContentType))
+                .filter(contentType -> contentType.equalsIgnoreCase(actualContentType))
                 .findAny()
                 .orElseThrow(() -> new IllegalStateException(format("Unexpected content type \"%s\"", actualContentType)));
     }

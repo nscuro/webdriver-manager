@@ -1,55 +1,120 @@
 package com.github.nscuro.wdm.binary;
 
+import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
+import com.github.nscuro.wdm.binary.chrome.ChromeDriverBinaryProvider;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+/**
+ * Test the basic success case for:
+ * <pre>
+ *     - Downloading of latest binary
+ *     - Registration of the binary
+ *     - Identification of the binary
+ * </pre>
+ * <p>
+ * We're using {@link Browser#CHROME} here because Google Cloud Storage
+ * does not limit the amount of requests being performed against their
+ * API as GitHub does. So this will hopefully result in better stability.
+ */
 class BinaryManagerImplIT {
 
-    private BinaryManager binaryManager;
+    private static BinaryManager binaryManager;
 
     private File downloadedFile;
 
-    @BeforeEach
-    void beforeEach() {
-        binaryManager = BinaryManager.createDefault();
+    @BeforeAll
+    static void beforeAll() throws IOException {
+        binaryManager = BinaryManager
+                .builder()
+                .defaultHttpClient()
+                .binaryDestinationDir(Files.createTempDirectory(BinaryManagerImplIT.class.getSimpleName()))
+                .addBinaryProvider(ChromeDriverBinaryProvider::new)
+                .build();
     }
 
-    @Nested
-    class GetBinaryTest {
+    @Test
+    void shouldDownloadAndRegisterLatestBinary() throws IOException {
+        downloadedFile = binaryManager.getLatestWebDriverBinary(Browser.CHROME, Os.WINDOWS, Architecture.X64);
 
-        @ParameterizedTest
-        @EnumSource(Browser.class)
-        void testGetLatestBinaryForCurrentOsAndArchitecture(final Browser browser) throws IOException {
-            assumeTrue(browser.doesRequireBinary(), "Only browsers that require a binary can be tested");
-            assumeFalse(Os.getCurrent() != Os.WINDOWS && (browser == Browser.EDGE || browser == Browser.INTERNET_EXPLORER),
-                    "Microsoft Edge and Internet Explorer are only supported on Windows systems");
+        assertThat(downloadedFile)
+                .as("downloaded file should exist")
+                .exists();
 
-            downloadedFile = binaryManager.getBinary(browser);
+        assertThat(downloadedFile.canExecute())
+                .as("downloaded file must be executable")
+                .isTrue();
 
-            assertThat(downloadedFile).exists();
-            assertThat(downloadedFile.canExecute())
-                    .as("The downloaded binary must be executable")
-                    .isTrue();
-        }
+        assertThat(downloadedFile.getName())
+                .as("downloaded file's name should contain the browser name")
+                .containsIgnoringCase(Browser.CHROME.name())
+                .as("downloaded file's name should contain the OS name")
+                .containsIgnoringCase(Os.WINDOWS.name())
+                .as("downloaded file's name should contain the architectures name")
+                .containsIgnoringCase(Architecture.X64.name());
 
+        binaryManager.registerWebDriverBinary(Browser.CHROME, downloadedFile);
+
+        //noinspection ConstantConditions
+        assertThat(System.getProperty(Browser.CHROME.getBinarySystemProperty().get()))
+                .as("should correctly register downloaded binary")
+                .isEqualTo(downloadedFile.getAbsolutePath());
+
+        assertThat(binaryManager.getLocalWebDriverBinaries())
+                .as("should identify downloaded file as webDriver binary")
+                .contains(downloadedFile);
+    }
+
+    @Test
+    void shouldDownloadAndRegisterSpecificBinaryVersion() throws IOException {
+        downloadedFile = binaryManager.getWebDriverBinary(Browser.CHROME, "2.34", Os.MACOS, Architecture.X64);
+
+        assertThat(downloadedFile)
+                .as("downloaded file should exist")
+                .exists();
+
+        assertThat(downloadedFile.canExecute())
+                .as("downloaded file must be executable")
+                .isTrue();
+
+        assertThat(downloadedFile.getName())
+                .as("downloaded file's name should contain the browser name")
+                .containsIgnoringCase(Browser.CHROME.name())
+                .as("downloaded file's name should contain the OS name")
+                .containsIgnoringCase(Os.MACOS.name())
+                .as("downloaded file's name should contain the architectures name")
+                .containsIgnoringCase(Architecture.X64.name())
+                .as("downloaded file's name should contain the version")
+                .contains("2.34");
+
+        binaryManager.registerWebDriverBinary(Browser.CHROME, downloadedFile);
+
+        //noinspection ConstantConditions
+        assertThat(System.getProperty(Browser.CHROME.getBinarySystemProperty().get()))
+                .as("should correctly register downloaded binary")
+                .isEqualTo(downloadedFile.getAbsolutePath());
+
+        assertThat(binaryManager.getLocalWebDriverBinaries())
+                .as("should identify downloaded file as webDriver binary")
+                .contains(downloadedFile);
     }
 
     @AfterEach
-    void tearDown() {
-        Optional.ofNullable(downloadedFile).ifPresent(File::delete);
+    void afterEach() {
+        //noinspection ResultOfMethodCallIgnored
+        Optional
+                .ofNullable(downloadedFile)
+                .ifPresent(File::delete);
     }
 
 }

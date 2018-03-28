@@ -1,258 +1,190 @@
 package com.github.nscuro.wdm.binary;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nscuro.wdm.Architecture;
 import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.Os;
-import com.github.nscuro.wdm.binary.chrome.ChromeDriverBinaryDownloader;
-import com.github.nscuro.wdm.binary.edge.MicrosoftWebDriverBinaryDownloader;
-import com.github.nscuro.wdm.binary.firefox.GeckoDriverBinaryDownloader;
-import com.github.nscuro.wdm.binary.github.GitHubReleasesService;
-import com.github.nscuro.wdm.binary.iexplorer.IEDriverServerBinaryDownloader;
-import com.github.nscuro.wdm.binary.opera.OperaChromiumDriverBinaryDownloader;
+import com.github.nscuro.wdm.binary.chrome.ChromeDriverBinaryProvider;
+import com.github.nscuro.wdm.binary.edge.MicrosoftWebDriverBinaryProvider;
+import com.github.nscuro.wdm.binary.firefox.GeckoDriverBinaryProvider;
+import com.github.nscuro.wdm.binary.ie.IEDriverServerBinaryProvider;
+import com.github.nscuro.wdm.binary.opera.OperaChromiumDriverBinaryProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
+/**
+ * A manager for WebDriver binaries.
+ *
+ * @since 0.2.0
+ */
 public interface BinaryManager {
 
     /**
-     * Get a webdriver binary for the given {@link Browser}, version, {@link Os} and {@link Architecture}
-     * <p>
-     * When a binary for the given requirements is found locally,
-     * it will not be downloaded again.
+     * Get a WebDriver binary.
      *
-     * @param browser      The browser to download the binary for
-     * @param version      The version of the binary (<strong>not</strong> the browser version)
-     * @param os           The operating system the binary must be compatible with
-     * @param architecture The architecture the binary must be compatible with
-     * @return A {@link File} handle of the downloaded binary
-     * @throws IOException When downloading the binary failed
+     * @param browser      The {@link Browser} to get the WebDriver binary for
+     * @param version      The version of the WebDriver binary to get.
+     *                     When {@code null}, the latest version will be used
+     * @param os           The {@link Os} the binary must be compatible with
+     * @param architecture The {@link Architecture} the binary must be compatible with
+     * @return The WebDriver binary
+     * @throws IOException In case of a network or file error
      */
     @Nonnull
-    File getBinary(final Browser browser, final String version, final Os os, final Architecture architecture) throws IOException;
+    File getWebDriverBinary(final Browser browser, @Nullable final String version, final Os os, final Architecture architecture) throws IOException;
 
     /**
-     * Get a webdriver binary for the given {@link Browser} and version.
-     * <p>
-     * This assumes that a binary for the current {@link Os} and {@link Architecture} is requested.
-     * <p>
-     * When a binary for the given requirements is found locally,
-     * it will not be downloaded again.
+     * Register a given {@link File} as the WebDriver binary for a given {@link Browser}.
      *
-     * @param browser The browser to download the binary for
-     * @param version The version of the binary (<strong>not</strong> the browser version)
-     * @return A {@link File} handle of the downloaded binary
-     * @throws IOException When downloading the binary failed
-     * @see #getBinary(Browser, String, Os, Architecture)
+     * @param browser             The {@link Browser} to register the WebDriver binary for
+     * @param webDriverBinaryFile The binary {@link File} to register
+     * @throws IllegalArgumentException      When the given {@link File} does not exist or is a directory
+     * @throws UnsupportedOperationException When the given {@link Browser} does not support WebDriver binaries
+     */
+    void registerWebDriverBinary(final Browser browser, final File webDriverBinaryFile);
+
+    /**
+     * @return All locally stored WebDriver binary {@link File}s
      */
     @Nonnull
-    default File getBinary(final Browser browser, final String version) throws IOException {
-        return getBinary(browser, version, Os.getCurrent(), Architecture.getCurrent());
+    List<File> getLocalWebDriverBinaries();
+
+    /**
+     * Get the latest WebDriver binary ({@link Os} and {@link Architecture} will be auto-detected).
+     *
+     * @param browser The {@link Browser} to get the WebDriver binary for
+     * @return The WebDriver binary
+     * @throws IOException In case of a network or file error
+     */
+    @Nonnull
+    default File getLatestWebDriverBinary(final Browser browser) throws IOException {
+        return getWebDriverBinary(browser, null, Os.getCurrent(), Architecture.getCurrent());
     }
 
     /**
-     * Get the latest webdriver binary for the given {@link Browser}, {@link Os} and {@link Architecture}.
-     * <p>
-     * When a binary for the given requirements is found locally,
-     * it will not be downloaded again.
+     * Get a specific version of a WebDriver binary ({@link Os} and {@link Architecture} will be auto-detected).
      *
-     * @param browser      The browser to download the binary for
-     * @param os           The operating system the binary must be compatible with
-     * @param architecture The architecture the binary must be compatible with
-     * @return A {@link File} handle of the downloaded binary
-     * @throws IOException When downloading the binary failed
-     * @see #getBinary(Browser, String, Os, Architecture)
+     * @param browser The {@link Browser} to get the WebDriver binary for
+     * @param version The version of the WebDriver binary to get.
+     *                When {@code null}, the latest version will be used
+     * @return The WebDriver binary
+     * @throws IOException In case of a network or file error
      */
     @Nonnull
-    default File getBinary(final Browser browser, final Os os, final Architecture architecture) throws IOException {
-        return getBinary(browser, "latest", os, architecture);
+    default File getWebDriverBinary(final Browser browser, final String version) throws IOException {
+        return getWebDriverBinary(browser, version, Os.getCurrent(), Architecture.getCurrent());
     }
 
     /**
-     * Get the latest webdriver binary for a given {@link Browser}.
-     * <p>
-     * This assumes that a binary for the current {@link Os} and {@link Architecture} is requested.
-     * <p>
-     * When a binary for the given requirements is found locally,
-     * it will not be downloaded again.
+     * Get the latest WebDriver binary.
      *
-     * @param browser The browser to download the binary for
-     * @return A {@link File} handle of the downloaded binary
-     * @throws IOException When downloading the binary failed
-     * @see #getBinary(Browser, String, Os, Architecture)
+     * @param browser      The {@link Browser} to get the WebDriver binary for
+     * @param os           The {@link Os} the binary must be compatible with
+     * @param architecture The {@link Architecture} the binary must be compatible with
+     * @return The WebDriver binary
+     * @throws IOException In case of a network or file error
      */
     @Nonnull
-    default File getBinary(final Browser browser) throws IOException {
-        return getBinary(browser, "latest");
+    default File getLatestWebDriverBinary(final Browser browser, final Os os, final Architecture architecture) throws IOException {
+        return getWebDriverBinary(browser, null, os, architecture);
     }
 
     /**
-     * Register a given binary file as the webdriver binary to use for a given {@link Browser}.
+     * Get the default {@link BinaryManager}.
+     * <p>
+     * Use this instead of {@link #builder()} if you don't need to perform any
+     * customizations.
+     * <p>
+     * Downloaded binaries will be stored in {@code $HOME/.webdriver-manager}.
      *
-     * @param binaryFile The binary file to register
-     * @param browser    The {@link Browser} to register the binary for
+     * @return A {@link BinaryManager} instance
      */
-    void registerBinary(final File binaryFile, final Browser browser);
-
-    /**
-     * Delete all downloaded binary files.
-     */
-    void cleanUp();
-
+    @Nonnull
     static BinaryManager createDefault() {
         return builder()
                 .defaultHttpClient()
-                .addDefaultBinaryDownloaders()
+                .defaultBinaryDestinationDir()
+                .addBinaryProvider(ChromeDriverBinaryProvider::new)
+                .addBinaryProvider(MicrosoftWebDriverBinaryProvider::new)
+                .addBinaryProvider(GeckoDriverBinaryProvider::new)
+                .addBinaryProvider(IEDriverServerBinaryProvider::new)
+                .addBinaryProvider(OperaChromiumDriverBinaryProvider::new)
                 .build();
     }
 
+    @Nonnull
     static Builder.HttpClientStep builder() {
-        return Builder::new;
+        return httpClient -> binaryDestinationDirPath -> new Builder(httpClient, binaryDestinationDirPath);
     }
 
     final class Builder {
 
         @FunctionalInterface
         public interface HttpClientStep {
+            BinaryDestinationDirStep httpClient(final HttpClient httpClient);
 
-            /**
-             * Provide a custom {@link HttpClient} to use for the binary downloaders.
-             *
-             * @param httpClient The http client to use
-             * @return A {@link Builder} instance
-             */
-            Builder httpClient(final HttpClient httpClient);
-
-            /**
-             * Use a default {@link HttpClient} that has been tested with
-             * built-in binary downloaders and should work for the vast majority of users.
-             *
-             * @return A {@link Builder} instance
-             */
-            default Builder defaultHttpClient() {
-                final HttpClient httpClient = HttpClients.custom()
-                        .setUserAgent("Mozilla/5.0")
+            default BinaryDestinationDirStep defaultHttpClient() {
+                return httpClient(HttpClients.custom()
+                        .setUserAgent("webdriver-manager/0.2.0")
                         .disableAuthCaching()
                         .disableCookieManagement()
-                        .build();
-
-                return httpClient(httpClient);
+                        .build());
             }
+        }
 
+        @FunctionalInterface
+        public interface BinaryDestinationDirStep {
+            Builder binaryDestinationDir(final Path binaryDestinationDirPath);
+
+            /**
+             * Use the default binary destination dir ({@code $HOME/.webdriver-manager}).
+             *
+             * @return A {@link Builder} instance
+             */
+            default Builder defaultBinaryDestinationDir() {
+                return binaryDestinationDir(Paths
+                        .get(System.getProperty("user.home"))
+                        .resolve(".webdriver-manager"));
+            }
         }
 
         private final HttpClient httpClient;
 
-        private final GitHubReleasesService gitHubReleasesService;
+        private final Path binaryDestinationDirPath;
 
-        private Set<BinaryDownloader> binaryDownloaders;
+        private final Set<BinaryProvider> binaryProviders;
 
-        private Builder(final HttpClient httpClient) {
+        private Builder(final HttpClient httpClient,
+                        final Path binaryDestinationDirPath) {
             this.httpClient = httpClient;
-            this.gitHubReleasesService = GitHubReleasesService.create(httpClient, new ObjectMapper());
-            binaryDownloaders = new HashSet<>();
+            this.binaryDestinationDirPath = binaryDestinationDirPath;
+            this.binaryProviders = new HashSet<>();
         }
 
-        /**
-         * Add the {@link ChromeDriverBinaryDownloader}.
-         *
-         * @return A {@link Builder} instance
-         */
-        public Builder addChromeDriverBinaryDownloader() {
-            binaryDownloaders.add(new ChromeDriverBinaryDownloader(httpClient));
-
-            return this;
-        }
-
-        /**
-         * Add the {@link GeckoDriverBinaryDownloader}.
-         *
-         * @return A {@link Builder} instance
-         */
-        public Builder addGeckoDriverBinaryDownloader() {
-            binaryDownloaders.add(new GeckoDriverBinaryDownloader(gitHubReleasesService));
-
-            return this;
-        }
-
-        /**
-         * Add the {@link OperaChromiumDriverBinaryDownloader}.
-         *
-         * @return A {@link Builder} instance
-         */
-        public Builder addOperaChromiumDriverBinaryDownloader() {
-            binaryDownloaders.add(new OperaChromiumDriverBinaryDownloader(gitHubReleasesService));
-
-            return this;
-        }
-
-        /**
-         * Add the {@link MicrosoftWebDriverBinaryDownloader}.
-         *
-         * @return A {@link Builder} instance
-         * @since 0.1.2
-         */
-        public Builder addMicrosoftWebDriverBinaryDownloader() {
-            binaryDownloaders.add(new MicrosoftWebDriverBinaryDownloader(httpClient));
-
-            return this;
-        }
-
-        /**
-         * Add the {@link IEDriverServerBinaryDownloader}.
-         *
-         * @return A {@link Builder} instance
-         * @since 0.1.3
-         */
-        public Builder addIEDriverServerBinaryDownloader() {
-            binaryDownloaders.add(new IEDriverServerBinaryDownloader(httpClient));
-
-            return this;
-        }
-
-        /**
-         * Add a custom {@link BinaryDownloader}.
-         *
-         * @param binaryDownloader The binary downloader to add
-         * @return A {@link Builder} instance
-         */
-        public Builder addBinaryDownloader(final BinaryDownloader binaryDownloader) {
-            binaryDownloaders.add(binaryDownloader);
-
-            return this;
-        }
-
-        /**
-         * Add all default {@link BinaryDownloader}s.
-         * <p>
-         * This includes:
-         * <pre>
-         *     - {@link ChromeDriverBinaryDownloader}
-         *     - {@link GeckoDriverBinaryDownloader}
-         *     - {@link OperaChromiumDriverBinaryDownloader}
-         *     - {@link MicrosoftWebDriverBinaryDownloader}
-         *     - {@link IEDriverServerBinaryDownloader}
-         * </pre>
-         *
-         * @return A {@link Builder} instance
-         */
-        public Builder addDefaultBinaryDownloaders() {
-            return this
-                    .addChromeDriverBinaryDownloader()
-                    .addGeckoDriverBinaryDownloader()
-                    .addOperaChromiumDriverBinaryDownloader()
-                    .addMicrosoftWebDriverBinaryDownloader()
-                    .addIEDriverServerBinaryDownloader();
-        }
-
+        @Nonnull
         public BinaryManager build() {
-            return new BinaryManagerImpl(binaryDownloaders);
+            return new BinaryManagerImpl(binaryDestinationDirPath, binaryProviders);
+        }
+
+        @Nonnull
+        public Builder addBinaryProvider(final BinaryProvider binaryProvider) {
+            this.binaryProviders.add(binaryProvider);
+            return this;
+        }
+
+        @Nonnull
+        public Builder addBinaryProvider(final Function<HttpClient, BinaryProvider> binaryProvider) {
+            return addBinaryProvider(binaryProvider.apply(this.httpClient));
         }
 
     }

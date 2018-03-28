@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static java.util.Collections.singletonList;
@@ -31,12 +32,11 @@ enum ChromeDriverPlatform implements Platform {
         this.architectures = architectures;
     }
 
-    static ChromeDriverPlatform valueOf(final Os os, final Architecture architecture) {
+    static Optional<ChromeDriverPlatform> valueOf(final Os os, final Architecture architecture) {
         return Arrays.stream(values())
-                .filter(platform -> platform.os.equals(os))
+                .filter(platform -> platform.os == os)
                 .filter(platform -> platform.architectures.contains(architecture))
-                .findAny()
-                .orElseThrow(IllegalArgumentException::new);
+                .findAny();
     }
 
     @Nonnull

@@ -103,7 +103,7 @@ using [`binaryManager.cleanUp()`](https://nscuro.github.io/webdriver-manager/jav
 
 #### GitHub API
 Some binaries are being downloaded from GitHub (currently Firefox's [`geckodriver`](https://github.com/mozilla/geckodriver) & Opera's [`operachromiumdriver`](https://github.com/operasoftware/operachromiumdriver)).
-GitHub **may** limit the amount of requests being performed against their API, in which case you must
+GitHub [limits](https://developer.github.com/v3/#rate-limiting) the amount of requests being performed against their API, in which case you must
 provide [API credentials](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/) in order to authorize yourself.
 
 Currently, you need to set the `WDM_GH_USER` and `WDM_GH_TOKEN` **ENVIRONMENT** variables for

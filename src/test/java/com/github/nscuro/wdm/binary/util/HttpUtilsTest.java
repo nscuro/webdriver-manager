@@ -92,6 +92,17 @@ class HttpUtilsTest {
                     .isEqualTo(MimeType.APPLICATION_ZIP);
         }
 
+        @Test
+        void shouldMatchCaseInsensitive() {
+            final Header contentTypeHeader = new BasicHeader(HttpHeaders.CONTENT_TYPE, "Application/XML; charset=UTF-8");
+
+            given(httpResponse.getLastHeader(HttpHeaders.CONTENT_TYPE))
+                    .willReturn(contentTypeHeader);
+
+            // shouldn't throw an exception
+            HttpUtils.verifyContentTypeIsAnyOf(httpResponse, "application/xml; charset=utf-8");
+        }
+
     }
 
 }

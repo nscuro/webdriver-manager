@@ -97,15 +97,15 @@ public final class LocalWebDriverFactory implements WebDriverFactory {
 
             try {
                 if (desiredVersion.isPresent()) {
-                    webDriverBinary = binaryManager.getBinary(browser, desiredVersion.get());
+                    webDriverBinary = binaryManager.getWebDriverBinary(browser, desiredVersion.get());
                 } else {
-                    webDriverBinary = binaryManager.getBinary(browser);
+                    webDriverBinary = binaryManager.getLatestWebDriverBinary(browser);
                 }
             } catch (IOException e) {
                 throw new WebDriverFactoryException(capabilities, e);
             }
 
-            binaryManager.registerBinary(webDriverBinary, browser);
+            binaryManager.registerWebDriverBinary(browser, webDriverBinary);
         }
 
         return getWebDriverInstance(browser, capabilities);

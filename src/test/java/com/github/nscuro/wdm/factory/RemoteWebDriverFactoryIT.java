@@ -1,6 +1,11 @@
 package com.github.nscuro.wdm.factory;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -10,6 +15,7 @@ import java.util.Optional;
 
 import static java.lang.String.format;
 
+@DisplayName("The remote WebDriver factory")
 class RemoteWebDriverFactoryIT {
 
     private static SeleniumServer seleniumServer;
@@ -30,7 +36,8 @@ class RemoteWebDriverFactoryIT {
     }
 
     @Test
-    void shouldBeAbleToInitiateRemoteWebDriverInstances() {
+    @DisplayName("should be able to create remote WebDriver instances")
+    void shouldBeAbleToCreateRemoteWebDriverInstances() {
         webDriver = webDriverFactory.createWebDriver(DesiredCapabilities.htmlUnit());
     }
 
