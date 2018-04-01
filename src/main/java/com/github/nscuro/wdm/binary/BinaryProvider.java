@@ -11,6 +11,10 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 /**
+ * Provider for WebDriver binaries.
+ *
+ * A {@link BinaryProvider} should provide binaries for only one {@link Browser}.
+ *
  * @since 0.2.0
  */
 public interface BinaryProvider {
