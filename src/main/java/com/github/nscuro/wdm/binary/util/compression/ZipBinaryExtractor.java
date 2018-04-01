@@ -23,6 +23,8 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 
 /**
+ * A {@link BinaryExtractor} for zipped archives.
+ *
  * @since 0.2.0
  */
 final class ZipBinaryExtractor implements BinaryExtractor {
@@ -35,6 +37,9 @@ final class ZipBinaryExtractor implements BinaryExtractor {
         this.archiveFile = requireNonNull(archiveFile);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public File extractBinary(final Path binaryDestinationPath, final Predicate<ArchiveEntry> binaryEntrySelector) throws IOException {

@@ -23,6 +23,8 @@ import static java.lang.String.format;
 import static java.util.Objects.isNull;
 
 /**
+ * A {@link BinaryExtractor} for gzipped tarball archives.
+ *
  * @since 0.2.0
  */
 final class GZipTarballBinaryExtractor implements BinaryExtractor {
@@ -35,6 +37,9 @@ final class GZipTarballBinaryExtractor implements BinaryExtractor {
         this.archiveFile = archiveFile;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public File extractBinary(final Path binaryDestinationPath, final Predicate<ArchiveEntry> binaryEntrySelector) throws IOException {
