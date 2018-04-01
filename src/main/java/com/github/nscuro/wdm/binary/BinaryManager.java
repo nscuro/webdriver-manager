@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A manager for WebDriver binaries.
  *
@@ -105,9 +107,18 @@ public interface BinaryManager {
      * Use this instead of {@link #builder()} if you don't need to perform any
      * customizations.
      * <p>
-     * Downloaded binaries will be stored in {@code $HOME/.webdriver-manager}.
+     * The following {@link BinaryProvider}s are included:
+     * <pre>
+     *     - {@link ChromeDriverBinaryProvider}
+     *     - {@link MicrosoftWebDriverBinaryProvider}
+     *     - {@link GeckoDriverBinaryProvider}
+     *     - {@link IEDriverServerBinaryProvider}
+     *     - {@link OperaChromiumDriverBinaryProvider}
+     * </pre>
      *
      * @return A {@link BinaryManager} instance
+     * @see Builder.HttpClientStep#defaultHttpClient()
+     * @see Builder.BinaryDestinationDirStep#defaultBinaryDestinationDir()
      */
     @Nonnull
     static BinaryManager createDefault() {
@@ -129,10 +140,23 @@ public interface BinaryManager {
 
     final class Builder {
 
+        /**
+         * A {@link Builder} step that forces the user to provide a {@link HttpClient}.
+         */
         @FunctionalInterface
         public interface HttpClientStep {
+
+            @Nonnull
             BinaryDestinationDirStep httpClient(final HttpClient httpClient);
 
+            /**
+             * Use the default {@link HttpClient}.
+             * <p>
+             * It uses a UserAgent string in the form of {@code webdriver-manager/{version}}.
+             *
+             * @return The next builder step
+             */
+            @Nonnull
             default BinaryDestinationDirStep defaultHttpClient() {
                 return httpClient(HttpClients.custom()
                         .setUserAgent("webdriver-manager/0.2.0")
@@ -142,15 +166,21 @@ public interface BinaryManager {
             }
         }
 
+        /**
+         * A {@link Builder} step that forces the user to specify a directory where binaries shall be deployed to.
+         */
         @FunctionalInterface
         public interface BinaryDestinationDirStep {
+
+            @Nonnull
             Builder binaryDestinationDir(final Path binaryDestinationDirPath);
 
             /**
-             * Use the default binary destination dir ({@code $HOME/.webdriver-manager}).
+             * Use the default binary destination directory ({@code $HOME/.webdriver-manager}).
              *
              * @return A {@link Builder} instance
              */
+            @Nonnull
             default Builder defaultBinaryDestinationDir() {
                 return binaryDestinationDir(Paths
                         .get(System.getProperty("user.home"))
@@ -166,8 +196,8 @@ public interface BinaryManager {
 
         private Builder(final HttpClient httpClient,
                         final Path binaryDestinationDirPath) {
-            this.httpClient = httpClient;
-            this.binaryDestinationDirPath = binaryDestinationDirPath;
+            this.httpClient = requireNonNull(httpClient, "no httpClient provided");
+            this.binaryDestinationDirPath = requireNonNull(binaryDestinationDirPath, "no binaryDestinationDirPath provided");
             this.binaryProviders = new HashSet<>();
         }
 
@@ -182,6 +212,15 @@ public interface BinaryManager {
             return this;
         }
 
+        /**
+         * Convenience method over {@link #addBinaryProvider(BinaryProvider)}.
+         * <p>
+         * This allows for construction of {@link BinaryProvider}s using the {@link HttpClient}
+         * that was used in {@link Builder.HttpClientStep}.
+         *
+         * @param binaryProvider A {@link Function} that constructs a {@link BinaryProvider} when given a {@link HttpClient}
+         * @return A {@link Builder} instance
+         */
         @Nonnull
         public Builder addBinaryProvider(final Function<HttpClient, BinaryProvider> binaryProvider) {
             return addBinaryProvider(binaryProvider.apply(this.httpClient));
