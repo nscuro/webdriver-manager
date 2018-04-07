@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.EnumSource.Mode;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -26,7 +27,6 @@ import java.util.Optional;
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -60,10 +60,8 @@ class IEDriverServerBinaryProviderTest {
         }
 
         @ParameterizedTest
-        @EnumSource(Browser.class)
+        @EnumSource(value = Browser.class, mode = Mode.EXCLUDE, names = "INTERNET_EXPLORER")
         void shouldReturnFalseForEveryBrowserExceptInternetExplorer(final Browser browser) {
-            assumeFalse(Browser.INTERNET_EXPLORER == browser);
-
             assertThat(binaryProvider.providesBinaryForBrowser(browser)).isFalse();
         }
 
@@ -91,10 +89,8 @@ class IEDriverServerBinaryProviderTest {
         }
 
         @ParameterizedTest
-        @EnumSource(Os.class)
+        @EnumSource(value = Os.class, mode = Mode.EXCLUDE, names = "WINDOWS")
         void shouldReturnEmptyOptionalForEveryOsExceptWindows(final Os os) throws IOException {
-            assumeFalse(Os.WINDOWS == os);
-
             assertThat(binaryProvider.getLatestBinaryVersion(os, Architecture.X86)).isNotPresent();
 
             assertThat(binaryProvider.getLatestBinaryVersion(os, Architecture.X64)).isNotPresent();
@@ -106,11 +102,9 @@ class IEDriverServerBinaryProviderTest {
     class DownloadTest {
 
         @ParameterizedTest
-        @EnumSource(Os.class)
+        @EnumSource(value = Os.class, mode = Mode.EXCLUDE, names = "WINDOWS")
         @SuppressWarnings("Duplicates")
         void shouldThrowExceptionForEveryOsExceptWindows(final Os os) {
-            assumeFalse(Os.WINDOWS == os);
-
             final String version = "doesNotMatter";
 
             final Path mockedPath = mock(Path.class);

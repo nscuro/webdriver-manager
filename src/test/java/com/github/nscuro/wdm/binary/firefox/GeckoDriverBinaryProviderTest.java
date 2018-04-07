@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.EnumSource.Mode;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -25,7 +26,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -73,11 +73,9 @@ class GeckoDriverBinaryProviderTest {
         }
 
         @ParameterizedTest(name = "[{index}] browser={0}")
-        @EnumSource(Browser.class)
-        @DisplayName("should return false for every browser except Edge")
+        @EnumSource(value = Browser.class, mode = Mode.EXCLUDE, names = "FIREFOX")
+        @DisplayName("should return false for every browser except Firefox")
         void shouldReturnFalseForEveryBrowserExceptFirefox(final Browser browser) {
-            assumeFalse(Browser.FIREFOX == browser);
-
             assertThat(binaryProvider.providesBinaryForBrowser(browser)).isFalse();
         }
 

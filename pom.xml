@@ -56,8 +56,8 @@
         <lombok.version>1.16.20</lombok.version>
         <findbugs-jsr305.version>3.0.2</findbugs-jsr305.version>
         <slf4j.version>1.7.25</slf4j.version>
-        <junit-jupiter.version>5.0.3</junit-jupiter.version>
-        <junit-platform.version>1.0.3</junit-platform.version>
+        <junit-jupiter.version>5.1.0</junit-jupiter.version>
+        <junit-platform.version>1.1.0</junit-platform.version>
         <assertj-version>3.9.0</assertj-version>
         <mockito.version>2.13.0</mockito.version>
         <wiremock.version>2.14.0</wiremock.version>
