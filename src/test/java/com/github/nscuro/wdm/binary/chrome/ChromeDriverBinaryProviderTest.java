@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.EnumSource.Mode;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -32,7 +33,6 @@ import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -83,11 +83,9 @@ class ChromeDriverBinaryProviderTest {
         }
 
         @ParameterizedTest(name = "[{index}] browser={0}")
-        @EnumSource(Browser.class)
+        @EnumSource(value = Browser.class, mode = Mode.EXCLUDE, names = "CHROME")
         @DisplayName("should return false for every browser except Chrome")
         void shouldReturnFalseForEveryBrowserExceptChrome(final Browser browser) {
-            assumeFalse(Browser.CHROME == browser);
-
             assertThat(binaryProvider.providesBinaryForBrowser(browser)).isFalse();
         }
 
