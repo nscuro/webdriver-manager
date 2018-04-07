@@ -1,6 +1,5 @@
 package com.github.nscuro.wdm.factory;
 
-import com.github.nscuro.wdm.Os;
 import com.github.nscuro.wdm.binary.BinaryManager;
 import com.github.nscuro.wdm.binary.chrome.ChromeDriverBinaryProvider;
 import com.github.nscuro.wdm.binary.edge.MicrosoftWebDriverBinaryProvider;
@@ -12,6 +11,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -34,7 +35,6 @@ import java.nio.file.Files;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @DisplayName("The local WebDriver factory")
 class LocalWebDriverFactoryIT {
@@ -95,30 +95,27 @@ class LocalWebDriverFactoryIT {
     }
 
     @Test
+    @EnabledOnOs(OS.MAC)
     @DisplayName("should be able to create SafariDriver instances")
     void testCreateWebDriverSafari() {
-        assumeTrue(Os.getCurrent() == Os.MACOS, "SafariDriver is only available on MacOS");
-
         webDriver = webDriverFactory.createWebDriver(new SafariOptions());
 
         assertThat(webDriver).isInstanceOf(SafariDriver.class);
     }
 
     @Test
+    @EnabledOnOs(OS.WINDOWS)
     @DisplayName("should be able to create EdgeDriver instances")
     void testCreateWebDriverEdge() {
-        assumeTrue(Os.getCurrent() == Os.WINDOWS, "EdgeDriver is only available on Windows");
-
         webDriver = webDriverFactory.createWebDriver(new EdgeOptions());
 
         assertThat(webDriver).isInstanceOf(EdgeDriver.class);
     }
 
     @Test
+    @EnabledOnOs(OS.WINDOWS)
     @DisplayName("should be able to create InternetExplorerDriver instances")
     void testCreateWebDriverInternetExplorer() {
-        assumeTrue(Os.getCurrent() == Os.WINDOWS, "InternetExplorer is only available on Windows");
-
         webDriver = webDriverFactory.createWebDriver(new InternetExplorerOptions());
 
         assertThat(webDriver).isInstanceOf(InternetExplorerDriver.class);

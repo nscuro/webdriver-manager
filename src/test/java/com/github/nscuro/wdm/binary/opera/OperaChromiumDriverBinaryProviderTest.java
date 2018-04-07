@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.EnumSource.Mode;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -24,7 +25,6 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -56,10 +56,8 @@ class OperaChromiumDriverBinaryProviderTest {
         }
 
         @ParameterizedTest
-        @EnumSource(Browser.class)
+        @EnumSource(value = Browser.class, mode = Mode.EXCLUDE, names = "OPERA")
         void shouldReturnFalseForEveryBrowserExceptOpera(final Browser browser) {
-            assumeFalse(Browser.OPERA == browser);
-
             assertThat(binaryProvider.providesBinaryForBrowser(browser)).isFalse();
         }
 
