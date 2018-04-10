@@ -65,7 +65,7 @@ final class ZipBinaryExtractor implements BinaryExtractor {
             }
         }
 
-        throw new NoSuchElementException("Nothing file was extracted");
+        throw new NoSuchElementException(format("%s does not contain a file matching the given predicate", archiveFile));
     }
 
 }

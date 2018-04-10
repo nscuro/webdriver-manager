@@ -66,7 +66,7 @@ final class GZipTarballBinaryExtractor implements BinaryExtractor {
             }
         }
 
-        throw new NoSuchElementException("Nothing was extracted");
+        throw new NoSuchElementException(format("%s does not contain a file matching the given predicate", archiveFile));
     }
 
 }
