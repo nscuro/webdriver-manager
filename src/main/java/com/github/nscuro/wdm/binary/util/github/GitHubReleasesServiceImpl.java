@@ -151,7 +151,8 @@ final class GitHubReleasesServiceImpl implements GitHubReleasesService {
                         "Request was rejected because your GitHub API rate limit is exceeded. %s",
                         rateLimitResetMessage.orElse("")));
             } else if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
-                throw new NoSuchElementException();
+                throw new NoSuchElementException(format(
+                        "Resource at %s%s does not exist", repositoryUrl, path));
             }
 
             remainingRateLimit
