@@ -73,33 +73,30 @@ Binaries can be downloaded using the [`BinaryManager`](https://nscuro.github.io/
 ```java
 BinaryManager binaryManager = BinaryManager.createDefault();
 
-// Download specific binary for Chrome on specific OS and architecture
-File binaryFile = binaryManager.getBinary(Browser.CHROME, "2.34", Os.MACOS, Architecture.X64);
-
-// Download latest binary for Edge on specific OS and architecture
-File binaryFile = binaryManager.getBinary(Browser.EDGE, Os.WINDOWS, Architecture.X86);
-
-// Download specific binary version for Firefox, auto-detect OS and architecture
-File binaryFile = binaryManager.getBinary(Browser.FIREFOX, "v0.18.0");
-
-// Download latest binary for Opera, auto-detect OS and architecture
-File binaryFile = binaryManager.getBinary(Browser.OPERA);
+File chromeDriverBinary = binaryManager.getLatestWebDriverBinary(Browser.CHROME, Os.WINDOWS, Architecture.X64);
 ```
+For more ways to download binaries please refer to the BinaryManager [documentation](https://nscuro.github.io/webdriver-manager/javadoc/com/github/nscuro/wdm/binary/BinaryManager.html).
 
-Using `BinaryManager.createDefault();` will provide you with a `BinaryManager` instance that
-should be able to fulfill all basic needs. You can however use a builder for customization purposes:
+Using [`BinaryManager.createDefault()`](https://nscuro.github.io/webdriver-manager/javadoc/com/github/nscuro/wdm/binary/BinaryManager.html#createDefault--) will provide you with a `BinaryManager` instance that
+should be able to fulfill all basic needs. 
+
+You can however use a builder for customization purposes:
 ```java
-BinaryManager binaryManager = BinaryManager.builder()
-    .httpClient(myHttpClient) // If you don't care, you can also use .defaultHttpClient()
-    .addGeckoDriverBinaryDownloader() // Each builtin downloader can be added separately
-    .addBinaryDownloader(myBinaryDownloader) // You can easily provide your own downloader
-    // If you don't care and just want all default downloaders, there's always .addDefaultBinaryDownloaders()
+BinaryManager binaryManager = BinaryManager
+    .builder()
+    // A HttpClient MUST be provided. If you do not care about this step, use .defaultHttpClient()
+    .httpClient(myHttpClient)
+    // You can also use .defaultBinaryDestinationDir(), which will cause all downloaded
+    // binaries to be placed in $HOME/.webdriver-manager
+    .binaryDestinationDir(Paths.get("/home/darthvader/webdriver"))
+    .addBinaryProvider(myCustomBinaryProvider)
+    // When a BinaryProvider has a constructor that only takes a HttpClient,
+    // you can pass it as method reference. The builder will then inject the HttpClient
+    // that was chosen in the first builder step.
+    .addBinaryProvider(ChromeDriverBinaryProvider::new) // For Google Chrome
+    .addBinaryProvider(GeckoDriverBinaryProvider::new) // For Mozilla Firefox
     .build();
 ```
-Custom binary downloaders can be provided by implementing the [`BinaryDownloader`](https://nscuro.github.io/webdriver-manager/javadoc/com/github/nscuro/wdm/binary/BinaryDownloader.html) interface.
-
-Binaries will be downloaded to `$HOME/.webdriver-manager` and can be programmatically deleted 
-using [`binaryManager.cleanUp()`](https://nscuro.github.io/webdriver-manager/javadoc/com/github/nscuro/wdm/binary/BinaryManager.html#cleanUp--).
 
 #### GitHub API
 Some binaries are being downloaded from GitHub (currently Firefox's [`geckodriver`](https://github.com/mozilla/geckodriver) & Opera's [`operachromiumdriver`](https://github.com/operasoftware/operachromiumdriver)).
