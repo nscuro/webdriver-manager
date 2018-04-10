@@ -49,6 +49,9 @@ final class GoogleCloudStorageDirectoryServiceImpl implements GoogleCloudStorage
         this.directoryUrl = directoryUrl;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     public List<GoogleCloudStorageEntry> getEntries() throws IOException {
         final HttpGet request = new HttpGet(directoryUrl);
@@ -86,6 +89,9 @@ final class GoogleCloudStorageDirectoryServiceImpl implements GoogleCloudStorage
                 .collect(Collectors.toList());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     public File downloadFile(final GoogleCloudStorageEntry fileEntry) throws IOException {
         final String fileName = FilenameUtils.getBaseName(fileEntry.getUrl());
