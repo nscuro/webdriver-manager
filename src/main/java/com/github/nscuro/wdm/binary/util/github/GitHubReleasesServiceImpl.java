@@ -39,6 +39,8 @@ import static com.github.nscuro.wdm.binary.util.MimeType.APPLICATION_ZIP;
 import static java.lang.String.format;
 
 /**
+ * The default {@link GitHubReleasesService} implementation.
+ *
  * @since 0.2.0
  */
 final class GitHubReleasesServiceImpl implements GitHubReleasesService {
@@ -71,6 +73,9 @@ final class GitHubReleasesServiceImpl implements GitHubReleasesService {
         this.repositoryUrl = getRepositoryUrl(baseUrl, repositoryOwner, repositoryName);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public List<GitHubRelease> getAllReleases() throws IOException {
@@ -78,6 +83,9 @@ final class GitHubReleasesServiceImpl implements GitHubReleasesService {
                 .constructCollectionType(ArrayList.class, GitHubRelease.class));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nonnull
     @Override
     public File downloadAsset(final GitHubReleaseAsset asset) throws IOException {
@@ -143,7 +151,8 @@ final class GitHubReleasesServiceImpl implements GitHubReleasesService {
                         "Request was rejected because your GitHub API rate limit is exceeded. %s",
                         rateLimitResetMessage.orElse("")));
             } else if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
-                throw new NoSuchElementException();
+                throw new NoSuchElementException(format(
+                        "Resource at %s%s does not exist", repositoryUrl, path));
             }
 
             remainingRateLimit
