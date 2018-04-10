@@ -164,4 +164,9 @@ final class BinaryManagerImpl implements BinaryManager {
         return file.isFile() && file.getName().startsWith(WEB_DRIVER_BINARY_PREFIX);
     }
 
+    @Nonnull
+    Set<BinaryProvider> getBinaryProviders() {
+        return binaryProviders;
+    }
+
 }
