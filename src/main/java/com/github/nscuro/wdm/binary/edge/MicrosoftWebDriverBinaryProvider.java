@@ -11,6 +11,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -154,14 +155,22 @@ public class MicrosoftWebDriverBinaryProvider implements BinaryProvider {
                 final Document document = Jsoup.parse(inputStream, StandardCharsets.UTF_8.name(), binaryDownloadPageUrl);
 
                 document.select("li.driver-download").forEach(releaseElement -> {
-                    final String downloadUrl = releaseElement.selectFirst("a").attr("href");
-                    final String downloadMeta = releaseElement.selectFirst("p.driver-download__meta").text();
+                    final Optional<String> downloadUrl = Optional
+                            .ofNullable(releaseElement.selectFirst("a"))
+                            .map(linkElement -> linkElement.attr("href"));
 
-                    final Matcher versionMatcher = VERSION_PATTERN.matcher(downloadMeta);
-                    if (!versionMatcher.matches()) {
-                        LOGGER.warn("Unable to parse version from \"{}\"", downloadMeta);
-                    } else {
-                        availableReleases.add(new MicrosoftWebDriverRelease(versionMatcher.group(1), downloadUrl));
+                    final Optional<String> downloadMeta = Optional
+                            .ofNullable(releaseElement.selectFirst("p.driver-download__meta"))
+                            .map(Element::text);
+
+                    if (downloadUrl.isPresent() && downloadMeta.isPresent()) {
+                        final Matcher versionMatcher = VERSION_PATTERN.matcher(downloadMeta.get());
+
+                        if (!versionMatcher.matches()) {
+                            LOGGER.warn("Unable to parse version from \"{}\"", downloadMeta.get());
+                        } else {
+                            availableReleases.add(new MicrosoftWebDriverRelease(versionMatcher.group(1), downloadUrl.get()));
+                        }
                     }
                 });
             }
