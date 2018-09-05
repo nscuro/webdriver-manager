@@ -20,7 +20,6 @@ Overall, there are 3 things `webdriver-manager` can do for you:
 - [x] Google Chrome ([chromedriver](https://sites.google.com/a/chromium.org/chromedriver/))
 - [x] Mozilla Firefox ([geckodriver](https://github.com/mozilla/geckodriver))
 - [x] Opera ([operachromiumdriver](https://github.com/operasoftware/operachromiumdriver))
-- [ ] PhantomJS
 - [x] Microsoft Internet Explorer ([IEDriverServer](https://msdn.microsoft.com/en-us/library/dn800898(v=vs.85).aspx))
 - [x] Microsoft Edge ([Microsoft WebDriver](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/))
  
@@ -46,13 +45,6 @@ Note that `webdriver-manager` requires you to provide the actual Selenium depend
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>selenium-java</artifactId>
     <version>${selenium.version}</version>
-</dependency>
-
-<!-- Only required if you plan on using PhantomJS -->
-<dependency>
-    <groupId>com.codeborne</groupId>
-    <artifactId>phantomjsdriver</artifactId>
-    <version>${phantomjs-driver.version}</version>
 </dependency>
 
 <!-- Only required if you plan on using HTMLUnit -->

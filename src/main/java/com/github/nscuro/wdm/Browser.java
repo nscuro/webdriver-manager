@@ -23,9 +23,7 @@ public enum Browser {
     INTERNET_EXPLORER(Arrays.asList(BrowserType.IE, BrowserType.IEXPLORE), "org.openqa.selenium.ie.InternetExplorerDriver", "webdriver.ie.driver", true),
 
     OPERA(Arrays.asList(BrowserType.OPERA, BrowserType.OPERA_BLINK), "org.openqa.selenium.opera.OperaDriver", "webdriver.opera.driver", true),
-
-    /* PHANTOM_JS(Collections.singletonList(BrowserType.PHANTOMJS), "org.openqa.selenium.phantomjs.PhantomJSDriver", "phantomjs.binary.path", true), */
-
+    
     HTMLUNIT(Collections.singletonList(BrowserType.HTMLUNIT), "org.openqa.selenium.htmlunit.HtmlUnitDriver", null, false),
 
     SAFARI(Collections.singletonList(BrowserType.SAFARI), "org.openqa.selenium.safari.SafariDriver", null, false);
