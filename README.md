@@ -1,5 +1,6 @@
 # webdriver-manager
 [![Build Status](https://travis-ci.org/nscuro/webdriver-manager.svg?branch=master)](https://travis-ci.org/nscuro/webdriver-manager)
+[![Known Vulnerabilities](https://snyk.io/test/github/nscuro/webdriver-manager/badge.svg)](https://snyk.io/test/github/nscuro/webdriver-manager)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.nscuro/webdriver-manager/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.nscuro/webdriver-manager)
 [![JavaDoc](http://javadoc-badge.appspot.com/com.github.nscuro/webdriver-manager.svg?label=javadoc)](https://nscuro.github.com/webdriver-manager/javadoc)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
