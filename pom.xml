@@ -45,7 +45,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- Dependency versions -->
-        <selenium.version>3.14.0</selenium.version>
+        <selenium.version>3.141.59</selenium.version>
         <htmlunit-driver.version>2.32.1</htmlunit-driver.version>
         <jsoup.version>1.11.3</jsoup.version>
         <apache-httpclient.version>4.5.6</apache-httpclient.version>
