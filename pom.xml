@@ -48,7 +48,7 @@
         <selenium.version>3.141.59</selenium.version>
         <htmlunit-driver.version>2.33.3</htmlunit-driver.version>
         <jsoup.version>1.11.3</jsoup.version>
-        <apache-httpclient.version>4.5.6</apache-httpclient.version>
+        <apache-httpclient.version>4.5.7</apache-httpclient.version>
         <apache-commons-compress.version>1.18</apache-commons-compress.version>
         <jackson.version>2.9.8</jackson.version>
         <lombok.version>1.18.2</lombok.version>
