@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/nscuro/webdriver-manager.svg?branch=master)](https://travis-ci.org/nscuro/webdriver-manager)
 [![Known Vulnerabilities](https://snyk.io/test/github/nscuro/webdriver-manager/badge.svg)](https://snyk.io/test/github/nscuro/webdriver-manager)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.nscuro/webdriver-manager/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.nscuro/webdriver-manager)
-[![JavaDoc](http://javadoc-badge.appspot.com/com.github.nscuro/webdriver-manager.svg?label=javadoc)](https://nscuro.github.com/webdriver-manager/javadoc)
+[![JavaDoc](http://javadoc-badge.appspot.com/com.github.nscuro/webdriver-manager.svg?label=javadoc)](https://nscuro.github.com/webdriver-manager)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![Coverage Status](https://coveralls.io/repos/github/nscuro/webdriver-manager/badge.svg?branch=master)](https://coveralls.io/github/nscuro/webdriver-manager?branch=master)
 
@@ -62,15 +62,15 @@ should work just fine.
 ## Usage
 
 ### Downloading WebDriver binaries
-Binaries can be downloaded using the [`BinaryManager`](https://nscuro.github.io/webdriver-manager/javadoc/com/github/nscuro/wdm/binary/BinaryManager.html) class:
+Binaries can be downloaded using the [`BinaryManager`](https://nscuro.github.io/webdriver-manager/com/github/nscuro/wdm/binary/BinaryManager.html) class:
 ```java
 BinaryManager binaryManager = BinaryManager.createDefault();
 
 File chromeDriverBinary = binaryManager.getLatestWebDriverBinary(Browser.CHROME, Os.WINDOWS, Architecture.X64);
 ```
-For more ways to download binaries please refer to the BinaryManager [documentation](https://nscuro.github.io/webdriver-manager/javadoc/com/github/nscuro/wdm/binary/BinaryManager.html).
+For more ways to download binaries please refer to the BinaryManager [documentation](https://nscuro.github.io/webdriver-manager/com/github/nscuro/wdm/binary/BinaryManager.html).
 
-Using [`BinaryManager.createDefault()`](https://nscuro.github.io/webdriver-manager/javadoc/com/github/nscuro/wdm/binary/BinaryManager.html#createDefault--) will provide you with a `BinaryManager` instance that
+Using [`BinaryManager.createDefault()`](https://nscuro.github.io/webdriver-manager/com/github/nscuro/wdm/binary/BinaryManager.html#createDefault--) will provide you with a `BinaryManager` instance that
 should be able to fulfill all basic needs. 
 
 You can however use a builder for customization purposes:
@@ -123,7 +123,7 @@ Whereas if you'd want to get a remote instance from your Selenium Grid, it'd be 
 WebDriver webDriver = new RemoteWebDriver(new URI("http://my-grid-domain:4444/wd/hub"), new ChromeOptions());
 ```
 
-What `webdriver-manager` offers you is a [simple interface](https://nscuro.github.io/webdriver-manager/javadoc/com/github/nscuro/wdm/factory/WebDriverFactory.html) that reduces all this down to:
+What `webdriver-manager` offers you is a [simple interface](https://nscuro.github.io/webdriver-manager/com/github/nscuro/wdm/factory/WebDriverFactory.html) that reduces all this down to:
 ```java
 // WebDriverFactory myWebDriverFactory = ...
 
@@ -134,7 +134,7 @@ There are two implementations of this interface, but you are of course free to w
 
 #### Local instantiation
 
-Using the [`LocalWebDriverFactory`](https://nscuro.github.io/webdriver-manager/javadoc/com/github/nscuro/wdm/factory/LocalWebDriverFactory.html), you can create `WebDriver` instances on the current machine.  
+Using the [`LocalWebDriverFactory`](https://nscuro.github.io/webdriver-manager/com/github/nscuro/wdm/factory/LocalWebDriverFactory.html), you can create `WebDriver` instances on the current machine.  
 It will automatically download any required binaries, as long as you provide a `BinaryManager` instance at construction:
 
 ```java
@@ -154,7 +154,7 @@ Per default, `LocalWebDriverFactory` will always download the latest version of 
 This behavior may not always be what you want - i.e. you use an older browser version or the latest binary version
 does not support your system's architecture anymore.
 
-In order to solve this issue, you can provide a [`WebDriverFactoryConfig`](https://nscuro.github.io/webdriver-manager/javadoc/com/github/nscuro/wdm/factory/WebDriverFactoryConfig.html) in which you explicitly state which version shall be downloaded:
+In order to solve this issue, you can provide a [`WebDriverFactoryConfig`](https://nscuro.github.io/webdriver-manager/com/github/nscuro/wdm/factory/WebDriverFactoryConfig.html) in which you explicitly state which version shall be downloaded:
 ```java
 WebDriverFactoryConfig config = new WebDriverFactoryConfig();
 config.setBinaryVersionForBrowser(Browser.CHROME, "2.32");
@@ -165,7 +165,7 @@ WebDriverFactory factory = new LocalWebDriverFactory(BinaryManager.createDefault
 
 #### Remote instantiation
 
-Alternatively to the local instantiation, you can use [`RemoteWebDriverFactory`](https://nscuro.github.io/webdriver-manager/javadoc/com/github/nscuro/wdm/factory/RemoteWebDriverFactory.html) with your Selenium Grid server:
+Alternatively to the local instantiation, you can use [`RemoteWebDriverFactory`](https://nscuro.github.io/webdriver-manager/com/github/nscuro/wdm/factory/RemoteWebDriverFactory.html) with your Selenium Grid server:
 ```java
 WebDriverFactory factory = new RemoteWebDriverFactory("http://my-grid-domain:4444/wd/hub");
  
@@ -176,6 +176,6 @@ Because are connecting to a remote machine, there's naturally no need to downloa
 
 ## Managing WebDriver instances
 
-Building upon the above `WebDriverFactory`, [`WebDriverManager`](https://nscuro.github.io/webdriver-manager/javadoc/com/github/nscuro/wdm/manager/WebDriverManager.html)s are used to manage the created instances (keeping references to them, limiting overall instance count, making sure they're properly closed...).
+Building upon the above `WebDriverFactory`, [`WebDriverManager`](https://nscuro.github.io/webdriver-manager/com/github/nscuro/wdm/manager/WebDriverManager.html)s are used to manage the created instances (keeping references to them, limiting overall instance count, making sure they're properly closed...).
 
-For all available implementations, please refer to the [javadoc](https://nscuro.github.io/webdriver-manager/javadoc/com/github/nscuro/wdm/manager/package-summary.html).
+For all available implementations, please refer to the [javadoc](https://nscuro.github.io/webdriver-manager/com/github/nscuro/wdm/manager/package-summary.html).
