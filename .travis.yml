@@ -18,9 +18,19 @@ script:
   - ./mvnw test integration-test verify jacoco:report
 after_success:
   - ./mvnw coveralls:report
+  - ./mvnw javadoc:javadoc
 branches:
   only:
     - master
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN
+  local-dir: target/site/apidocs
+  target-branch: gh-pages
+  on:
+    branch: master
+    jdk: "oraclejdk8"
 notifications:
   email:
     on_success: never
