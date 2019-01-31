@@ -172,10 +172,61 @@ WebDriverFactory factory = new RemoteWebDriverFactory("http://my-grid-domain:444
 WebDriver webDriver = factory.createWebDriver(new FirefoxOptions());
 ```
 
-Because are connecting to a remote machine, there's naturally no need to download any binaries (on your machine, that is).
+Because you are connecting to a remote machine, there's naturally no need to download any binaries (on your machine, that is).
 
 ## Managing WebDriver instances
 
 Building upon the above `WebDriverFactory`, [`WebDriverManager`](https://nscuro.github.io/webdriver-manager/com/github/nscuro/wdm/manager/WebDriverManager.html)s are used to manage the created instances (keeping references to them, limiting overall instance count, making sure they're properly closed...).
+
+### SingletonWebDriverManager
+
+As the name suggests, this `WebDriverManager` manages a single `WebDriver` instance.
+You request a `WebDriver` instance by calling the manager's [`getWebDriver()`](https://nscuro.github.io/webdriver-manager/com/github/nscuro/wdm/manager/SingletonWebDriverManager.html#getWebDriver-org.openqa.selenium.Capabilities-) method, 
+it basically behaves like `WebDriverFactory`, except:
+
+>  * If no WebDriver is currently active, a new instance will be created.
+>  * If a WebDriver is currently active and its Capabilities match the given desired ones,
+>      the currently active instance will be returned.
+>  * If a WebDriver is currently active and its Capabilities DO NOT match the given
+>      desired ones, the currently active instance will be closed and a new one will be created.
+
+This is useful when your tests run sequentially, as an instance can now be reused as long as the requested
+`Capabilities` stay the same. 
+
+Example usage with JUnit Jupiter:
+
+```java
+class ExampleTest {
+    
+    private static WebDriverManager webDriverManager;
+    
+    private WebDriver webDriver;
+    
+    @BeforeAll
+    static void beforeAll() {
+        WebDriverFactory webDriverFactory = new LocalWebDriverFactory(BinaryManager.createDefault());
+        
+        webDriverManager = new SingletonWebDriverManager(webDriverFactory);
+    }
+    
+    @BeforeEach
+    void beforeEach() {
+        webDriver = webDriverManager.getWebDriver(new ChromeOptions());
+    }
+    
+    @Test
+    void testDuckDuckGo() {
+        webDriver.get("https://duckduckgo.com");
+        
+        // ...
+    }
+    
+    @AfterAll
+    static void afterAll() {
+        webDriverManager.shutdown();
+    }
+    
+}
+```
 
 For all available implementations, please refer to the [javadoc](https://nscuro.github.io/webdriver-manager/com/github/nscuro/wdm/manager/package-summary.html).
