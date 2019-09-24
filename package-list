@@ -1,0 +1,13 @@
+com.github.nscuro.wdm
+com.github.nscuro.wdm.binary
+com.github.nscuro.wdm.binary.chrome
+com.github.nscuro.wdm.binary.edge
+com.github.nscuro.wdm.binary.firefox
+com.github.nscuro.wdm.binary.ie
+com.github.nscuro.wdm.binary.opera
+com.github.nscuro.wdm.binary.util
+com.github.nscuro.wdm.binary.util.compression
+com.github.nscuro.wdm.binary.util.github
+com.github.nscuro.wdm.binary.util.googlecs
+com.github.nscuro.wdm.factory
+com.github.nscuro.wdm.manager
