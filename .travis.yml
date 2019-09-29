@@ -5,7 +5,7 @@ dist: trusty
 sudo: true
 
 jdk:
-  - oraclejdk8
+  - openjdk8
   - openjdk11
 
 matrix:
