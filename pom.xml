@@ -47,7 +47,7 @@
         <!-- Dependency versions -->
         <selenium.version>3.141.59</selenium.version>
         <htmlunit-driver.version>2.37.0</htmlunit-driver.version>
-        <jsoup.version>1.11.3</jsoup.version>
+        <jsoup.version>1.13.1</jsoup.version>
         <apache-httpclient.version>4.5.11</apache-httpclient.version>
         <apache-commons-compress.version>1.19</apache-commons-compress.version>
         <jackson.version>2.10.2</jackson.version>
