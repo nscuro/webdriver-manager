@@ -4,6 +4,8 @@ import com.github.nscuro.wdm.Browser;
 import com.github.nscuro.wdm.binary.BinaryManager;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -116,7 +118,7 @@ public final class LocalWebDriverFactory implements WebDriverFactory {
             return Class
                     .forName(browser.getWebDriverClassName())
                     .asSubclass(WebDriver.class)
-                    .getConstructor(Capabilities.class)
+                    .getConstructor(Class.forName(browser.getOptionsClassName()))
                     .newInstance(capabilities);
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException | ClassNotFoundException e) {
             throw new WebDriverFactoryException(capabilities, e);

@@ -14,23 +14,25 @@ import static java.lang.String.format;
 
 public enum Browser {
 
-    CHROME(Arrays.asList(BrowserType.CHROME, BrowserType.GOOGLECHROME), "org.openqa.selenium.chrome.ChromeDriver", "webdriver.chrome.driver", true),
+    CHROME(Arrays.asList(BrowserType.CHROME, BrowserType.GOOGLECHROME), "org.openqa.selenium.chrome.ChromeDriver", "org.openqa.selenium.chrome.ChromeOptions", "webdriver.chrome.driver", true),
 
-    EDGE(Collections.singletonList(BrowserType.EDGE), "org.openqa.selenium.edge.EdgeDriver", "webdriver.edge.driver", true),
+    EDGE(Collections.singletonList(BrowserType.EDGE), "org.openqa.selenium.edge.EdgeDriver", "org.openqa.selenium.edge.EdgeOptions", "webdriver.edge.driver", true),
 
-    FIREFOX(Collections.singletonList(BrowserType.FIREFOX), "org.openqa.selenium.firefox.FirefoxDriver", "webdriver.gecko.driver", true),
+    FIREFOX(Collections.singletonList(BrowserType.FIREFOX), "org.openqa.selenium.firefox.FirefoxDriver", "org.openqa.selenium.firefox.FirefoxOptions", "webdriver.gecko.driver", true),
 
-    INTERNET_EXPLORER(Arrays.asList(BrowserType.IE, BrowserType.IEXPLORE), "org.openqa.selenium.ie.InternetExplorerDriver", "webdriver.ie.driver", true),
+    INTERNET_EXPLORER(Arrays.asList(BrowserType.IE, BrowserType.IEXPLORE), "org.openqa.selenium.ie.InternetExplorerDriver", "org.openqa.selenium.ie.InternetExplorerOptions", "webdriver.ie.driver", true),
 
-    OPERA(Arrays.asList(BrowserType.OPERA, BrowserType.OPERA_BLINK), "org.openqa.selenium.opera.OperaDriver", "webdriver.opera.driver", true),
-    
-    HTMLUNIT(Collections.singletonList(BrowserType.HTMLUNIT), "org.openqa.selenium.htmlunit.HtmlUnitDriver", null, false),
+    OPERA(Arrays.asList(BrowserType.OPERA, BrowserType.OPERA_BLINK), "org.openqa.selenium.opera.OperaDriver", "org.openqa.selenium.opera.OperaOptions", "webdriver.opera.driver", true),
 
-    SAFARI(Collections.singletonList(BrowserType.SAFARI), "org.openqa.selenium.safari.SafariDriver", null, false);
+    HTMLUNIT(Collections.singletonList(BrowserType.HTMLUNIT), "org.openqa.selenium.htmlunit.HtmlUnitDriver", "org.openqa.selenium.Capabilities", null, false),
+
+    SAFARI(Collections.singletonList(BrowserType.SAFARI), "org.openqa.selenium.safari.SafariDriver", "org.openqa.selenium.safari.SafariOptions", null, false);
 
     private final List<String> names;
 
     private final String webDriverClassName;
+
+    private final String optionsClassName;
 
     private final String binarySystemProperty;
 
@@ -38,10 +40,12 @@ public enum Browser {
 
     Browser(final List<String> names,
             final String webDriverClassName,
+            final String optionsClassName,
             @Nullable final String binarySystemProperty,
             final boolean requiresBinary) {
         this.names = names;
         this.webDriverClassName = webDriverClassName;
+        this.optionsClassName = optionsClassName;
         this.binarySystemProperty = binarySystemProperty;
         this.requiresBinary = requiresBinary;
     }
@@ -58,6 +62,11 @@ public enum Browser {
     @Nonnull
     public String getWebDriverClassName() {
         return webDriverClassName;
+    }
+
+    @Nonnull
+    public String getOptionsClassName() {
+        return optionsClassName;
     }
 
     @Nonnull
