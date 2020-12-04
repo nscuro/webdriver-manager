@@ -1,0 +1,36 @@
+name: Continuous Integration
+
+on: [ push, pull_request ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ "8", "11" ]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v1
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+          architecture: x64
+      - name: Build
+        run: mvn -B clean compile test-compile
+      - name: Install xvfb
+        run: |
+          sudo apt install xvfb
+          export DISPLAY=:99.0
+          sh -e /etc/init.d/xvfb start
+          sleep 3 # give xvfb some time to start
+      - name: Test
+        run: mvn -B verify jacoco:report
+      - name: Package
+        run: mvn -B package
+      - name: Report Test Coverage
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: target/site/jacoco/jacoco.xml
+          fail_ci_if_error: true
