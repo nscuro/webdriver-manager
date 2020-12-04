@@ -154,7 +154,7 @@ public class MicrosoftWebDriverBinaryProvider implements BinaryProvider {
             try (final InputStream inputStream = httpResponse.getEntity().getContent()) {
                 final Document document = Jsoup.parse(inputStream, StandardCharsets.UTF_8.name(), binaryDownloadPageUrl);
 
-                document.select("li.driver-download").forEach(releaseElement -> {
+                document.select("div.module:nth-of-type(2) > ul.driver-downloads > li.driver-download").forEach(releaseElement -> {
                     final Optional<String> downloadUrl = Optional
                             .ofNullable(releaseElement.selectFirst("a"))
                             .map(linkElement -> linkElement.attr("href"));
