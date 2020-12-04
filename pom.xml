@@ -49,7 +49,7 @@
         <htmlunit-driver.version>2.37.0</htmlunit-driver.version>
         <jsoup.version>1.11.3</jsoup.version>
         <apache-httpclient.version>4.5.13</apache-httpclient.version>
-        <apache-commons-compress.version>1.19</apache-commons-compress.version>
+        <apache-commons-compress.version>1.20</apache-commons-compress.version>
         <jackson.version>2.10.2</jackson.version>
         <lombok.version>1.18.16</lombok.version>
         <findbugs-jsr305.version>3.0.2</findbugs-jsr305.version>
