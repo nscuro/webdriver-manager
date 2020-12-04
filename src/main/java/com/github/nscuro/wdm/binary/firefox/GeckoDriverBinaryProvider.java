@@ -110,6 +110,8 @@ public final class GeckoDriverBinaryProvider implements BinaryProvider {
                 .filter(release -> normalizeTagName(release.getTagName()).equals(version))
                 .flatMap(release -> release.getAssets().stream())
                 .filter(asset -> asset.isAssetForPlatform(platform))
+                // Mozilla provides checksums for every binary
+                .filter(asset -> !asset.getName().endsWith(".asc"))
                 .findAny()
                 .orElseThrow(NoSuchElementException::new);
 
