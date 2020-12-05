@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./mvnw -Darguments="-DskipITs" release:clean release:prepare
+./mvnw -P ossrh -Darguments="-DskipITs" release:clean release:prepare

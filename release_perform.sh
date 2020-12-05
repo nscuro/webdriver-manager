@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./mvnw -Darguments="-DskipITs" release:perform
+./mvnw -P ossrh -Darguments="-DskipITs" release:perform
