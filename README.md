@@ -1,10 +1,8 @@
 # webdriver-manager
-[![Build Status](https://travis-ci.org/nscuro/webdriver-manager.svg?branch=master)](https://travis-ci.org/nscuro/webdriver-manager)
-[![Known Vulnerabilities](https://snyk.io/test/github/nscuro/webdriver-manager/badge.svg)](https://snyk.io/test/github/nscuro/webdriver-manager)
+[![Build Status](https://github.com/nscuro/webdriver-manager/workflows/Continuous%20Integration/badge.svg)](https://github.com/nscuro/webdriver-manager/actions?query=workflow%3A%22Continuous+Integration%22)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.nscuro/webdriver-manager/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.nscuro/webdriver-manager)
-[![JavaDoc](http://javadoc-badge.appspot.com/com.github.nscuro/webdriver-manager.svg?label=javadoc)](https://nscuro.github.com/webdriver-manager)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
-[![Coverage Status](https://coveralls.io/repos/github/nscuro/webdriver-manager/badge.svg?branch=master)](https://coveralls.io/github/nscuro/webdriver-manager?branch=master)
+[![codecov](https://codecov.io/gh/nscuro/webdriver-manager/branch/master/graph/badge.svg?token=8Wy45EtrQz)](https://codecov.io/gh/nscuro/webdriver-manager)
 
 *Simplifying WebDriver instantiation*
 
