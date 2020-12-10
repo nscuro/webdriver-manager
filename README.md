@@ -3,8 +3,12 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.nscuro/webdriver-manager/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.nscuro/webdriver-manager)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![codecov](https://codecov.io/gh/nscuro/webdriver-manager/branch/master/graph/badge.svg?token=8Wy45EtrQz)](https://codecov.io/gh/nscuro/webdriver-manager)
+![Development Status](https://img.shields.io/badge/development-discontinued-red)
 
 *Simplifying WebDriver instantiation*
+
+> ⚠ **Development of this library is discontinued** ⚠  
+> I'm not working with Selenium anymore, so there's no reason for me to keep updating this
 
 ## Introduction
 This project aims to simplify the process of constructing a `WebDriver` instance in [Selenium](https://github.com/SeleniumHQ/selenium) test cases
